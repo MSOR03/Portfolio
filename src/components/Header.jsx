@@ -3,6 +3,8 @@ import Link from "next/link";
 import { Button } from "./ui/button.jsx";
 import Nav from "./Nav.jsx";
 import MobileNav from "./MobileNav.jsx";
+import Image from "next/image.js";
+
 
 const Header = () => {
   return (
@@ -10,10 +12,11 @@ const Header = () => {
       <div className="container mx-auto flex justify-between items-center">
         {/*Img*/}
         <Link href="/">
-          <h1 className="text-4xl font-semibold">
-            Sebas
+          <Image src="/Logo.png" alt="LOGO" width={70} height={70}></Image>
+          <p className="text-center">
+            SOR
             <span className="text-accent">.</span>
-          </h1>
+          </p>
         </Link>
 
         {/*Desktop nav */}
