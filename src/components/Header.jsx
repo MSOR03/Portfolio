@@ -2,6 +2,7 @@ import React from "react";
 import Link from "next/link";
 import { Button } from "./ui/button.jsx";
 import Nav from "./Nav.jsx";
+import MobileNav from "./MobileNav.jsx";
 
 const Header = () => {
   return (
@@ -10,8 +11,8 @@ const Header = () => {
         {/*Img*/}
         <Link href="/">
           <h1 className="text-4xl font-semibold">
-            Sebastián
-            <br /> Olarte<span className="text-accent">.</span>
+            Sebas
+            <span className="text-accent">.</span>
           </h1>
         </Link>
 
@@ -24,7 +25,9 @@ const Header = () => {
         </div>
 
         {/*mobile nave*/}
-        <div className="lg:hidden">Mobile nav</div>
+        <div className="lg:hidden">
+          <MobileNav />
+        </div>
       </div>
     </header>
   );
