@@ -8,11 +8,11 @@ import Image from "next/image.js";
 
 const Header = () => {
   return (
-    <header className="py-8 xl:py-12 text-white">
+    <header className="py-2 xl:py-12 text-white">
       <div className="container mx-auto flex justify-between items-center">
         {/*Img*/}
         <Link href="/">
-          <Image src="/Logo.png" alt="LOGO" width={70} height={70}></Image>
+          <Image src="/Logo.png" alt="LOGO" width={90} height={90}></Image>
           <p className="text-center">
             SOR
             <span className="text-accent">.</span>
@@ -20,10 +20,10 @@ const Header = () => {
         </Link>
 
         {/*Desktop nav */}
-        <div className="hidden lg:flex items-center gap-9">
+        <div className="hidden lg:flex items-center gap-3 text-sm">
           <Nav />
           <Link href="/contact">
-            <Button>Contratarme</Button>
+            <Button>Contrata</Button>
           </Link>
         </div>
 
