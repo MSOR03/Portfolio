@@ -27,7 +27,9 @@ const credentials = { key: privateKey, cert: certificate,ca:ca_certicate };
 app.use(cors());
 app.use(express.json());
 
+//Monitoring request
 app.use(morgan('dev'));
+
 //Define routes '/api/message' and send answers.
 app.get("/", (req, res) => {
   res.send("Hello from the secure backend" );

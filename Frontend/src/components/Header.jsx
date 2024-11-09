@@ -14,7 +14,7 @@ const Header = () => {
           href="/"
           className="transition-transform duration-300 ease-in-out transform hover:scale-90"
         >
-          <Image src="/Logo.png" alt="LOGO" width={90} height={90}></Image>
+          <Image src="/assets/Logo.png" alt="LOGO" width={90} height={90}></Image>
           <p className="text-center">
             SOR
             <span className="text-accent">.</span>
