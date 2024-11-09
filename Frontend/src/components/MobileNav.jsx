@@ -14,7 +14,7 @@ const links = [
   { name: "Servicios", path: "/services" },
   { name: "Acerca", path: "/aboutme" },
   { name: "Trabajos", path: "/projects" },
-  { name: "Contacto", path: "/contact" },
+  /*{ name: "Contacto", path: "/contact" },*/
 ];
 
 const MobileNav = () => {
@@ -29,28 +29,48 @@ const MobileNav = () => {
         <CiMenuFries className="text-[32px] text-accent" />
       </SheetTrigger>
 
-      <SheetContent className="flex flex-col h-full max-h-screen overflow-y-auto items-center justify-between"> {/* Alinear elementos al centro */}
+      <SheetContent className="flex flex-col h-full max-h-screen overflow-y-auto items-center justify-between">
+        {" "}
+        {/* Alinear elementos al centro */}
         {/* Logo */}
-        <div className="mt-8 text-center text-2xl"> {/* Reduce el margen superior */}
-          <Link href="/" className="flex flex-col items-center" onClick={closeMenu}>
+        <div className="mt-8 text-center text-2xl">
+          {" "}
+          {/* Reduce el margen superior */}
+          <Link 
+            href="/"
+            className="flex flex-col items-center transition-transform duration-300 ease-in-out transform hover:scale-90"
+            onClick={closeMenu}
+          >
             <Image src="/Logo.png" alt="Logo" width={70} height={70} />
             <p>
               SOR<span className="text-accent">.</span>
             </p>
           </Link>
         </div>
-
         {/* Nav */}
-        <nav className="flex flex-col justify-center items-center gap-4 text-sm mb-8"> {/* Espacio más pequeño entre enlaces */}
-          <Link href="/contact" onClick={closeMenu}>
-            <Button>Contrata</Button>
+        <nav className="flex flex-col justify-center items-center gap-4 text-sm mb-8">
+          {" "}
+          {/* Espacio más pequeño entre enlaces */}
+          <Link href="/contact">
+            <Button
+              onClick={closeMenu}
+              variant="outline"
+              size="sm"
+              className="uppercase flex items-center gap-2 group hover:bg-accent hover:text-black"
+            >
+              <span className="text-accent group-hover:text-black transition-colors ">
+                Contratar
+              </span>
+            </Button>
           </Link>
           {links.map((link, index) => (
             <Link
               href={link.path}
               key={index}
               className={`${
-                link.path === pathname ? "text-accent border-b-2 border-accent" : ""
+                link.path === pathname
+                  ? "text-accent border-b-2 border-accent"
+                  : ""
               } capitalize hover:text-accent transition-all`}
               onClick={closeMenu} // Cerrar el menú al hacer clic en un enlace
             >

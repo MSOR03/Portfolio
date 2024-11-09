@@ -1,9 +1,10 @@
 import Link from "next/link";
-import { FaFacebook, FaGithub, FaLinkedin,FaInstagram } from "react-icons/fa";
+import { FaFacebook, FaYoutube, FaInstagram } from "react-icons/fa";
 import { FaSquareWhatsapp, FaDatabase } from "react-icons/fa6";
 import { CgProfile } from "react-icons/cg";
 import { GiSkills } from "react-icons/gi";
 import { GiArchiveResearch } from "react-icons/gi";
+
 
 const Footer = () => {
   return (
@@ -18,19 +19,16 @@ const Footer = () => {
               </span>
             </div>
             <div className="flex space-x-4 gap-2">
-              <Link href="/">
-                <FaFacebook size={25} />
+              <Link href="/" className="flex items-center justify-center w-10 h-10 m-2 rounded-full bg-white text-green-600 border-2 border-transparent transition-colors duration-300 hover:bg-gradient-to-br from-green-400 to-blue-600 hover:text-white">
+                  <FaFacebook size={25} />
               </Link>
-              <Link href="/">
-                <FaGithub size={25} />
+              <Link href="/" className="flex items-center justify-center w-10 h-10 m-2 rounded-full bg-white text-green-600 border-2 border-transparent transition-colors duration-300 hover:bg-gradient-to-br from-green-400 to-blue-600 hover:text-white">
+                <FaYoutube size={25} />
               </Link>
-              <Link href="/">
-                <FaLinkedin size={25} />
-              </Link>
-              <Link href="/">
+              <Link href="/" className="flex items-center justify-center w-10 h-10 m-2 rounded-full bg-white text-green-600 border-2 border-transparent transition-colors duration-300 hover:bg-gradient-to-br from-green-400 to-blue-600 hover:text-white">
                 <FaSquareWhatsapp size={25} />
               </Link>
-              <Link href="/">
+              <Link href="/" className="flex items-center justify-center w-10 h-10 m-2 rounded-full bg-white text-green-600 border-2 border-transparent transition-colors duration-300 hover:bg-gradient-to-br from-green-400 to-blue-600 hover:text-white">
                 <FaInstagram size={25} />
               </Link>
             </div>
@@ -67,7 +65,7 @@ const Footer = () => {
                   </li>
                   <li>
                     <a href="" className="hover:underline">
-                      SIG
+                      GIS
                     </a>
                   </li>
                   <li>
@@ -85,9 +83,7 @@ const Footer = () => {
 
               <div className="mb-4 text-sm">
                 <div className="flex justify-center items-center space-x-8 text-accent">
-                  <h6 className="text-sm font-bold ">
-                    Areas Intereses
-                  </h6>
+                  <h6 className="text-sm font-bold ">Areas Intereses</h6>
                   <GiArchiveResearch size={20} />
                 </div>
                 <hr className="my-2 w-45 border-t-2 border-accent" />
@@ -133,7 +129,7 @@ const Footer = () => {
                 <ul className="space-y-2">
                   <li>
                     <a
-                      href="https://www.google.com/maps"
+                      href="https://www.google.com/maps/place/Cl.+66a+%2396-53/@4.6948747,-74.1191856,19z/data=!4m7!3m6!1s0x8e3f9b59797b82e5:0x8c5f500ac69f59f4!4b1!8m2!3d4.6948671!4d-74.1186395!16s%2Fg%2F11fq36bs3d?entry=ttu&g_ep=EgoyMDI0MTAyMS4xIKXMDSoASAFQAw%3D%3D"
                       className="hover:underline"
                     >
                       Calle 66a 96-53

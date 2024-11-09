@@ -14,8 +14,11 @@ const links = [
   { name: "Servicios", path: "/services", icon: <CiServer /> },
   { name: "Acerca", path: "/aboutme", icon: <FaPersonCircleQuestion /> },
   { name: "Trabajos", path: "/projects", icon: <GrUserWorker /> },
-  { name: "Contacto", path: "/contact", icon: <CiPhone/> },
 ];
+  {/*
+  { name: "Contacto", path: "/contact", icon: <CiPhone/> },
+  */}
+
 
 const Nav = () => {
   const pathname = usePathname();
