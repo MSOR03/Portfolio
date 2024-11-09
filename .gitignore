@@ -1,0 +1,5 @@
+#Ignore ssl certificate
+
+Backend\src\ssl\certificate.crt
+Backend\src\ssl\certificate.csr
+Backend\src\ssl\private.key
