@@ -4,6 +4,7 @@ import { FiDownload } from "react-icons/fi";
 //Components
 import Social from "@/components/Social"
 import Photo from "@/components/Photo"
+//import Clients from "@/components/Clients";
 
 const Home = () => {
   return (
@@ -12,12 +13,12 @@ const Home = () => {
         <div className="flex flex-col md:flex-row items-center justify-between md:pt-8 md:pb-24">
           {/*Text*/}
           <div className="text-center md:text-left order-2 md:order-none">
-            <span className="text-xl">Engineering</span>
+            <span className="text-xl">Ingeniero</span>
             <h1 className="h1 mb-6">
               Hola soy
               <br /> <span className="text-accent">Sebastián</span>
             </h1>
-            <p className="max-w-[450px] text-white/80">
+            <p className="md:max-w-[450px] lg:max-w-[450px] xl:max-w-[500px] text-white/80">
               Ingeniero Topografico e Ingeniero de Sistemas con habilidades en
               desarrollo de software (Movil,Web), Sistemas de Información,
               ademas, cualidades en diseño en Civil3D,ArcGIS,Qgis.
@@ -41,8 +42,12 @@ const Home = () => {
           </div>
 
           {/*Photo*/}
-          <div className="order-1 md:order-none mb-8 xl:mb-0">
+          <div className="order-1 md:order-none mb-8 xl:mb-0 ">
             <Photo/>
+          </div>
+
+          <div>
+           {/*<Clients/>*/}
           </div>
         </div>
       </div>
