@@ -19,16 +19,16 @@ const Footer = () => {
               </span>
             </div>
             <div className="flex space-x-4 gap-2">
-              <Link href="/" className="flex items-center justify-center w-10 h-10 m-2 rounded-full bg-white text-green-600 border-2 border-transparent transition-colors duration-300 hover:bg-gradient-to-br from-green-400 to-blue-600 hover:text-white">
+              <Link href="/" className="flex items-center justify-center w-10 h-10 m-2 rounded-full ring-2 ring-green-600 bg-white text-green-600 border-2 border-transparent transition-colors duration-300 hover:bg-gradient-to-br from-green-400 to-blue-600 hover:text-white">
                   <FaFacebook size={25} />
               </Link>
-              <Link href="/" className="flex items-center justify-center w-10 h-10 m-2 rounded-full bg-white text-green-600 border-2 border-transparent transition-colors duration-300 hover:bg-gradient-to-br from-green-400 to-blue-600 hover:text-white">
+              <Link href="/" className="flex items-center justify-center w-10 h-10 m-2 rounded-full ring-2 ring-green-600 bg-white text-green-600 border-2 border-transparent transition-colors duration-300 hover:bg-gradient-to-br from-green-400 to-blue-600 hover:text-white">
                 <FaYoutube size={25} />
               </Link>
-              <Link href="/" className="flex items-center justify-center w-10 h-10 m-2 rounded-full bg-white text-green-600 border-2 border-transparent transition-colors duration-300 hover:bg-gradient-to-br from-green-400 to-blue-600 hover:text-white">
+              <Link href="/" className="flex items-center justify-center w-10 h-10 m-2 rounded-full ring-2 ring-green-600 bg-white text-green-600 border-2 border-transparent transition-colors duration-300 hover:bg-gradient-to-br from-green-400 to-blue-600 hover:text-white">
                 <FaSquareWhatsapp size={25} />
               </Link>
-              <Link href="/" className="flex items-center justify-center w-10 h-10 m-2 rounded-full bg-white text-green-600 border-2 border-transparent transition-colors duration-300 hover:bg-gradient-to-br from-green-400 to-blue-600 hover:text-white">
+              <Link href="/" className="flex items-center justify-center w-10 h-10 m-2 rounded-full ring-2 ring-green-600 bg-white text-green-600 border-2 border-transparent transition-colors duration-300 hover:bg-gradient-to-br from-green-400 to-blue-600 hover:text-white">
                 <FaInstagram size={25} />
               </Link>
             </div>
@@ -161,7 +161,7 @@ const Footer = () => {
         >
           <p>
             © 2024 Copyright: Sebastián Olarte Ramirez, Todos los derechos
-            reservados.
+            reservados, Creditos: Cristian Mihai.
           </p>
         </div>
       </footer>

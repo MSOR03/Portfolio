@@ -41,7 +41,7 @@ const MobileNav = () => {
             className="flex flex-col items-center transition-transform duration-300 ease-in-out transform hover:scale-90"
             onClick={closeMenu}
           >
-            <Image src="/Logo.png" alt="Logo" width={70} height={70} />
+            <Image src="/assets/Logo.png" alt="Logo" width={70} height={70} />
             <p>
               SOR<span className="text-accent">.</span>
             </p>
