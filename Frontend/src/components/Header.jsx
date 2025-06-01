@@ -7,37 +7,80 @@ import { Button } from "./ui/button.jsx";
 
 const Header = () => {
   return (
-    <header className="py-2 xl:py-6 text-white">
-      <div className="container mx-auto flex justify-between items-center">
-        {/*Img*/}
+    <header className="sticky top-4 z-50">
+      <div
+        className="
+          container mx-auto max-w-7xl
+          bg-[#111916] bg-opacity-90
+          border border-green-700/30
+          rounded-xl
+          shadow-md
+          backdrop-blur-sm
+          flex justify-between items-center
+          py-4
+          px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20
+          gap-4
+          transition-shadow duration-300 ease-in-out
+          hover:shadow-lg
+        "
+      >
+        {/* Logo */}
         <Link
           href="/"
-          className="transition-transform duration-300 ease-in-out transform hover:scale-90"
+          className="
+            flex items-center gap-3
+            transition-transform duration-300 ease-in-out
+            transform hover:scale-105 hover:brightness-110
+            select-none cursor-pointer
+          "
+          aria-label="Homepage"
         >
-          <Image src="/assets/Logo.png" alt="LOGO" width={90} height={90}></Image>
-          <p className="text-center">
-            SOR
-            <span className="text-accent">.</span>
+          <Image
+            src="/assets/Logo.png"
+            alt="LOGO"
+            width={90}
+            height={90}
+            priority
+            className="rounded-full drop-shadow-md"
+          />
+          <p
+            className="
+              text-lg font-semibold select-none
+              text-green-500 whitespace-nowrap
+              transition-colors duration-300
+              hover:text-green-400
+              cursor-pointer
+            "
+          >
+            SOR<span className="text-green-400">.</span>
           </p>
         </Link>
 
-        {/*Desktop nav */}
-        <div className="hidden lg:flex items-center gap-3 text-sm">
+        {/* Desktop nav */}
+        <div className="hidden lg:flex items-center gap-8 text-sm font-medium">
           <Nav />
-          <Link href="/contact">
+          <Link href="/contact" passHref>
             <Button
               variant="outline"
               size="sm"
-              className="uppercase flex items-center gap-2 group hover:bg-accent hover:text-black"
+              className="
+                uppercase flex items-center gap-2
+                border-green-500 text-green-500
+                hover:bg-green-500 hover:text-black
+                transition-colors duration-300
+                shadow-sm hover:shadow-lg
+                transform hover:scale-105
+                cursor-pointer
+              "
             >
-              <span className="text-accent group-hover:text-black transition-colors ">
+              <span className="transition-colors group-hover:text-black">
                 Contratar
               </span>
             </Button>
           </Link>
         </div>
 
-        {/*mobile nave*/}
+        {/* Mobile nav */}
         <div className="lg:hidden">
           <MobileNav />
         </div>
@@ -45,4 +88,5 @@ const Header = () => {
     </header>
   );
 };
+
 export default Header;

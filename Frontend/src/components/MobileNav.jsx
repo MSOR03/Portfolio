@@ -4,7 +4,6 @@ import { useState } from "react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { BsMenuButtonWideFill } from "react-icons/bs";
 import { CiMenuFries } from "react-icons/ci";
 import { Button } from "./ui/button";
 import Image from "next/image";
@@ -14,69 +13,65 @@ const links = [
   { name: "Servicios", path: "/services" },
   { name: "Acerca", path: "/aboutme" },
   { name: "Trabajos", path: "/projects" },
-  /*{ name: "Contacto", path: "/contact" },*/
 ];
 
 const MobileNav = () => {
   const pathname = usePathname();
-  const [isOpen, setIsOpen] = useState(false); // Estado para manejar la visibilidad del menú
+  const [isOpen, setIsOpen] = useState(false);
 
-  const closeMenu = () => setIsOpen(false); // Función para cerrar el menú
+  const closeMenu = () => setIsOpen(false);
 
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
-      <SheetTrigger className="flex justify-center items-center">
-        <CiMenuFries className="text-[32px] text-accent" />
+      <SheetTrigger className="p-2">
+        <CiMenuFries className="text-[32px] text-green-400" />
       </SheetTrigger>
 
-      <SheetContent className="flex flex-col h-full max-h-screen overflow-y-auto items-center justify-between">
-        {" "}
-        {/* Alinear elementos al centro */}
+      <SheetContent
+        side="left"
+        className="bg-black/80 backdrop-blur-md text-white border-none px-6 py-10"
+      >
         {/* Logo */}
-        <div className="mt-8 text-center text-2xl">
-          {" "}
-          {/* Reduce el margen superior */}
-          <Link 
+        <div className="flex flex-col items-center gap-2 mb-10">
+          <Link
             href="/"
-            className="flex flex-col items-center transition-transform duration-300 ease-in-out transform hover:scale-90"
+            className="flex flex-col items-center hover:scale-90 transition-transform"
             onClick={closeMenu}
           >
             <Image src="/assets/Logo.png" alt="Logo" width={70} height={70} />
-            <p>
-              SOR<span className="text-accent">.</span>
+            <p className="text-lg font-semibold">
+              SOR<span className="text-green-400">.</span>
             </p>
           </Link>
         </div>
-        {/* Nav */}
-        <nav className="flex flex-col justify-center items-center gap-4 text-sm mb-8">
-          {" "}
-          {/* Espacio más pequeño entre enlaces */}
-          <Link href="/contact">
-            <Button
-              onClick={closeMenu}
-              variant="outline"
-              size="sm"
-              className="uppercase flex items-center gap-2 group hover:bg-accent hover:text-black"
-            >
-              <span className="text-accent group-hover:text-black transition-colors ">
-                Contratar
-              </span>
-            </Button>
-          </Link>
+
+        {/* Navigation links */}
+        <nav className="flex flex-col items-center gap-6 text-base font-medium">
           {links.map((link, index) => (
             <Link
               href={link.path}
               key={index}
+              onClick={closeMenu}
               className={`${
                 link.path === pathname
-                  ? "text-accent border-b-2 border-accent"
-                  : ""
-              } capitalize hover:text-accent transition-all`}
-              onClick={closeMenu} // Cerrar el menú al hacer clic en un enlace
+                  ? "text-green-400 border-b border-green-400"
+                  : "text-white/80"
+              } hover:text-green-400 transition-colors`}
             >
               {link.name}
             </Link>
           ))}
+
+          {/* Botón destacado */}
+          <Link href="#contacto" onClick={closeMenu}>
+            <Button
+              variant="outline"
+              size="lg"
+              className="uppercase mt-6 border-green-400 text-green-400 hover:bg-green-400 hover:text-black transition-all"
+            >
+              Contratar
+            </Button>
+          </Link>
         </nav>
       </SheetContent>
     </Sheet>

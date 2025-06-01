@@ -1,48 +1,27 @@
-import { animate, easeInOut, motion } from "framer-motion";
-import StairTransition from "./StairTransition";
-//varianst
+"use client";
+import { motion } from "framer-motion";
 
-const StairAnimation = {
-  initial: {
-    top: "0%",
-  },
-  animate: {
-    top: "100%",
-  },
-  exit: {
-    top: ["100%", "0%"],
-  },
+// Variantes más suaves y modernas
+const overlayVariants = {
+  initial: { y: 0, opacity: 1 },
+  animate: { y: "-100%", opacity: 0 },
+  exit: { y: "0%", opacity: 1 },
 };
 
-//Calculate the revert index
-
-const reverseIndex = (index) => {
-  const totalSteps = 6;
-  return totalSteps - index - 1;
-};
 const Stairs = () => {
-    return (
-      <>
-        {/*Comentario Framer motion*/}
-        {[...Array(6)].map((_, index) => {
-          return (
-            <motion.div
-              key={index}
-              variants={StairAnimation}
-              initial="initial" // Corregido
-              animate="animate"
-              exit="exit"
-              transition={{
-                duration: 0.4,
-                ease: "easeInOut",
-                delay: reverseIndex(index) * 0.1, // Función corregida
-              }}
-              className="h-full w-full bg-zinc-900 relative"
-            />
-          );
-        })}
-      </>
-    );
-  };
-  
-  export default Stairs;
+  return (
+    <motion.div
+      variants={overlayVariants}
+      initial="initial"
+      animate="animate"
+      exit="exit"
+      transition={{
+        duration: 0.6,
+        ease: "easeInOut",
+      }}
+      className="fixed top-0 left-0 w-full h-full bg-[#101915]/90 z-50 backdrop-blur-sm"
+    />
+  );
+};
+
+export default Stairs;
