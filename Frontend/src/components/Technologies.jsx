@@ -33,7 +33,7 @@ const Technologies = () => {
 
         {/* Ingeniería y SIG */}
         <div className="mb-12">
-          <h3 className="text-2xl font-semibold text-white mb-6">Diseño</h3>
+          <h3 className="text-2xl font-semibold text-white mb-6">GIS y BIM</h3>
           <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-6">
             {engineeringSkills.map((tech, index) => (
               <div

@@ -1,26 +1,22 @@
 import { Button } from "@/components/ui/button";
 import { FiDownload } from "react-icons/fi";
 
-
 //Components
 import Social from "@/components/Social";
 import Photo from "@/components/Photo";
 import Stats from "@/components/Stats";
+import RadarChart from "@/components/RadarChart";
 
 import Technologies from "@/components/Technologies";
 import Testimonials from "@/components/Testimonials";
-import ScrollAnimation from "../components/ui/scroll-animation"
+import ScrollAnimation from "../components/ui/scroll-animation";
 import ContactSection from "@/components/ContactSection";
 
 const Home = () => {
   return (
- 
     <section className="h-full py-16">
-      
       <div className="container mx-auto px-4">
-        
         <div className="flex flex-col md:flex-row items-center justify-between gap-12">
-
           {/* Tarjeta de presentación mejorada */}
           <div
             className="
@@ -32,13 +28,16 @@ const Home = () => {
             "
             style={{ willChange: "transform" }}
           >
-            
-            <span className="text-sm text-green-400 uppercase tracking-wider">Ingeniero</span>
+            <span className="text-sm text-green-400 uppercase tracking-wider">
+              Ingeniero
+            </span>
             <h1 className="text-4xl font-bold mb-4 mt-2 leading-tight">
               Hola, soy <span className="text-green-400">Sebastián</span>
             </h1>
             <p className="text-white/80 text-base leading-relaxed">
-              Ingeniero Topográfico e Ingeniero de Sistemas con habilidades en desarrollo de software (Móvil, Web), Sistemas de Información, además, cualidades en diseño con Civil3D, ArcGIS, QGIS.
+              Ingeniero Topográfico e Ingeniero de Sistemas con habilidades en
+              desarrollo de software (Móvil, Web), Sistemas de Información,
+              además, cualidades en diseño con Civil3D, ArcGIS, QGIS.
             </p>
 
             {/* Botón y redes */}
@@ -46,11 +45,42 @@ const Home = () => {
               <Button
                 variant="outline"
                 size="lg"
-                className="uppercase flex items-center gap-2 px-6 py-3 border border-green-400 text-green-400 hover:bg-green-400 hover:text-black transition-colors duration-300"
+                className="
+    relative
+    uppercase flex items-center gap-2
+    px-6 py-3
+    border border-green-400 text-green-400
+    bg-transparent
+    transition-transform duration-500 ease-in-out
+    transform-gpu
+    hover:rotate-[1.5deg] hover:-translate-y-[4px] hover:scale-[1.04]
+    hover:bg-green-500 hover:text-black
+    shadow-md hover:shadow-green-500/40
+    group
+    overflow-hidden
+    rounded-lg
+  "
               >
-                <span>Descargar CV</span>
-                <FiDownload className="text-xl" />
+                <span className="relative z-10 font-medium tracking-wide">
+                  Descargar CV
+                </span>
+                <FiDownload className="text-xl relative z-10" />
+
+                {/* Luz diagonal verde brillante */}
+                <span
+                  className="
+      absolute left-0 top-0 h-full w-1/4
+      bg-white/20
+      transform -translate-x-full skew-x-12
+      group-hover:translate-x-[260%]
+      transition-transform duration-[1100ms] ease-in-out
+      pointer-events-none
+      blur-sm
+      rounded-full
+    "
+                />
               </Button>
+
               <Social />
             </div>
           </div>
@@ -64,29 +94,41 @@ const Home = () => {
           </div>
         </div>
       </div>
-      
+
       {/* Estadísticas mejoradas */}
       <div className="container mx-auto px-4">
-        <h2 className="text-4xl font-bold text-green-400 text-left mb-2">Resumen</h2>
-        <p className="text-lg text-white text-left mb-10">Para descatacar</p>
-      </div>
-      <Stats />
+        <h2 className="text-4xl font-bold text-green-400 text-left mb-2">
+          Resumen
+        </h2>
+        <p className="text-lg text-white text-left mb-10">Para destacar</p>
 
-    <Technologies />
-    
-    <div className="container mx-auto px-4 text-left mb-10">
+        <div className="flex flex-col md:flex-row gap-8">
+          {/* Gráfico a la izquierda */}
+          <div className="w-full md:w-1/2">
+            <RadarChart />
+          </div>
+
+          {/* Tarjetas de stats a la derecha */}
+          <div className="w-full md:w-1/2">
+            <Stats />
+          </div>
+        </div>
+      </div>
+
+      <Technologies />
+
+      <div className="container mx-auto px-4 text-left mb-10">
         <h2 className="text-3xl font-bold text-green-400 mb-4">
           ¿Quieres trabajar conmigo?
         </h2>
         <p className="text-white/80 mb-8 text-lg">
-          Estoy disponible para colaboraciones, proyectos freelance o propuestas laborales.
+          Estoy disponible para colaboraciones, proyectos freelance o propuestas
+          laborales.
         </p>
       </div>
-    <ContactSection />
-    <Testimonials />
-    
+      <ContactSection />
+      <Testimonials />
     </section>
-    
   );
 };
 

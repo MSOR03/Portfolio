@@ -75,50 +75,137 @@ html {
 .animate-pulseSlow {
   animation: pulseSlow 20s ease-in-out infinite;
 }
-.bg-concentric-rings {
-  background-image: 
-    radial-gradient(circle at center, 
-      rgba(34, 197, 94, 0.25) 0%, 
-      rgba(34, 197, 94, 0.25) 8%, 
-      rgba(34, 197, 94, 0.05) 10%, 
-      transparent 12%),
-      
-    radial-gradient(circle at center, 
-      rgba(34, 197, 94, 0.18) 20%, 
-      rgba(34, 197, 94, 0.18) 23%, 
-      rgba(34, 197, 94, 0.05) 25%, 
-      transparent 27%),
-
-    radial-gradient(circle at center, 
-      rgba(34, 197, 94, 0.12) 45%, 
-      rgba(34, 197, 94, 0.12) 48%, 
-      rgba(34, 197, 94, 0.04) 50%, 
-      transparent 52%),
-
-    radial-gradient(circle at center, 
-      rgba(34, 197, 94, 0.08) 70%, 
-      rgba(34, 197, 94, 0.08) 73%, 
-      rgba(34, 197, 94, 0.03) 75%, 
-      transparent 78%);
-    
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: 100% 100%;
-  opacity: 0.6;
-  animation: pulseSlow 20s ease-in-out infinite;
+body::before,
+body::after,
+body::backdrop {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: -1;
 }
 
-@keyframes pulseSlow {
+/* Capa 1: Anillos verdes suaves con tonos metalizados */
+body::before {
+  background-image:
+    radial-gradient(circle at center,
+      transparent 0%,
+      rgba(34, 197, 94, 0.08) 9.7%, /* antes 0.05 */
+      rgba(102, 255, 153, 0.16) 10%, /* antes 0.12 */
+      rgba(255, 255, 255, 0.06) 10.2%, /* antes 0.05 */
+      transparent 11%),
+
+    radial-gradient(circle at center,
+      transparent 19%,
+      rgba(144, 238, 144, 0.1) 20%, /* antes 0.08 */
+      rgba(255, 255, 255, 0.045) 20.2%, /* antes 0.035 */
+      rgba(193, 255, 193, 0.13) 20.4%, /* antes 0.1 */
+      transparent 21%),
+
+    radial-gradient(circle at center,
+      transparent 38%,
+      rgba(152, 251, 152, 0.09) 39%, /* antes 0.06 */
+      rgba(255, 255, 255, 0.03) 39.2%, /* antes 0.02 */
+      rgba(193, 255, 193, 0.1) 39.4%, /* antes 0.08 */
+      transparent 40%),
+
+    radial-gradient(circle at center,
+      transparent 58%,
+      rgba(193, 255, 193, 0.06) 59%, /* antes 0.04 */
+      rgba(255, 255, 255, 0.02) 59.2%, /* antes 0.01 */
+      rgba(225, 255, 225, 0.08) 59.4%, /* antes 0.06 */
+      transparent 60%);
+
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 130% 130%;
+  opacity: 0.35; /* antes 0.3 */
+  animation: pulseMetal 22s ease-in-out infinite;
+  filter: blur(0.2px);
+}
+
+/* Capa 2: Luz giratoria envolvente */
+body::after {
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    rgba(34, 197, 94, 0.4) 15deg, /* antes 0.3 */
+    rgba(255, 255, 255, 0.12) 25deg, /* antes 0.1 */
+    transparent 60deg,
+    rgba(34, 197, 94, 0.2) 90deg, /* antes 0.15 */
+    transparent 360deg
+  );
+  mask-image: radial-gradient(circle at center, black 10%, transparent 62%);
+  animation: spinLight 12s linear infinite;
+  opacity: 0.3; /* antes 0.25 */
+  filter: blur(0.3px);
+}
+
+/* Capa 3: Halo ambiental difuso */
+body::backdrop {
+  background: radial-gradient(circle at center,
+    rgba(34, 197, 94, 0.05), /* antes 0.03 */
+    rgba(34, 197, 94, 0.03) 30%, /* antes 0.015 */
+    transparent 70%);
+  animation: shimmer 8s ease-in-out infinite;
+  filter: blur(8px);
+  opacity: 0.4; /* antes 0.35 */
+}
+
+/* Animaciones */
+@keyframes pulseMetal {
   0%, 100% {
     transform: scale(1);
+    opacity: 0.35;
+  }
+  50% {
+    transform: scale(1.01);
+    opacity: 0.45;
+  }
+}
+
+@keyframes spinLight {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes shimmer {
+  0%, 100% {
     opacity: 0.3;
   }
   50% {
-    transform: scale(1.02);
-    opacity: 0.4;
+    opacity: 0.45;
   }
 }
 
-.animate-pulseSlow {
-  animation: pulseSlow 20s ease-in-out infinite;
+@layer utilities {
+  @keyframes floating {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(-4px); }
+    100% { transform: translateY(0); }
+  }
+
+  .animate-floating {
+    animation: floating 4s ease-in-out infinite;
+  }
 }
+
+@keyframes wiggle {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(3deg);
+  }
+  75% {
+    transform: rotate(-3deg);
+  }
+}
+

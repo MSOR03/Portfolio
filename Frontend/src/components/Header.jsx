@@ -1,4 +1,5 @@
-import React from "react";
+"use client";
+import React, { use } from "react";
 import Link from "next/link";
 import Nav from "./Nav.jsx";
 import MobileNav from "./MobileNav.jsx";
@@ -64,18 +65,22 @@ const Header = () => {
               variant="outline"
               size="sm"
               className="
-                uppercase flex items-center gap-2
-                border-green-500 text-green-500
-                hover:bg-green-500 hover:text-black
-                transition-colors duration-300
-                shadow-sm hover:shadow-lg
-                transform hover:scale-105
-                cursor-pointer
-              "
+    uppercase flex items-center gap-2
+    border border-green-500 text-green-400
+    bg-[#0b1512] bg-opacity-60
+    transition-all duration-300 ease-in-out
+    hover:bg-green-500 hover:text-black
+    hover:scale-105 hover:shadow-[0_0_18px_2px_rgba(34,197,94,0.4)]
+    animate-floating
+    relative overflow-hidden
+    rounded-md
+    px-5 py-2
+    shadow-inner shadow-green-900/10
+    ring-1 ring-green-700/20
+    cursor-pointer
+  "
             >
-              <span className="transition-colors group-hover:text-black">
-                Contratar
-              </span>
+              <span className="relative z-10 tracking-wider">Contratar</span>
             </Button>
           </Link>
         </div>
