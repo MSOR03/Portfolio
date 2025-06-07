@@ -27,12 +27,13 @@ const RadialProgressChart = ({ title, skills }) => {
     datasets: skills.map((s, i) => ({
       label: s.label,
       data: [s.value, s.max - s.value],
-      backgroundColor: [s.color, "#1f2937"], // fondo oscuro coherente
+      backgroundColor: [s.color, "#1f2937"],
+      hoverBackgroundColor: [s.color, "#1f2937"], // evita brillo al hacer hover
       borderWidth: 0,
       cutout: `${baseCutout - i * cutoutStep}%`,
       circumference: 360,
       rotation: -90,
-      hoverOffset: 8, // se "acerca" al hacer hover
+      hoverOffset: 8, // acercamiento al hacer hover
     })),
   };
 
@@ -47,6 +48,12 @@ const RadialProgressChart = ({ title, skills }) => {
     plugins: {
       legend: { display: false },
       tooltip: {
+        backgroundColor: "#1f2937",
+        titleColor: "#22c55e",
+        bodyColor: "#ffffff",
+        borderColor: "#22c55e",
+        borderWidth: 1,
+        cornerRadius: 6,
         callbacks: {
           label: function (context) {
             const label = context.dataset.label || "";
@@ -55,11 +62,6 @@ const RadialProgressChart = ({ title, skills }) => {
             return `${label}: ${value}/${max}`;
           },
         },
-        backgroundColor: "#1e293b",
-        titleColor: "#22c55e",
-        bodyColor: "#ffffff",
-        borderColor: "#22c55e",
-        borderWidth: 1,
       },
     },
     hover: {
