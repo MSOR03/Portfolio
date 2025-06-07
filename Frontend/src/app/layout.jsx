@@ -1,4 +1,4 @@
-import jetBrains_Mono, { JetBrains_Mono } from "next/font/google";
+import { JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -23,15 +23,8 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body
-        className={`
-          ${jetbrainsMono.variable}
-          flex flex-col min-h-screen
-          text-white relative overflow-x-hidden
-        `}
-        style={{
-          backgroundColor: '#0c0c0c',
-        }}
-      >
+  //className={jetbrainsMono.variable}//
+>
         {/* Fondo con anillos concéntricos bien definidos */}
         <div className="absolute inset-0 -z-10 pointer-events-none">
           <div className="w-full h-full bg-concentric-rings opacity-20 animate-pulseSlow" />
