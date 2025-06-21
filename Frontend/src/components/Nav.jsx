@@ -1,54 +1,41 @@
 "use client";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+
 import { FaPersonCircleQuestion } from "react-icons/fa6";
 import { GrUserWorker } from "react-icons/gr";
 import { CiHome, CiServer } from "react-icons/ci";
+import { Link as ScrollLink } from "react-scroll";
 
 const links = [
-  { name: "Home", path: "/", icon: <CiHome size={20} /> },
-  { name: "Servicios", path: "/services", icon: <CiServer size={20} /> },
-  { name: "Acerca", path: "/aboutme", icon: <FaPersonCircleQuestion size={20} /> },
-  { name: "Trabajos", path: "/projects", icon: <GrUserWorker size={20} /> },
+  { name: "Inicio", id: "home", icon: <CiHome size={20} /> },
+  { name: "Servicios", id: "services", icon: <CiServer size={20} /> },
+  { name: "Acerca", id: "aboutme", icon: <FaPersonCircleQuestion size={20} /> },
+  { name: "Trabajos", id: "projects", icon: <GrUserWorker size={20} /> },
 ];
 
 const Nav = () => {
-  const pathname = usePathname();
-
   return (
     <nav className="flex gap-8 items-center">
-      {links.map((link, index) => {
-        const isActive = link.path === pathname;
-
-        return (
-          <Link
-            href={link.path}
-            key={index}
-            className={`
-              relative flex items-center gap-3
-              ${isActive ? "px-4 py-2" : "px-2 py-1"}
-              text-base font-medium tracking-wide rounded-md
-              transition-colors duration-300 ease-in-out
-              group
-              ${isActive
-                ? "text-green-400"
-                : "text-neutral-200 hover:text-green-400 hover:bg-green-900/20"}
-            `}
-          >
-            <span className="text-lg">{link.icon}</span>
-            <span className="capitalize">{link.name}</span>
-
-            {/* Underline only for active link */}
-            {isActive && (
-              <span
-                className="
-                  absolute -bottom-0.5 left-0 w-full h-[2.5px] bg-green-400 rounded-full
-                "
-              />
-            )}
-          </Link>
-        );
-      })}
+      {links.map((link, index) => (
+        <ScrollLink
+          key={index}
+          to={link.id}
+          smooth={true}
+          duration={1000} // duración en ms (700 ms en este ejemplo)
+          offset={-80} // offset para compensar tu navbar fijo
+          spy={true} // opcional: resalta el link activo
+          activeClass="text-green-400" // opcional: clase para el link activo
+          className="
+            cursor-pointer
+            relative flex items-center gap-3 px-2 py-1
+            text-base font-medium tracking-wide rounded-md
+            transition-colors duration-300 ease-in-out
+            text-neutral-200 hover:text-green-400 hover:bg-green-900/20
+          "
+        >
+          <span className="text-lg">{link.icon}</span>
+          <span className="capitalize">{link.name}</span>
+        </ScrollLink>
+      ))}
     </nav>
   );
 };
