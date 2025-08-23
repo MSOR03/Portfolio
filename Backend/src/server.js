@@ -1,43 +1,44 @@
-//Import express(Server) and cors(Because the server and client are in differents ports)
-//Import fs to read in disk and https for protocole.
-//Import dotenv to read .env
-const fs = require("fs");
-const https = require("https");
-const express = require("express");
-const cors = require("cors");
-const dotenv = require('dotenv');
-const morgan = require('morgan');
+import fs from "fs";
+import https from "https";
+import express from "express";
+import cors from "cors";
+import dotenv from "dotenv";
+import morgan from "morgan";
 
-// Load environment variables from .env file
+import emailRoutes from "./routes/emailRoutes.js";
+
+// Load env variables
 dotenv.config();
 
-//Setup app with instance of express and port 5000
 const app = express();
 const port = process.env.PORT || 5000;
 
-//Load certificates ssl for secure backend
+// SSL certificates
 const privateKey = fs.readFileSync(process.env.SSL_KEY_PATH, "utf8");
 const certificate = fs.readFileSync(process.env.SSL_CERT_PATH, "utf8");
-const ca_certicate = fs.readFileSync(process.env.SSL_CA_PATH,"utf-8")
+const ca_certificate = fs.readFileSync(process.env.SSL_CA_PATH, "utf-8");
 
-//Object for credentials
-const credentials = { key: privateKey, cert: certificate,ca:ca_certicate };
+const credentials = { key: privateKey, cert: certificate, ca: ca_certificate };
 
-//Enable from two ports and request from .json
+// Middlewares
 app.use(cors());
 app.use(express.json());
+app.use(morgan("dev"));
 
-//Monitoring request
-app.use(morgan('dev'));
+app.use(cors({
+  origin: "http://localhost:3000", // puerto donde corre tu frontend
+  methods: ["POST", "GET"],
+}));
 
-//Define routes '/api/message' and send answers.
+// Routes
+app.use("/api/email", emailRoutes);
+
 app.get("/", (req, res) => {
-  res.send("Hello from the secure backend" );
+  res.send("Hello from the secure backend");
 });
 
-//Create server HTTPS with credentials and express
-const httpsServer=https.createServer(credentials,app);
-//Start the server
-httpsServer.listen(port,()=>{
-    console.log(`HTTPS Server is running on https://localhost:${port}`);
-})
+// Start HTTPS server
+const httpsServer = https.createServer(credentials, app);
+httpsServer.listen(port, () => {
+  console.log(`🚀 HTTPS Server running on https://localhost:${port}`);
+});

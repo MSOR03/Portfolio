@@ -174,7 +174,7 @@ const SkillCard = ({ skill, index, delay = 0 }) => {
 
 const Technologies = () => {
   return (
-    <section className="py-16 bg-transparent">
+    <section className="py-0 bg-transparent">
       <div className="container mx-auto px-4">
         {/* Header */}
         <motion.div
@@ -182,10 +182,10 @@ const Technologies = () => {
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
           viewport={{ once: true }}
-          className="text-left mb-16"
+          className="text-center mb-0"
         >
           <h2 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-emerald-400 via-cyan-400 to-blue-400 bg-clip-text text-transparent mb-4">
-            Skills
+            Habilidades
           </h2>
           <p className="text-xl text-gray-400">
             Tecnologías que uso

@@ -97,7 +97,7 @@ const getColorClasses = (color, progreso) => {
 
 const EstudiosBarChart = () => {
   return (
-    <section className="py-16 bg-transparent">
+    <section className="py-0 bg-transparent">
       <div className="max-w-6xl mx-auto px-4">
         {/* Header */}
         <motion.div

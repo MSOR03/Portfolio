@@ -6,24 +6,24 @@ import { useState, useEffect } from "react";
 
 const testimonials = [
   {
-    name: "Laura Pérez",
-    role: "Gerente de Proyecto",
-    company: "TechSolutions Corp",
+    name: "Alex Vergara",
+    role: "Cliente",
+    company: "N/A",
     feedback:
-      "Sebastián es un profesional comprometido y creativo. Su aporte fue clave en la implementación del sistema de gestión territorial. La calidad de su trabajo superó nuestras expectativas.",
+      "Sebastián es un profesional comprometido y creativo.Su ayuda fue clave para el desarrollo de la pagina de la Red Bacata. La calidad de su trabajo superó nuestras expectativas.",
     rating: 5,
-    project: "Sistema de Gestión Territorial",
+    project: "Red Bacata",
     icon: <FaProjectDiagram className="text-blue-400" />,
     avatar: "LP",
-    skills: ["Gestión de Proyectos", "Liderazgo", "Innovación"],
+    skills: ["Desarrollo Web", "Investigacion"],
     gradient: "from-blue-500/20 to-purple-500/20"
   },
   {
-    name: "Carlos Rodríguez",
-    role: "CEO",
-    company: "Geomaps Solutions",
+    name: "Astrid Olarte",
+    role: "Cliente",
+    company: "N/A",
     feedback:
-      "Excelente trabajo con ArcGIS y QGIS. Su habilidad para integrar soluciones complejas fue fundamental en el éxito del proyecto. Recomiendo ampliamente sus servicios.",
+      "Sebastian nos ayudo a crear una pagina web noCode para nuestro trabajo de grado. Su profesionalismo y creatividad fueron clave para el éxito del proyecto.",
     rating: 5,
     project: "Análisis Geoespacial Avanzado",
     icon: <FaMapMarkedAlt className="text-green-400" />,
@@ -32,16 +32,16 @@ const testimonials = [
     gradient: "from-green-500/20 to-emerald-500/20"
   },
   {
-    name: "Andrea Gómez",
-    role: "Analista de Datos",
-    company: "DataInsights Pro",
+    name: "Ricardo Bacca Avila",
+    role: "Ingeniero en Ingeterra Projects S.A.S.",
+    company: "Ingeterra Projects S.A.S.",
     feedback:
-      "Colaborar con Sebastián fue una experiencia excepcional. Su enfoque técnico y atención al detalle marcaron la diferencia en nuestro proyecto de análisis de datos.",
+      "Sebastian ha colaborado con nosotros en varios trabajos de la organización, puedo decir que es un profesional comprometido y con una gran capacidad de aprendizaje. Su trabajo en GIS y Civil3D ha sido excepcional.",
     rating: 5,
-    project: "Dashboard Analítico Empresarial",
+    project: "Varios trabajos",
     icon: <FaChartLine className="text-orange-400" />,
     avatar: "AG",
-    skills: ["Data Analysis", "Visualización", "Python"],
+    skills: ["Avaluos", "Planos", "SIG"],
     gradient: "from-orange-500/20 to-red-500/20"
   },
 ];

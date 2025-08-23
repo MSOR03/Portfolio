@@ -1,11 +1,12 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 const idiomas = [
   {
     nombre: "Español",
     nivel: 100,
-    color: "from-green-400 to-green-600",
-    bandera: "🇪🇸",
+    bandera: "https://flagcdn.com/48x36/es.png",
+    banderaAlt: "ES",
+    countryCode: "es",
     descripcion: "Nativo",
     certificacion: "Lengua Materna",
     soundWave: [3, 8, 4, 9, 2, 7, 5, 8, 3, 6]
@@ -13,32 +14,63 @@ const idiomas = [
   {
     nombre: "Inglés",
     nivel: 65,
-    color: "from-blue-400 to-blue-600",
-    bandera: "🇬🇧",
+    bandera: "https://flagcdn.com/48x36/gb.png",
+    banderaAlt: "GB",
+    countryCode: "gb",
     descripcion: "Intermedio",
-    certificacion: "B1 Certificado",
+    certificacion: "B1 Progreso en YESBOGOTA",
     soundWave: [2, 6, 3, 7, 4, 8, 2, 5, 6, 4]
   },
   {
     nombre: "Alemán",
-    nivel: 25,
-    color: "from-yellow-400 to-yellow-600",
-    bandera: "🇩🇪",
+    nivel: 5,
+    bandera: "https://flagcdn.com/48x36/de.png",
+    banderaAlt: "DE",
+    countryCode: "de",
     descripcion: "Básico",
     certificacion: "A1 En Progreso",
     soundWave: [1, 3, 2, 4, 1, 3, 2, 4, 1, 3]
   },
 ];
 
+function getPalette(level) {
+  if (level >= 80) {
+    return {
+      start: '#22c55e', // green-500
+      mid: '#16a34a',   // green-600
+      end: '#15803d',   // green-700
+      glow: 'rgba(34, 197, 94, 0.3)'
+    };
+  }
+  if (level >= 50) {
+    return {
+      start: '#60a5fa', // blue-400
+      mid: '#3b82f6',   // blue-500
+      end: '#2563eb',   // blue-600
+      glow: 'rgba(59, 130, 246, 0.3)'
+    };
+  }
+  return {
+    start: '#facc15', // yellow-400
+    mid: '#eab308',   // yellow-500
+    end: '#ca8a04',   // yellow-600 (amber-600)
+    glow: 'rgba(234, 179, 8, 0.3)'
+  };
+}
+
 const LanguageCard = ({ idioma, index, isActive, onHover, onLeave }) => {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [isHovered, setIsHovered] = useState(false);
   const [particlePositions, setParticlePositions] = useState([]);
-  const [progressComplete, setProgressComplete] = useState(false);
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const [imageError, setImageError] = useState(false);
+  const rafRef = useRef(null);
 
-  // Generar partículas basadas en el nivel del idioma
+  const palette = getPalette(idioma.nivel);
+
+  // Generate particles based on language level
   useEffect(() => {
-    const particleCount = Math.floor(idioma.nivel / 10);
+    const particleCount = Math.max(8, Math.floor(idioma.nivel / 6));
     const particles = Array.from({ length: particleCount }, (_, i) => ({
       id: i,
       x: Math.random() * 100,
@@ -50,22 +82,31 @@ const LanguageCard = ({ idioma, index, isActive, onHover, onLeave }) => {
     setParticlePositions(particles);
   }, [idioma.nivel]);
 
-  // Animar partículas
+  // Animate particles with requestAnimationFrame for smoother motion
   useEffect(() => {
     if (!isHovered) return;
-    
-    const interval = setInterval(() => {
-      setParticlePositions(prev => 
-        prev.map(particle => ({
-          ...particle,
-          y: (particle.y - particle.speed) % 105,
-          x: particle.x + Math.sin(Date.now() * 0.001 + particle.id) * 0.2
+    const animate = () => {
+      setParticlePositions(prev =>
+        prev.map(p => ({
+          ...p,
+          y: (p.y - p.speed + 105) % 105,
+          x: p.x + Math.sin(Date.now() * 0.001 + p.id) * 0.2
         }))
       );
-    }, 50);
-
-    return () => clearInterval(interval);
+      rafRef.current = requestAnimationFrame(animate);
+    };
+    rafRef.current = requestAnimationFrame(animate);
+    return () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
   }, [isHovered]);
+
+  // Pre-check cache so shimmer disappears even for cached images
+  useEffect(() => {
+    const img = new Image();
+    img.src = idioma.bandera;
+    if (img.complete) setImageLoaded(true);
+  }, [idioma.bandera]);
 
   const handleMouseMove = (e) => {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -85,19 +126,6 @@ const LanguageCard = ({ idioma, index, isActive, onHover, onLeave }) => {
     onLeave();
   };
 
-  // Determinar color basado en el nivel
-  const getGlowColor = () => {
-    if (idioma.nivel >= 80) return 'rgba(34, 197, 94, 0.3)';
-    if (idioma.nivel >= 50) return 'rgba(59, 130, 246, 0.3)';
-    return 'rgba(234, 179, 8, 0.3)';
-  };
-
-  const getProgressColor = () => {
-    if (idioma.nivel >= 80) return 'from-green-400 via-green-500 to-green-600';
-    if (idioma.nivel >= 50) return 'from-blue-400 via-blue-500 to-blue-600';
-    return 'from-yellow-400 via-yellow-500 to-yellow-600';
-  };
-
   return (
     <div
       onMouseMove={handleMouseMove}
@@ -107,262 +135,255 @@ const LanguageCard = ({ idioma, index, isActive, onHover, onLeave }) => {
       style={{
         transform: `translateY(${index * 2}px) rotateX(${mousePosition.y * 0.02}deg) rotateY(${mousePosition.x * 0.02}deg)`,
         transformStyle: 'preserve-3d',
-        transition: 'transform 0.1s ease-out'
+        transition: 'transform 100ms ease-out'
       }}
     >
-      {/* Aura externa */}
-      <div 
+      {/* External spotlight aura */}
+      <div
         className="absolute -inset-6 rounded-3xl transition-all duration-700 pointer-events-none"
         style={{
-          background: `radial-gradient(circle at ${50 + mousePosition.x * 0.5}% ${50 + mousePosition.y * 0.5}%, 
-            ${getGlowColor()} 0%, 
-            transparent 60%)`,
+          background: `radial-gradient(600px circle at ${50 + mousePosition.x * 0.5}% ${50 + mousePosition.y * 0.5}%, ${palette.glow} 0%, transparent 60%)`,
           filter: `blur(${isHovered ? 20 : 0}px)`,
           opacity: isHovered ? 1 : 0
         }}
       />
 
+      {/* Card */}
       <div
         className="relative p-8 rounded-2xl border overflow-hidden transition-all duration-500"
         style={{
           background: `
-            linear-gradient(145deg, 
-              rgba(15, 23, 19, 0.95) 0%, 
-              rgba(13, 20, 17, 0.9) 30%, 
-              rgba(10, 15, 10, 0.95) 60%, 
-              rgba(15, 23, 19, 0.95) 100%
-            ),
-            radial-gradient(circle at ${50 + mousePosition.x * 0.3}% ${50 + mousePosition.y * 0.3}%, 
-              ${getGlowColor().replace('0.3', '0.05')} 0%, transparent 60%)
+            linear-gradient(160deg, rgba(10,16,12,0.95) 0%, rgba(12,18,14,0.92) 40%, rgba(9,14,10,0.95) 100%),
+            radial-gradient(1200px 400px at ${50 + mousePosition.x * 0.3}% ${40 + mousePosition.y * 0.3}%, rgba(255,255,255,0.05), transparent 70%)
           `,
-          borderColor: isHovered ? getGlowColor().replace('0.3', '0.4') : 'rgba(255, 255, 255, 0.1)',
-          boxShadow: isHovered ? 
-            `0 20px 40px ${getGlowColor().replace('0.3', '0.2')}, 
-             0 0 20px ${getGlowColor().replace('0.3', '0.3')},
-             inset 0 1px 0 rgba(255, 255, 255, 0.1)` :
-            '0 8px 32px rgba(0, 0, 0, 0.3)',
-          backdropFilter: 'blur(20px)',
-          transform: `translateZ(${isHovered ? '10px' : '0px'})`
+          borderColor: isHovered ? palette.glow.replace('0.3','0.5') : 'rgba(255,255,255,0.08)',
+          boxShadow: isHovered
+            ? `0 24px 48px ${palette.glow.replace('0.3','0.22')}, 0 0 24px ${palette.glow}`
+            : '0 10px 36px rgba(0,0,0,0.35)',
+          backdropFilter: 'blur(16px)'
         }}
       >
-        {/* Partículas flotantes */}
-        {particlePositions.map(particle => (
+        {/* Subtle noise/pattern */}
+        <div className="absolute inset-0 opacity-[0.06] pointer-events-none" style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%23ffffff' stroke-width='1' opacity='0.35'%3E%3Cpath d='M20 20h60v60H20z'/%3E%3Cpath d='M30 30h40v40H30z'/%3E%3Cpath d='M40 40h20v20H40z'/%3E%3C/g%3E%3C/svg%3E")`,
+          backgroundSize: '80px 80px'
+        }}/>
+
+        {/* Floating particles */}
+        {particlePositions.map(p => (
           <div
-            key={particle.id}
+            key={p.id}
             className="absolute rounded-full pointer-events-none"
             style={{
-              left: `${particle.x}%`,
-              top: `${particle.y}%`,
-              width: `${particle.size}px`,
-              height: `${particle.size}px`,
-              background: getGlowColor().replace('0.3', '0.6'),
-              opacity: particle.opacity * (isHovered ? 1 : 0.3),
+              left: `${p.x}%`,
+              top: `${p.y}%`,
+              width: `${p.size}px`,
+              height: `${p.size}px`,
+              background: palette.glow.replace('0.3', '0.65'),
+              opacity: p.opacity * (isHovered ? 1 : 0.35),
               filter: 'blur(0.5px)',
-              boxShadow: `0 0 ${particle.size * 3}px ${getGlowColor().replace('0.3', '0.4')}`,
-              transition: 'opacity 0.5s ease'
+              boxShadow: `0 0 ${p.size * 3}px ${palette.glow.replace('0.3','0.45')}`
             }}
           />
         ))}
 
-        {/* Patrón de fondo */}
-        <div className="absolute inset-0 pointer-events-none">
-          <div 
-            className="absolute inset-0 opacity-10"
-            style={{
-              backgroundImage: `url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%23ffffff' stroke-width='1' opacity='0.1'%3E%3Cpath d='M20 20h60v60H20z'/%3E%3Cpath d='M30 30h40v40H30z'/%3E%3Cpath d='M40 40h20v20H40z'/%3E%3C/g%3E%3C/svg%3E")`,
-              backgroundSize: '80px 80px',
-              transform: `translate(${mousePosition.x * 0.1}px, ${mousePosition.y * 0.1}px)`
-            }}
-          />
-        </div>
-
-        {/* Header con bandera y nombre */}
+        {/* Header */}
         <div className="flex justify-between items-start mb-6 relative z-10">
           <div className="flex items-center gap-6">
-            {/* Bandera animada */}
-            <div className="relative">
-              <div
-                className="text-5xl transition-all duration-300 relative"
-                style={{
-                  transform: `
-                    scale(${isHovered ? 1.2 : 1}) 
-                    rotateY(${mousePosition.x * 0.1}deg) 
-                    rotateX(${mousePosition.y * 0.1}deg)
-                  `,
-                  filter: `drop-shadow(0 0 ${isHovered ? 15 : 5}px ${getGlowColor().replace('0.3', '0.5')})`
-                }}
-              >
-                {idioma.bandera}
-              </div>
-              
-              {/* Anillo giratorio */}
-              <div 
-                className="absolute inset-0 rounded-full border-2 transition-all duration-1000 pointer-events-none"
-                style={{
-                  borderColor: getGlowColor().replace('0.3', '0.4'),
-                  transform: `scale(${isHovered ? 1.4 : 1.2}) rotate(${isHovered ? 360 : 0}deg)`,
-                  opacity: isHovered ? 0.8 : 0.3
-                }}
-              />
+            {/* Flag with ring, shimmer and shine */}
+            <div className="relative w-[68px] h-[68px] flex items-center justify-center">
+              {/* Rotating ring */}
+              <div className="absolute inset-0 rounded-full pointer-events-none" style={{
+                border: `2px solid ${palette.glow.replace('0.3','0.5')}`,
+                boxShadow: `0 0 16px ${palette.glow}`,
+                transform: `scale(${isHovered ? 1.15 : 1})`,
+                transition: 'transform 400ms ease, opacity 400ms ease',
+                opacity: isHovered ? 0.9 : 0.6,
+                animation: isHovered ? 'rotateSlow 6s linear infinite' : 'none'
+              }}/>
+
+              {/* Shimmer placeholder (shows while loading) */}
+              {!imageLoaded && !imageError && (
+                <div className="absolute w-[52px] h-[40px] rounded-lg overflow-hidden" style={{
+                  border: `2px solid ${palette.glow.replace('0.3','0.6')}`,
+                  boxShadow: `0 0 12px ${palette.glow.replace('0.3','0.45')}`
+                }}>
+                  <div className="absolute inset-0 shimmer"/>
+                </div>
+              )}
+
+              {/* Flag image */}
+              {!imageError ? (
+                <div className="relative">
+                  <img
+                    src={idioma.bandera}
+                    alt={`${idioma.nombre} flag`}
+                    className="rounded-lg object-cover transition-transform duration-300"
+                    style={{
+                      width: '52px',
+                      height: '40px',
+                      border: `2px solid ${palette.glow.replace('0.3','0.6')}`,
+                      boxShadow: `0 0 14px ${palette.glow.replace('0.3','0.5')}, 0 6px 20px rgba(0,0,0,0.35)`,
+                      transform: `scale(${isHovered ? 1.06 : 1}) rotateY(${mousePosition.x * 0.08}deg) rotateX(${mousePosition.y * 0.08}deg)`
+                    }}
+                    decoding="async"
+                    onLoad={() => setImageLoaded(true)}
+                    onError={() => setImageError(true)}
+                  />
+                  {/* Shine sweep on hover */}
+                  <div className="pointer-events-none absolute inset-0 overflow-hidden rounded-lg" style={{
+                    opacity: isHovered ? 1 : 0,
+                    transition: 'opacity 300ms ease'
+                  }}>
+                    <div className="absolute -inset-y-4 -left-10 w-8 rotate-12 bg-white/40 blur-[2px]" style={{
+                      animation: isHovered ? 'sweep 1.2s ease forwards' : 'none'
+                    }}/>
+                  </div>
+                </div>
+              ) : (
+                <div
+                  className="flex items-center justify-center rounded-lg text-white font-bold text-lg w-[52px] h-[40px]"
+                  style={{
+                    background: `linear-gradient(135deg, ${palette.start}, ${palette.end})`,
+                    border: `2px solid ${palette.glow.replace('0.3', '0.6')}`,
+                    boxShadow: `0 0 14px ${palette.glow.replace('0.3','0.5')}`
+                  }}
+                >
+                  {idioma.banderaAlt}
+                </div>
+              )}
             </div>
 
-            {/* Información del idioma */}
+            {/* Language info */}
             <div className="space-y-2">
-              <h3 
-                className="text-2xl font-bold text-white tracking-wide transition-all duration-300"
-                style={{
-                  textShadow: `0 0 ${isHovered ? 20 : 10}px ${getGlowColor().replace('0.3', '0.6')}`,
-                  transform: `translateX(${mousePosition.x * 0.1}px)`
-                }}
-              >
+              <h3 className="text-2xl font-bold text-white tracking-wide" style={{
+                textShadow: `0 0 ${isHovered ? 18 : 10}px ${palette.glow.replace('0.3','0.8')}`
+              }}>
                 {idioma.nombre}
               </h3>
-              <p className="text-gray-300 text-sm font-medium">
-                {idioma.descripcion}
-              </p>
-              <div 
-                className="inline-block px-3 py-1 rounded-full text-xs font-semibold transition-all duration-300"
+              <p className="text-gray-300 text-sm font-medium">{idioma.descripcion}</p>
+              <span
+                className="inline-block px-3 py-1 rounded-full text-xs font-semibold text-white"
                 style={{
-                  background: getGlowColor().replace('0.3', '0.2'),
-                  color: 'white',
-                  backdropFilter: 'blur(10px)',
-                  border: `1px solid ${getGlowColor().replace('0.3', '0.4')}`,
-                  boxShadow: `0 0 ${isHovered ? 15 : 5}px ${getGlowColor().replace('0.3', '0.3')}`
+                  background: palette.glow.replace('0.3', '0.25'),
+                  border: `1px solid ${palette.glow.replace('0.3','0.45')}`,
+                  boxShadow: `0 0 ${isHovered ? 14 : 8}px ${palette.glow.replace('0.3','0.35')}`
                 }}
               >
                 {idioma.certificacion}
-              </div>
+              </span>
             </div>
           </div>
 
-          {/* Medidor de nivel */}
+          {/* Level meter */}
           <div className="text-right">
-            <div 
-              className="text-4xl font-bold mb-1 transition-all duration-300"
-              style={{
-                background: `linear-gradient(135deg, ${getProgressColor().split(' ')[1]} 0%, ${getProgressColor().split(' ')[4]} 100%)`,
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text',
-                textShadow: `0 0 ${isHovered ? 20 : 10}px ${getGlowColor().replace('0.3', '0.4')}`,
-                transform: `scale(${isHovered ? 1.1 : 1})`
-              }}
-            >
+            <div className="text-4xl font-bold mb-1 bg-clip-text text-transparent" style={{
+              backgroundImage: `linear-gradient(135deg, ${palette.start}, ${palette.end})`,
+              textShadow: `0 0 ${isHovered ? 16 : 10}px ${palette.glow.replace('0.3','0.45')}`
+            }}>
               {idioma.nivel}%
             </div>
-            <div className="text-gray-400 text-xs uppercase tracking-wider">
-              Competencia
-            </div>
+            <div className="text-gray-400 text-xs uppercase tracking-wider">Competencia</div>
           </div>
         </div>
 
-        {/* Barra de progreso mejorada */}
+        {/* Enhanced progress bar */}
         <div className="relative mb-6">
           <div className="relative w-full h-4 bg-white/5 rounded-full overflow-hidden backdrop-blur-sm border border-white/10">
-            {/* Fondo con patrón */}
-            <div 
-              className="absolute inset-0 opacity-20"
-              style={{
-                backgroundImage: `url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' opacity='0.1'%3E%3Ccircle cx='10' cy='10' r='1'/%3E%3C/g%3E%3C/svg%3E")`,
-                backgroundSize: '10px 10px'
-              }}
-            />
-            
-            {/* Barra de progreso principal */}
-            <div
-              className="absolute top-0 left-0 h-full rounded-full transition-all duration-1000 ease-out relative overflow-hidden"
-              style={{
-                width: `${idioma.nivel}%`,
-                background: `linear-gradient(90deg, ${getProgressColor()})`,
-                boxShadow: `
-                  0 0 20px ${getGlowColor().replace('0.3', '0.6')},
-                  inset 0 1px 0 rgba(255, 255, 255, 0.3),
-                  inset 0 -1px 0 rgba(0, 0, 0, 0.2)
-                `
-              }}
-            >
-              {/* Efecto de brillo que se mueve */}
-              <div 
-                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent transform -skew-x-12 transition-transform duration-2000"
-                style={{
-                  transform: `translateX(${isHovered ? '200%' : '-100%'}) skewX(-12deg)`,
-                  width: '50%'
-                }}
-              />
-              
-              {/* Ondas de sonido */}
+            {/* Background dots */}
+            <div className="absolute inset-0 opacity-20" style={{
+              backgroundImage: `url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' opacity='0.12'%3E%3Ccircle cx='10' cy='10' r='1'/%3E%3C/g%3E%3C/svg%3E")`,
+              backgroundSize: '10px 10px'
+            }}/>
+
+            {/* Main progress bar */}
+            <div className="absolute top-0 left-0 h-full rounded-full transition-all duration-1000 ease-out relative overflow-hidden" style={{
+              width: `${idioma.nivel}%`,
+              background: `linear-gradient(90deg, ${palette.start}, ${palette.mid}, ${palette.end})`,
+              boxShadow: `0 0 20px ${palette.glow.replace('0.3','0.65')}, inset 0 1px 0 rgba(255,255,255,0.35), inset 0 -1px 0 rgba(0,0,0,0.25)`
+            }}>
+              {/* Moving shine effect */}
+              <div className="absolute inset-0 -skew-x-12" style={{
+                background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.35) 50%, transparent 100%)',
+                transform: `translateX(${isHovered ? '200%' : '-100%'})`,
+                transition: 'transform 1200ms ease'
+              }}/>
+
+              {/* Sound waves */}
               <div className="absolute inset-0 flex items-center justify-center space-x-1">
-                {idioma.soundWave.map((height, i) => (
+                {idioma.soundWave.map((h, i) => (
                   <div
                     key={i}
-                    className="bg-white/40 rounded-full transition-all duration-300"
+                    className="bg-white/50 rounded-full"
                     style={{
                       width: '2px',
-                      height: `${height * 2}px`,
-                      animationDelay: `${i * 0.1}s`,
-                      transform: `scaleY(${isHovered ? 1.5 : 1})`,
-                      animation: isHovered ? 'pulse 1s ease-in-out infinite' : 'none'
+                      height: `${h * 2}px`,
+                      transform: `translateY(${isHovered ? -1 : 0}px) scaleY(${isHovered ? 1.5 : 1})`,
+                      transition: 'transform 300ms ease',
+                      animation: isHovered ? `pulse 1000ms ease-in-out ${i * 80}ms infinite` : 'none'
                     }}
                   />
                 ))}
               </div>
             </div>
 
-            {/* Indicador de progreso */}
-            <div 
-              className="absolute top-1/2 transform -translate-y-1/2 w-6 h-6 rounded-full border-2 border-white bg-white/20 backdrop-blur-sm transition-all duration-500"
-              style={{
-                left: `calc(${idioma.nivel}% - 12px)`,
-                borderColor: getGlowColor().replace('0.3', '0.8'),
-                boxShadow: `0 0 15px ${getGlowColor().replace('0.3', '0.6')}`,
-                transform: `translateY(-50%) scale(${isHovered ? 1.2 : 1})`
-              }}
-            >
-              <div 
-                className="absolute inset-1 rounded-full transition-all duration-300"
-                style={{
-                  background: `linear-gradient(135deg, ${getProgressColor()})`,
-                  boxShadow: `inset 0 0 10px ${getGlowColor().replace('0.3', '0.4')}`
-                }}
-              />
+            {/* Progress indicator knob */}
+            <div className="absolute top-1/2 -translate-y-1/2 w-6 h-6 rounded-full border-2 bg-white/20 backdrop-blur-sm" style={{
+              left: `calc(${idioma.nivel}% - 12px)`,
+              borderColor: palette.glow.replace('0.3','0.85'),
+              boxShadow: `0 0 16px ${palette.glow.replace('0.3','0.6')}`,
+              transform: `translateY(-50%) scale(${isHovered ? 1.12 : 1})`,
+              transition: 'transform 300ms ease'
+            }}>
+              <div className="absolute inset-1 rounded-full" style={{
+                background: `linear-gradient(135deg, ${palette.start}, ${palette.end})`,
+                boxShadow: `inset 0 0 10px ${palette.glow.replace('0.3','0.45')}`
+              }}/>
             </div>
           </div>
         </div>
 
-        {/* Estadísticas adicionales */}
+        {/* Additional stats */}
         <div className="grid grid-cols-3 gap-4 relative z-10">
           {[
             { label: 'Conversación', value: Math.floor(idioma.nivel * 0.9) },
-            { label: 'Escritura', value: Math.floor(idioma.nivel * 0.8) },
+            { label: 'Escritura', value: Math.floor(idioma.nivel * 1) },
             { label: 'Comprensión', value: Math.floor(idioma.nivel * 1.1) }
           ].map((stat, i) => (
-            <div 
+            <div
               key={i}
-              className="text-center p-3 rounded-lg transition-all duration-300 hover:scale-105 group/stat"
+              className="text-center p-3 rounded-lg transition-all duration-300"
               style={{
-                background: 'rgba(255, 255, 255, 0.03)',
+                background: 'rgba(255,255,255,0.04)',
                 backdropFilter: 'blur(10px)',
-                border: '1px solid rgba(255, 255, 255, 0.1)',
-                transform: `translateY(${isHovered ? -5 : 0}px)`,
-                transitionDelay: `${i * 0.1}s`
+                border: '1px solid rgba(255,255,255,0.1)',
+                transform: `translateY(${isHovered ? -4 : 0}px)`,
+                transitionDelay: `${i * 60}ms`
               }}
             >
-              <div 
-                className="text-lg font-bold mb-1 transition-all duration-300"
-                style={{
-                  color: getGlowColor().replace('0.3', '1'),
-                  textShadow: `0 0 10px ${getGlowColor().replace('0.3', '0.5')}`
-                }}
-              >
+              <div className="text-lg font-bold mb-1" style={{
+                color: palette.end,
+                textShadow: `0 0 10px ${palette.glow.replace('0.3','0.55')}`
+              }}>
                 {Math.min(100, stat.value)}%
               </div>
-              <div className="text-xs text-gray-400 uppercase tracking-wide">
-                {stat.label}
-              </div>
+              <div className="text-xs text-gray-400 uppercase tracking-wide">{stat.label}</div>
             </div>
           ))}
         </div>
       </div>
+
+      {/* Animations */}
+      <style jsx>{`
+        @keyframes pulse { 0%, 100% { transform: scaleY(1); } 50% { transform: scaleY(1.3); } }
+        @keyframes rotateSlow { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @keyframes sweep { 0% { transform: translateX(-100%); opacity: 0; } 30% { opacity: 1; } 100% { transform: translateX(220%); opacity: 0; } }
+        .shimmer { background: linear-gradient(90deg, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0.20) 50%, rgba(255,255,255,0.07) 100%); animation: shimmerMove 1.2s ease-in-out infinite; }
+        @keyframes shimmerMove { from { transform: translateX(-60%); } to { transform: translateX(60%); } }
+        @media (prefers-reduced-motion: reduce) {
+          * { animation: none !important; transition: none !important; }
+        }
+      `}</style>
     </div>
   );
 };
@@ -371,39 +392,27 @@ const LanguageProgress = () => {
   const [activeIndex, setActiveIndex] = useState(-1);
 
   return (
-    <section className="py-20 w-full bg-transparent relative overflow-hidden">
-      {/* Fondo con efectos */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div 
-          className="absolute inset-0 opacity-5"
-          style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg width='200' height='200' viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%2322c55e' stroke-width='1' opacity='0.3'%3E%3Cpath d='M100 0v200M0 100h200'/%3E%3Ccircle cx='100' cy='100' r='80'/%3E%3Ccircle cx='100' cy='100' r='40'/%3E%3C/g%3E%3C/svg%3E")`,
-            backgroundSize: '300px 300px',
-            backgroundPosition: 'center'
-          }}
-        />
-      </div>
+    <section className="py-5 w-full bg-transparent relative overflow-hidden">
+      {/* Background grid + soft vignette */}
+     
 
       <div className="max-w-4xl mx-auto px-4 relative z-10">
-       
-
-        {/* Tarjetas de idiomas */}
         <div className="space-y-8">
           {idiomas.map((idioma, i) => (
             <div
               key={i}
               style={{
-                animationDelay: `${i * 0.2}s`,
+                animationDelay: `${i * 120}ms`,
                 opacity: 0,
-                transform: 'translateY(50px)',
-                animation: 'fadeInUp 0.6s ease-out forwards'
+                transform: 'translateY(40px)',
+                animation: 'fadeInUp 600ms ease-out forwards'
               }}
             >
               <LanguageCard
                 idioma={idioma}
                 index={i}
                 isActive={activeIndex === i}
-                onHover={(index) => setActiveIndex(index)}
+                onHover={(idx) => setActiveIndex(idx)}
                 onLeave={() => setActiveIndex(-1)}
               />
             </div>
@@ -412,17 +421,7 @@ const LanguageProgress = () => {
       </div>
 
       <style jsx>{`
-        @keyframes fadeInUp {
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-        
-        @keyframes pulse {
-          0%, 100% { transform: scaleY(1); }
-          50% { transform: scaleY(1.3); }
-        }
+        @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
       `}</style>
     </section>
   );

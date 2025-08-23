@@ -431,3 +431,14 @@ body::after {
     transparent);
   animation: scan 2s ease-in-out infinite;
 }
+
+
+/* Add to your CSS file */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Color+Emoji&display=swap');
+
+.emoji-flag {
+  font-family: 'Noto Color Emoji', 'Apple Color Emoji', 'Segoe UI Emoji', sans-serif !important;
+  font-style: normal !important;
+  font-weight: normal !important;
+}
+
