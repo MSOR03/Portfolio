@@ -6,6 +6,7 @@ import PageTransition from "@/components/PageTransition";
 import StairTransition from "@/components/StairTransition";
 import { ThemeProvider } from "next-themes";
 import ThemeSync from "@/components/ThemeSync";
+import Script from "next/script";
 
 const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
@@ -25,6 +26,23 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="es" className="scroll-smooth" suppressHydrationWarning>
+      <head>
+        {/* Script para prevenir FOUC - Se ejecuta ANTES de que React se monte */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  const stored = localStorage.getItem('theme');
+                  const theme = stored || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+                  document.documentElement.classList.add(theme);
+                  document.documentElement.setAttribute('data-theme', theme);
+                } catch (e) {}
+              })();
+            `,
+          }}
+        />
+      </head>
       <body
         className={`${jetbrainsMono.variable} antialiased theme-transition`}
       >
@@ -32,8 +50,9 @@ export default function RootLayout({ children }) {
           attribute="class"
           defaultTheme="system"
           enableSystem={true}
-          disableTransitionOnChange
+          disableTransitionOnChange={false}
           themes={["light", "dark"]}
+          storageKey="theme"
         >
           {/* Componente para sincronizar temas */}
           <ThemeSync />

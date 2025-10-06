@@ -4,6 +4,7 @@
 @import "flag-icons/css/flag-icons.min.css";
 @import "@fontsource/sora/latin.css";
 
+
 :root {
   --font-primary: 'Sora', sans-serif;
   --primary-green: #22c55e;
