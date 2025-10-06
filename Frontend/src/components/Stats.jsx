@@ -120,11 +120,9 @@ const CountUpAnimation = ({ end, duration = 2.5, suffix = "", delay = 0 }) => {
   const timeoutRef = useRef(null);
 
   useEffect(() => {
-    // Limpiar timers previos
     if (intervalRef.current) clearInterval(intervalRef.current);
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
     
-    // Resetear estado
     setCount(0);
     setHasStarted(false);
 
@@ -137,8 +135,6 @@ const CountUpAnimation = ({ end, duration = 2.5, suffix = "", delay = 0 }) => {
       const updateCount = () => {
         const elapsed = Date.now() - startTime;
         const progress = Math.min(elapsed / durationMs, 1);
-        
-        // Función de easing suave
         const easeOutQuart = 1 - Math.pow(1 - progress, 4);
         const currentCount = Math.floor(easeOutQuart * end);
         
@@ -147,14 +143,13 @@ const CountUpAnimation = ({ end, duration = 2.5, suffix = "", delay = 0 }) => {
         if (progress < 1) {
           intervalRef.current = requestAnimationFrame(updateCount);
         } else {
-          setCount(end); // Asegurar el valor final
+          setCount(end);
         }
       };
       
       intervalRef.current = requestAnimationFrame(updateCount);
     }, delay);
 
-    // Cleanup
     return () => {
       if (intervalRef.current) {
         if (typeof intervalRef.current === 'number') {
@@ -177,10 +172,7 @@ const StatCard = ({ stat, index, theme }) => {
   const timeoutRef = useRef(null);
 
   useEffect(() => {
-    // Limpiar timeout previo
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
-    
-    // Resetear visibilidad
     setIsVisible(false);
     
     timeoutRef.current = setTimeout(() => {
@@ -239,31 +231,36 @@ const StatCard = ({ stat, index, theme }) => {
   );
 };
 
-// Componente principal
+// Componente principal - EL FIX ESTÁ AQUÍ
 const Stats = () => {
-  const { theme } = useTheme();
-  const [headerVisible, setHeaderVisible] = useState(false);
+  const { resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
   const [footerVisible, setFooterVisible] = useState(false);
-  const headerTimeoutRef = useRef(null);
   const footerTimeoutRef = useRef(null);
 
+  // FIX: Esperar a que el componente esté montado
   useEffect(() => {
-    // Limpiar timeouts previos
-    if (headerTimeoutRef.current) clearTimeout(headerTimeoutRef.current);
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
     if (footerTimeoutRef.current) clearTimeout(footerTimeoutRef.current);
-    
-    // Resetear estado
-    setHeaderVisible(false);
     setFooterVisible(false);
 
-    headerTimeoutRef.current = setTimeout(() => setHeaderVisible(true), 100);
     footerTimeoutRef.current = setTimeout(() => setFooterVisible(true), 2000);
     
     return () => {
-      if (headerTimeoutRef.current) clearTimeout(headerTimeoutRef.current);
       if (footerTimeoutRef.current) clearTimeout(footerTimeoutRef.current);
     };
   }, []);
+
+  // FIX: No renderizar hasta que esté montado
+  if (!mounted) {
+    return null;
+  }
+
+  // FIX: Usar resolvedTheme en lugar de theme
+  const currentTheme = resolvedTheme || 'dark';
 
   return (
     <section className="py-16 bg-transparent">
@@ -271,13 +268,13 @@ const Stats = () => {
         {/* Grid de estadísticas */}
         <div className="flex flex-wrap justify-center gap-8">
           {stats.map((stat, index) => (
-            <StatCard key={`stat-${index}-${stat.num}`} stat={stat} index={index} theme={theme} />
+            <StatCard key={`stat-${index}-${stat.num}`} stat={stat} index={index} theme={currentTheme} />
           ))}
         </div>
 
         {/* Resumen inferior */}
         <div className={`text-center mt-12 transition-all duration-800 ${footerVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-          <p className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-700'} text-lg max-w-2xl mx-auto`}>
+          <p className={`${currentTheme === 'dark' ? 'text-gray-400' : 'text-gray-700'} text-lg max-w-2xl mx-auto`}>
             Cada número representa horas de dedicación, aprendizaje continuo y pasión por crear soluciones tecnológicas innovadoras.
           </p>
         </div>

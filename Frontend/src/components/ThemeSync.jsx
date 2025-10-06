@@ -4,16 +4,30 @@ import { useTheme } from 'next-themes';
 import { useEffect } from 'react';
 
 const ThemeSync = () => {
-  const { theme } = useTheme();
+  const { theme, systemTheme } = useTheme();
 
   useEffect(() => {
-    // Sincronizar el tema con el atributo data-theme del CSS
-    if (typeof document !== 'undefined') {
-      document.documentElement.setAttribute('data-theme', theme || 'dark');
+    // Determinar el tema efectivo
+    const effectiveTheme = theme === 'system' ? systemTheme : theme;
+    
+    if (typeof document !== 'undefined' && effectiveTheme) {
+      const root = document.documentElement;
+      
+      // Remover ambas clases primero
+      root.classList.remove('light', 'dark');
+      
+      // Agregar la clase correcta
+      root.classList.add(effectiveTheme);
+      
+      // Sincronizar atributo data-theme
+      root.setAttribute('data-theme', effectiveTheme);
+      
+      // Sincronizar color-scheme nativo del navegador
+      root.style.colorScheme = effectiveTheme;
     }
-  }, [theme]);
+  }, [theme, systemTheme]);
 
-  return null; // Este componente no renderiza nada visible
+  return null;
 };
 
 export default ThemeSync;

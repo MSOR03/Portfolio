@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { FiDownload } from "react-icons/fi";
-import { memo, useMemo, lazy, Suspense, useCallback } from "react";
+import { memo, useMemo, lazy, Suspense } from "react";
 
 import Social from "@/components/Social";
 import Photo from "@/components/Photo";
@@ -15,20 +15,19 @@ import LanguageProgress from "@/components/Languaje";
 import ExperienceCard from "@/components/ExperienceCard";
 import Carousel from "@/components/carruselVideo";
 import useDownloadCV from "@/components/downloadCV";
-import ThemeToggle from "@/components/ThemeToggle";
 
 // Lazy loading con preload
 const RadarChart = lazy(() => import("@/components/RadarChart"));
 const RadialProgressChart = lazy(() => import("@/components/RadialProgressChart"));
 const ClientOnly = lazy(() => import("@/components/ClientOnly"));
 
-// Skeleton OPTIMIZADO - sin animaciones costosas
+// Skeleton OPTIMIZADO
 const ChartSkeleton = memo(() => (
   <div className="h-64 bg-gray-200 dark:bg-gray-800 rounded-xl opacity-50"></div>
 ));
 ChartSkeleton.displayName = "ChartSkeleton";
 
-// Datos (mover fuera del componente para evitar recreaciones)
+// Datos
 const SKILLS_SYSTEMS = [
   { label: "Frontend", value: 80, max: 100, color: "#3b82f6" },
   { label: "Backend", value: 70, max: 100, color: "#ef4444" },
@@ -97,7 +96,6 @@ const SectionTitle = memo(({ title, subtitle, className = "" }) => {
             </span>
           ))}
         </h2>
-        {/* Decoración simplificada - sin blur */}
         <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-24 h-1 bg-green-400 rounded-full"></div>
       </div>
       <p className="text-lg text-gray-600 dark:text-white/70 mt-6 max-w-2xl mx-auto">
@@ -108,7 +106,7 @@ const SectionTitle = memo(({ title, subtitle, className = "" }) => {
 });
 SectionTitle.displayName = "SectionTitle";
 
-// Gráfico optimizado - sin efectos pesados
+// Gráfico optimizado
 const OptimizedRadialChart = memo(({ config }) => (
   <div key={config.title} className="w-full max-w-xl">
     <div className="relative bg-white/5 dark:bg-white/5 rounded-xl p-4 border border-green-500/20">
@@ -139,14 +137,9 @@ const Home = () => {
 
   return (
     <section className="h-full py-16 scroll-mt-20" id="home">
-      {/* Toggle de tema - posición fija */}
-      <div className="fixed top-4 right-4 z-50">
-        <ThemeToggle />
-      </div>
-
       <div className="container mx-auto px-4">
         <div className="flex flex-col md:flex-row items-center justify-between gap-12">
-          {/* Hero section simplificado - SIN efectos de blur pesados */}
+          {/* Hero section */}
           <div className="relative max-w-xl w-full order-2 md:order-none">
             <div className="relative bg-white/10 dark:bg-black/40 p-10 rounded-3xl border border-green-500/30 transition-transform hover:scale-[1.01]">
               <span className="inline-block text-sm text-green-400 uppercase tracking-wider font-semibold mb-2 px-3 py-1 bg-green-400/10 rounded-full border border-green-400/20">
@@ -179,7 +172,7 @@ const Home = () => {
         </div>
       </div>
 
-      {/* Resto de secciones con estructura simplificada */}
+      {/* Resto de secciones */}
       <div className="container mx-auto px-4 mt-24" id="cv">
         <SectionTitle 
           title="Mi Resumen" 
