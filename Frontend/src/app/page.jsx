@@ -17,19 +17,18 @@ import Carousel from "@/components/carruselVideo";
 import useDownloadCV from "@/components/downloadCV";
 import ThemeToggle from "@/components/ThemeToggle";
 
-// Lazy loading para componentes pesados
+// Lazy loading con preload
 const RadarChart = lazy(() => import("@/components/RadarChart"));
 const RadialProgressChart = lazy(() => import("@/components/RadialProgressChart"));
 const ClientOnly = lazy(() => import("@/components/ClientOnly"));
 
-// Skeleton/Loading placeholder adaptativo
+// Skeleton OPTIMIZADO - sin animaciones costosas
 const ChartSkeleton = memo(() => (
-  <div className="animate-pulse card-glow">
-    <div className="h-64 bg-white/10 dark:bg-white/10 bg-black/5 rounded-xl"></div>
-  </div>
+  <div className="h-64 bg-gray-200 dark:bg-gray-800 rounded-xl opacity-50"></div>
 ));
+ChartSkeleton.displayName = "ChartSkeleton";
 
-// Datos (sin cambios)
+// Datos (mover fuera del componente para evitar recreaciones)
 const SKILLS_SYSTEMS = [
   { label: "Frontend", value: 80, max: 100, color: "#3b82f6" },
   { label: "Backend", value: 70, max: 100, color: "#ef4444" },
@@ -84,57 +83,46 @@ const CHART_CONFIGS = [
   }
 ];
 
-// Componente SectionTitle con estilos adaptativos
+// SectionTitle simplificado
 const SectionTitle = memo(({ title, subtitle, className = "" }) => {
   const titleWords = useMemo(() => title.split(" "), [title]);
-  
-
-
 
   return (
     <div className={`text-center mb-16 px-4 ${className}`}>
       <div className="relative inline-block">
-        <h2 className="text-4xl md:text-5xl font-bold text-white dark:text-white text-gray-900 mb-4 relative z-10">
+        <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
           {titleWords.map((word, index) => (
             <span key={index} className={index === titleWords.length - 1 ? "text-green-400" : ""}>
-              {word} {" "}
+              {word}{" "}
             </span>
           ))}
         </h2>
-        <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-24 h-1 bg-gradient-to-r from-green-400 to-green-600 rounded-full"></div>
-        <div className="absolute -bottom-4 left-1/2 transform -translate-x-1/2 w-12 h-1 bg-green-400/50 rounded-full"></div>
+        {/* Decoración simplificada - sin blur */}
+        <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-24 h-1 bg-green-400 rounded-full"></div>
       </div>
-      <p className="text-lg text-white/70 dark:text-white/70 text-gray-600 mt-6 max-w-2xl mx-auto leading-relaxed">
+      <p className="text-lg text-gray-600 dark:text-white/70 mt-6 max-w-2xl mx-auto">
         {subtitle}
       </p>
     </div>
   );
 });
-
 SectionTitle.displayName = "SectionTitle";
 
-// Componente de gráfico con estilos adaptativos
+// Gráfico optimizado - sin efectos pesados
 const OptimizedRadialChart = memo(({ config }) => (
   <div key={config.title} className="w-full max-w-xl">
-    <div className="relative">
-      <div className={`absolute inset-0 bg-gradient-to-r ${config.gradient} rounded-xl blur-lg`} />
-      <div className="relative z-10 card-glow p-4">
-        <Suspense fallback={<ChartSkeleton />}>
-          <ClientOnly>
-            <RadialProgressChart title={config.title} skills={config.skills} />
-          </ClientOnly>
-        </Suspense>
-      </div>
+    <div className="relative bg-white/5 dark:bg-white/5 rounded-xl p-4 border border-green-500/20">
+      <Suspense fallback={<ChartSkeleton />}>
+        <ClientOnly>
+          <RadialProgressChart title={config.title} skills={config.skills} />
+        </ClientOnly>
+      </Suspense>
     </div>
   </div>
 ));
-
 OptimizedRadialChart.displayName = "OptimizedRadialChart";
 
-
-
 const Home = () => {
-
   const handleDownloadCV = useDownloadCV();
 
   const experienceCards = useMemo(() => (
@@ -144,7 +132,7 @@ const Home = () => {
   ), []);
 
   const radialCharts = useMemo(() => (
-    CHART_CONFIGS.map((config, idx) => (
+    CHART_CONFIGS.map((config) => (
       <OptimizedRadialChart key={config.title} config={config} />
     ))
   ), []);
@@ -158,60 +146,56 @@ const Home = () => {
 
       <div className="container mx-auto px-4">
         <div className="flex flex-col md:flex-row items-center justify-between gap-12">
-          <div className="relative max-w-xl w-full order-2 md:order-none group">
-            <div className="absolute -inset-1 bg-gradient-to-r from-green-500/10 to-green-600/10 rounded-3xl blur-md md:blur-lg transition-all duration-700"></div>
-            <div className="relative card-glow p-10 rounded-3xl shadow-2xl transition-all duration-700 ease-out hover:scale-[1.02] hover:shadow-green-500/20 hover:border-green-500/30 overflow-hidden">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-green-500/10 to-transparent rounded-full blur-2xl"></div>
-              <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-green-400/10 to-transparent rounded-full blur-xl"></div>
-              <div className="relative z-10">
-                <span className="inline-block text-sm text-green-400 uppercase tracking-wider font-semibold mb-2 px-3 py-1 bg-green-400/10 rounded-full border border-green-400/20">Ingeniero</span>
-                <h1 className="text-4xl md:text-5xl font-bold mb-6 mt-4 leading-tight text-white dark:text-white text-gray-900">
-                  Hola, soy <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-green-600">Sebastián</span>
-                </h1>
-                <p className="text-white/80 dark:text-white/80 text-gray-700 text-lg leading-relaxed mb-8">
-                  Ingeniero Topográfico e Ingeniero de Sistemas con habilidades en desarrollo de software (Móvil, Web), Sistemas de Información, además, cualidades en diseño con <span className="text-green-300">Civil3D</span>, <span className="text-green-300">ArcGIS</span>, <span className="text-green-300">QGIS</span>.
-                </p>
-                <div className="flex flex-col sm:flex-row items-center gap-6">
-                  <Button
-                    variant="outline"
-                    size="lg"
-                    onClick={handleDownloadCV}
-                    className="btn-green relative group uppercase flex items-center gap-3 px-8 py-4 text-base text-white font-semibold tracking-wide overflow-hidden rounded-xl"
-                  >
-                    <span className="relative z-10">Descargar CV</span>
-                    <FiDownload className="text-xl relative z-10 transition-transform group-hover:-translate-y-1" />
-                  </Button>
-                  <Social />
-                </div>
+          {/* Hero section simplificado - SIN efectos de blur pesados */}
+          <div className="relative max-w-xl w-full order-2 md:order-none">
+            <div className="relative bg-white/10 dark:bg-black/40 p-10 rounded-3xl border border-green-500/30 transition-transform hover:scale-[1.01]">
+              <span className="inline-block text-sm text-green-400 uppercase tracking-wider font-semibold mb-2 px-3 py-1 bg-green-400/10 rounded-full border border-green-400/20">
+                Ingeniero
+              </span>
+              <h1 className="text-4xl md:text-5xl font-bold mb-6 mt-4 text-gray-900 dark:text-white">
+                Hola, soy <span className="text-green-400">Sebastián</span>
+              </h1>
+              <p className="text-gray-700 dark:text-white/80 text-lg mb-8">
+                Ingeniero Topográfico e Ingeniero de Sistemas con habilidades en desarrollo de software (Móvil, Web), Sistemas de Información, además, cualidades en diseño con <span className="text-green-300">Civil3D</span>, <span className="text-green-300">ArcGIS</span>, <span className="text-green-300">QGIS</span>.
+              </p>
+              <div className="flex flex-col sm:flex-row items-center gap-6">
+                <Button
+                  variant="outline"
+                  size="lg"
+                  onClick={handleDownloadCV}
+                  className="btn-green uppercase flex items-center gap-3 px-8 py-4"
+                >
+                  <span>Descargar CV</span>
+                  <FiDownload className="text-xl" />
+                </Button>
+                <Social />
               </div>
             </div>
           </div>
 
           <div className="relative order-1 md:order-none">
-            <div className="absolute -inset-8 bg-gradient-to-tr from-green-500/20 via-green-400/10 to-transparent rounded-full blur-3xl animate-pulse"></div>
-            <div className="absolute -inset-4 bg-gradient-to-bl from-green-600/10 to-green-400/5 rounded-full blur-xl"></div>
-            <div className="relative z-10 p-2 rounded-full bg-gradient-to-tr from-green-400/20 to-transparent">
-              <Photo />
-            </div>
+            <Photo />
           </div>
         </div>
       </div>
 
+      {/* Resto de secciones con estructura simplificada */}
       <div className="container mx-auto px-4 mt-24" id="cv">
-        <SectionTitle title="Mi Resumen" subtitle="Habilidades y competencias técnicas destacadas en desarrollo y topografía" />
+        <SectionTitle 
+          title="Mi Resumen" 
+          subtitle="Habilidades y competencias técnicas destacadas en desarrollo y topografía" 
+        />
+        
         <div className="flex justify-center items-start gap-12 flex-col lg:flex-row mx-auto max-w-7xl">
-          <div className="w-full lg:w-1/2 flex justify-center items-center">
-            <div className="relative w-full max-w-2xl lg:max-w-[600px]">
-              <div className="absolute inset-0 bg-gradient-to-r from-green-500/10 to-blue-500/10 rounded-2xl blur-xl" />
-              <div className="relative z-10 card-glow p-6">
-                <Suspense fallback={<ChartSkeleton />}>
-                  <RadarChart />
-                </Suspense>
-              </div>
+          <div className="w-full lg:w-1/2 flex justify-center">
+            <div className="relative w-full max-w-2xl lg:max-w-[600px] bg-white/5 dark:bg-white/5 rounded-2xl p-6 border border-green-500/20">
+              <Suspense fallback={<ChartSkeleton />}>
+                <RadarChart />
+              </Suspense>
             </div>
           </div>
 
-          <div className="w-full lg:w-1/2 flex flex-col gap-8 justify-center items-center">
+          <div className="w-full lg:w-1/2 flex flex-col gap-8">
             {radialCharts}
           </div>
         </div>
@@ -227,14 +211,25 @@ const Home = () => {
 
       <div className="scroll-mt-20" id="services" />
       <div id="aboutme" className="container mx-auto px-4 mt-24 scroll-mt-50">
-        <SectionTitle title="Mis Estudios" subtitle="Formación académica y certificaciones que respaldan mi experiencia profesional" />
+        <SectionTitle 
+          title="Mis Estudios" 
+          subtitle="Formación académica y certificaciones que respaldan mi experiencia profesional" 
+        />
         <GradesTimeline />
+        
         <div className="mt-10">
-          <SectionTitle title="Mis Idiomas" subtitle="Competencias lingüísticas para comunicación internacional efectiva" />
+          <SectionTitle 
+            title="Mis Idiomas" 
+            subtitle="Competencias lingüísticas para comunicación internacional efectiva" 
+          />
           <LanguageProgress />
         </div>
+        
         <div className="mt-5">
-          <SectionTitle title="Mi Experiencia" subtitle="Trayectoria profesional en desarrollo GIS y topografía aplicada" />
+          <SectionTitle 
+            title="Mi Experiencia" 
+            subtitle="Trayectoria profesional en desarrollo GIS y topografía aplicada" 
+          />
           <div className="flex flex-wrap justify-center gap-8 max-w-6xl mx-auto">
             {experienceCards}
           </div>
@@ -248,14 +243,11 @@ const Home = () => {
       <div id="projects" className="mt-10 scroll-mt-20" />
       <div className="mt-10">
         <div className="container mx-auto px-4 text-center mb-5">
-          <div className="relative inline-block">
-            <h2 className="text-4xl md:text-5xl font-bold mb-5">
-              <span className="text-white dark:text-white text-gray-900">¿Quieres trabajar </span>
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-green-600">conmigo?</span>
-            </h2>
-            <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-32 h-1 bg-gradient-to-r from-green-400 to-green-600 rounded-full"></div>
-          </div>
-          <p className="text-white/70 dark:text-white/70 text-gray-600 text-xl mt-8 max-w-3xl mx-auto leading-relaxed">
+          <h2 className="text-4xl md:text-5xl font-bold mb-5">
+            <span className="text-gray-900 dark:text-white">¿Quieres trabajar </span>
+            <span className="text-green-400">conmigo?</span>
+          </h2>
+          <p className="text-gray-600 dark:text-white/70 text-xl mt-8 max-w-3xl mx-auto">
             Estoy disponible para colaboraciones, proyectos freelance o propuestas laborales. Convirtamos tu visión en realidad digital.
           </p>
         </div>
