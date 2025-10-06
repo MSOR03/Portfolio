@@ -13,20 +13,23 @@ import ContactSection from "@/components/ContactSection";
 import GradesTimeline from "@/components/GradesTimeline";
 import LanguageProgress from "@/components/Languaje";
 import ExperienceCard from "@/components/ExperienceCard";
+import Carousel from "@/components/carruselVideo";
+import useDownloadCV from "@/components/downloadCV";
+import ThemeToggle from "@/components/ThemeToggle";
 
-// Lazy loading para componentes pesados - solo se cargan cuando son necesarios
+// Lazy loading para componentes pesados
 const RadarChart = lazy(() => import("@/components/RadarChart"));
 const RadialProgressChart = lazy(() => import("@/components/RadialProgressChart"));
 const ClientOnly = lazy(() => import("@/components/ClientOnly"));
 
-// Skeleton/Loading placeholder optimizado
+// Skeleton/Loading placeholder adaptativo
 const ChartSkeleton = memo(() => (
-  <div className="animate-pulse bg-white/5 rounded-xl border border-white/10">
-    <div className="h-64 bg-white/10 rounded-xl"></div>
+  <div className="animate-pulse card-glow">
+    <div className="h-64 bg-white/10 dark:bg-white/10 bg-black/5 rounded-xl"></div>
   </div>
 ));
 
-// Datos movidos fuera del componente para evitar recreación en cada render
+// Datos (sin cambios)
 const SKILLS_SYSTEMS = [
   { label: "Frontend", value: 80, max: 100, color: "#3b82f6" },
   { label: "Backend", value: 70, max: 100, color: "#ef4444" },
@@ -81,14 +84,17 @@ const CHART_CONFIGS = [
   }
 ];
 
-// Componente SectionTitle memoizado para evitar re-renders innecesarios
+// Componente SectionTitle con estilos adaptativos
 const SectionTitle = memo(({ title, subtitle, className = "" }) => {
   const titleWords = useMemo(() => title.split(" "), [title]);
   
+
+
+
   return (
     <div className={`text-center mb-16 px-4 ${className}`}>
       <div className="relative inline-block">
-        <h2 className="text-4xl md:text-5xl font-bold text-white mb-4 relative z-10">
+        <h2 className="text-4xl md:text-5xl font-bold text-white dark:text-white text-gray-900 mb-4 relative z-10">
           {titleWords.map((word, index) => (
             <span key={index} className={index === titleWords.length - 1 ? "text-green-400" : ""}>
               {word} {" "}
@@ -98,7 +104,7 @@ const SectionTitle = memo(({ title, subtitle, className = "" }) => {
         <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-24 h-1 bg-gradient-to-r from-green-400 to-green-600 rounded-full"></div>
         <div className="absolute -bottom-4 left-1/2 transform -translate-x-1/2 w-12 h-1 bg-green-400/50 rounded-full"></div>
       </div>
-      <p className="text-lg text-white/70 mt-6 max-w-2xl mx-auto leading-relaxed">
+      <p className="text-lg text-white/70 dark:text-white/70 text-gray-600 mt-6 max-w-2xl mx-auto leading-relaxed">
         {subtitle}
       </p>
     </div>
@@ -107,12 +113,12 @@ const SectionTitle = memo(({ title, subtitle, className = "" }) => {
 
 SectionTitle.displayName = "SectionTitle";
 
-// Componente de gráfico optimizado con memoización
+// Componente de gráfico con estilos adaptativos
 const OptimizedRadialChart = memo(({ config }) => (
   <div key={config.title} className="w-full max-w-xl">
     <div className="relative">
       <div className={`absolute inset-0 bg-gradient-to-r ${config.gradient} rounded-xl blur-lg`} />
-      <div className="relative z-10 bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-4">
+      <div className="relative z-10 card-glow p-4">
         <Suspense fallback={<ChartSkeleton />}>
           <ClientOnly>
             <RadialProgressChart title={config.title} skills={config.skills} />
@@ -125,25 +131,18 @@ const OptimizedRadialChart = memo(({ config }) => (
 
 OptimizedRadialChart.displayName = "OptimizedRadialChart";
 
-// Hook personalizado para manejar la descarga del CV
-const useDownloadCV = () => {
-  return useCallback(() => {
-    // Aquí puedes agregar la lógica de descarga
-    console.log("Descargando CV...");
-  }, []);
-};
+
 
 const Home = () => {
+
   const handleDownloadCV = useDownloadCV();
 
-  // Renderizado de tarjetas de experiencia memoizado
   const experienceCards = useMemo(() => (
     EXPERIENCIA.map((item, index) => (
       <ExperienceCard key={`${item.company}-${index}`} {...item} />
     ))
   ), []);
 
-  // Renderizado de gráficos memoizado
   const radialCharts = useMemo(() => (
     CHART_CONFIGS.map((config, idx) => (
       <OptimizedRadialChart key={config.title} config={config} />
@@ -152,19 +151,24 @@ const Home = () => {
 
   return (
     <section className="h-full py-16 scroll-mt-20" id="home">
+      {/* Toggle de tema - posición fija */}
+      <div className="fixed top-4 right-4 z-50">
+        <ThemeToggle />
+      </div>
+
       <div className="container mx-auto px-4">
         <div className="flex flex-col md:flex-row items-center justify-between gap-12">
           <div className="relative max-w-xl w-full order-2 md:order-none group">
             <div className="absolute -inset-1 bg-gradient-to-r from-green-500/10 to-green-600/10 rounded-3xl blur-md md:blur-lg transition-all duration-700"></div>
-            <div className="relative bg-white/5 backdrop-blur-md border border-white/10 p-10 rounded-3xl shadow-2xl transition-all duration-700 ease-out hover:scale-[1.02] hover:shadow-green-500/20 hover:border-green-500/30 overflow-hidden">
+            <div className="relative card-glow p-10 rounded-3xl shadow-2xl transition-all duration-700 ease-out hover:scale-[1.02] hover:shadow-green-500/20 hover:border-green-500/30 overflow-hidden">
               <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-green-500/10 to-transparent rounded-full blur-2xl"></div>
               <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-green-400/10 to-transparent rounded-full blur-xl"></div>
               <div className="relative z-10">
                 <span className="inline-block text-sm text-green-400 uppercase tracking-wider font-semibold mb-2 px-3 py-1 bg-green-400/10 rounded-full border border-green-400/20">Ingeniero</span>
-                <h1 className="text-4xl md:text-5xl font-bold mb-6 mt-4 leading-tight">
+                <h1 className="text-4xl md:text-5xl font-bold mb-6 mt-4 leading-tight text-white dark:text-white text-gray-900">
                   Hola, soy <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-green-600">Sebastián</span>
                 </h1>
-                <p className="text-white/80 text-lg leading-relaxed mb-8">
+                <p className="text-white/80 dark:text-white/80 text-gray-700 text-lg leading-relaxed mb-8">
                   Ingeniero Topográfico e Ingeniero de Sistemas con habilidades en desarrollo de software (Móvil, Web), Sistemas de Información, además, cualidades en diseño con <span className="text-green-300">Civil3D</span>, <span className="text-green-300">ArcGIS</span>, <span className="text-green-300">QGIS</span>.
                 </p>
                 <div className="flex flex-col sm:flex-row items-center gap-6">
@@ -172,11 +176,10 @@ const Home = () => {
                     variant="outline"
                     size="lg"
                     onClick={handleDownloadCV}
-                    className="relative group uppercase flex items-center gap-3 px-8 py-4 text-base border-2 border-green-400 text-green-400 bg-transparent transition-all duration-500 ease-in-out hover:bg-green-500 hover:text-black hover:border-green-500 hover:shadow-lg hover:shadow-green-500/30 rounded-xl font-semibold tracking-wide overflow-hidden"
+                    className="btn-green relative group uppercase flex items-center gap-3 px-8 py-4 text-base text-white font-semibold tracking-wide overflow-hidden rounded-xl"
                   >
                     <span className="relative z-10">Descargar CV</span>
                     <FiDownload className="text-xl relative z-10 transition-transform group-hover:-translate-y-1" />
-                    <span className="absolute left-0 top-0 h-full w-1/3 bg-white/20 transform -translate-x-full skew-x-12 group-hover:translate-x-[300%] transition-transform duration-1000 ease-out pointer-events-none" />
                   </Button>
                   <Social />
                 </div>
@@ -200,7 +203,7 @@ const Home = () => {
           <div className="w-full lg:w-1/2 flex justify-center items-center">
             <div className="relative w-full max-w-2xl lg:max-w-[600px]">
               <div className="absolute inset-0 bg-gradient-to-r from-green-500/10 to-blue-500/10 rounded-2xl blur-xl" />
-              <div className="relative z-10 bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6">
+              <div className="relative z-10 card-glow p-6">
                 <Suspense fallback={<ChartSkeleton />}>
                   <RadarChart />
                 </Suspense>
@@ -236,6 +239,10 @@ const Home = () => {
             {experienceCards}
           </div>
         </div>
+
+        <div className="mt-5">
+          <Carousel />
+        </div>
       </div>
 
       <div id="projects" className="mt-10 scroll-mt-20" />
@@ -243,12 +250,12 @@ const Home = () => {
         <div className="container mx-auto px-4 text-center mb-5">
           <div className="relative inline-block">
             <h2 className="text-4xl md:text-5xl font-bold mb-5">
-              <span className="text-white">¿Quieres trabajar </span>
+              <span className="text-white dark:text-white text-gray-900">¿Quieres trabajar </span>
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-green-600">conmigo?</span>
             </h2>
             <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-32 h-1 bg-gradient-to-r from-green-400 to-green-600 rounded-full"></div>
           </div>
-          <p className="text-white/70 text-xl mt-8 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-white/70 dark:text-white/70 text-gray-600 text-xl mt-8 max-w-3xl mx-auto leading-relaxed">
             Estoy disponible para colaboraciones, proyectos freelance o propuestas laborales. Convirtamos tu visión en realidad digital.
           </p>
         </div>

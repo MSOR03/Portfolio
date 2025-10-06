@@ -2,8 +2,12 @@
 
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
+import { useTheme } from "next-themes";
 
 const ContactForm = () => {
+  const { theme } = useTheme();
+  const isDark = theme === "dark";
+
   const [focusedField, setFocusedField] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
@@ -17,7 +21,6 @@ const ContactForm = () => {
     e.preventDefault();
     setStatus(null);
 
-    // Validación de campos
     if (!formData.name || !formData.email || !formData.message) {
       setStatus({ type: "warning", message: "Por favor completa todos los campos." });
       return;
@@ -48,194 +51,130 @@ const ContactForm = () => {
     }
   };
 
+  const inputBaseClasses = `
+    w-full px-4 py-3 rounded-lg 
+    border
+    focus:outline-none
+    transition-all duration-200 text-sm
+  `;
+
+  const inputThemeClasses = isDark
+    ? `bg-slate-800/60 text-white placeholder-slate-500 border-slate-600/30 focus:border-green-400/50 focus:bg-slate-800/80 hover:border-slate-500/50`
+    : `bg-white text-gray-900 placeholder-gray-400 border-gray-300 focus:border-green-400/50 focus:bg-gray-100 hover:border-gray-400`;
+
   return (
     <div className="w-full max-w-lg mx-auto p-4">
       <div
-        className="
-          relative rounded-2xl 
-          bg-slate-900/95 
-          border border-green-400/20
+        className={`
+          relative rounded-2xl
+          ${isDark ? "bg-slate-900/95 border border-green-400/20" : "bg-white/95 border border-gray-300"}
           backdrop-blur-sm
           overflow-hidden
           transition-all duration-300 ease-out
           hover:border-green-400/30
-        "
-        translate="yes"
+        `}
       >
-        <div className="relative p-6 pb-4 border-b border-slate-700/30">
+        <div className={`relative p-6 pb-4 border-b ${isDark ? "border-slate-700/30" : "border-gray-200"}`}>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 bg-green-400 rounded-full"></div>
               <div className="w-2 h-2 bg-green-400/60 rounded-full"></div>
               <div className="w-2 h-2 bg-green-400/30 rounded-full"></div>
             </div>
-            <div className="text-xs text-green-400/70 font-mono">CONTACTO</div>
+            <div className={`text-xs ${isDark ? "text-green-400/70" : "text-green-600/70"} font-mono`}>CONTACTO</div>
           </div>
 
           <div className="mt-4">
-            <h2 className="text-xl sm:text-2xl font-bold text-white mb-1">
+            <h2 className={`text-xl sm:text-2xl font-bold mb-1 ${isDark ? "text-white" : "text-gray-900"}`}>
               Contáctame
             </h2>
-            <p className="text-sm text-slate-400">
+            <p className={`${isDark ? "text-slate-400" : "text-gray-600"} text-sm`}>
               ¿Tienes un proyecto o idea? ¡Hablemos!
             </p>
           </div>
         </div>
 
-        {/* Formulario */}
-        <form className="p-6 space-y-5" translate="yes">
-          {/* Mensaje de estado */}
+        <form className="p-6 space-y-5" onSubmit={handleSubmit}>
           {status && (
             <div
-              className={`p-3 rounded-md text-sm font-medium mb-4 transition-all duration-300 ${
-                status.type === "success"
-                  ? "bg-green-600/80 text-white"
-                  : status.type === "error"
-                  ? "bg-red-600/80 text-white"
-                  : "bg-yellow-500/80 text-white"
-              }`}
+              className={`
+                p-3 rounded-md text-sm font-medium mb-4 transition-all duration-300
+                ${status.type === "success" ? "bg-green-600/80 text-white" : ""}
+                ${status.type === "error" ? "bg-red-600/80 text-white" : ""}
+                ${status.type === "warning" ? "bg-yellow-500/80 text-white" : ""}
+              `}
             >
               {status.message}
             </div>
           )}
 
-          {/* Campo Nombre */}
-          <div className="space-y-2">
-            <label
-              className="block text-green-400/90 text-xs font-medium uppercase tracking-widest"
-              htmlFor="name"
-              translate="yes"
-            >
-              Nombre
-            </label>
-            <div className="relative">
-              <input
-                type="text"
-                id="name"
-                name="name"
-                required
-                placeholder="Maicol Sebastián Olarte Ramírez"
-                value={formData.name}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                onFocus={() => setFocusedField("name")}
-                onBlur={() => setFocusedField(null)}
-                className="
-                  w-full px-4 py-3 rounded-lg 
-                  bg-slate-800/60 text-white placeholder-slate-500
-                  border border-slate-600/30
-                  focus:outline-none focus:border-green-400/50 focus:bg-slate-800/80
-                  hover:border-slate-500/50
-                  transition-all duration-200
-                  text-sm
-                "
-              />
-              <div
-                className={`
-                  absolute bottom-0 left-0 h-px bg-gradient-to-r from-green-400/80 to-green-400/20
-                  transition-all duration-300 ease-out
-                  ${focusedField === "name" ? "w-full" : "w-0"}
-                `}
-              ></div>
+          {["name", "email", "message"].map((field) => (
+            <div className="space-y-2" key={field}>
+              <label
+                htmlFor={field}
+                className={`block ${isDark ? "text-green-400/90" : "text-green-600/90"} text-xs font-medium uppercase tracking-widest`}
+              >
+                {field === "name" ? "Nombre" : field === "email" ? "Correo electrónico" : "Mensaje"}
+              </label>
+              <div className="relative">
+                {field !== "message" ? (
+                  <input
+                    type={field === "email" ? "email" : "text"}
+                    id={field}
+                    name={field}
+                    required
+                    placeholder={
+                      field === "name"
+                        ? "Maicol Sebastián Olarte Ramírez"
+                        : "example@example.com"
+                    }
+                    value={formData[field]}
+                    onChange={(e) => setFormData({ ...formData, [field]: e.target.value })}
+                    onFocus={() => setFocusedField(field)}
+                    onBlur={() => setFocusedField(null)}
+                    className={`${inputBaseClasses} ${inputThemeClasses}`}
+                  />
+                ) : (
+                  <textarea
+                    id="message"
+                    name="message"
+                    rows={4}
+                    required
+                    placeholder="Cuéntame sobre tu proyecto o idea..."
+                    value={formData.message}
+                    onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                    onFocus={() => setFocusedField(field)}
+                    onBlur={() => setFocusedField(null)}
+                    className={`${inputBaseClasses} ${inputThemeClasses} resize-none`}
+                  />
+                )}
+                <div
+                  className={`
+                    absolute bottom-0 left-0 h-px bg-gradient-to-r from-green-400/80 to-green-400/20
+                    transition-all duration-300 ease-out
+                    ${focusedField === field ? "w-full" : "w-0"}
+                  `}
+                ></div>
+              </div>
             </div>
-          </div>
+          ))}
 
-          {/* Campo Email */}
-          <div className="space-y-2">
-            <label
-              className="block text-green-400/90 text-xs font-medium uppercase tracking-widest"
-              htmlFor="email"
-              translate="yes"
-            >
-              Correo electrónico
-            </label>
-            <div className="relative">
-              <input
-                type="email"
-                id="email"
-                name="email"
-                required
-                placeholder="example@example.com"
-                value={formData.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                onFocus={() => setFocusedField("email")}
-                onBlur={() => setFocusedField(null)}
-                className="
-                  w-full px-4 py-3 rounded-lg 
-                  bg-slate-800/60 text-white placeholder-slate-500
-                  border border-slate-600/30
-                  focus:outline-none focus:border-green-400/50 focus:bg-slate-800/80
-                  hover:border-slate-500/50
-                  transition-all duration-200
-                  text-sm
-                "
-              />
-              <div
-                className={`
-                  absolute bottom-0 left-0 h-px bg-gradient-to-r from-green-400/80 to-green-400/20
-                  transition-all duration-300 ease-out
-                  ${focusedField === "email" ? "w-full" : "w-0"}
-                `}
-              ></div>
-            </div>
-          </div>
-
-          {/* Campo Mensaje */}
-          <div className="space-y-2">
-            <label
-              className="block text-green-400/90 text-xs font-medium uppercase tracking-widest"
-              htmlFor="message"
-              translate="yes"
-            >
-              Mensaje
-            </label>
-            <div className="relative">
-              <textarea
-                id="message"
-                name="message"
-                rows={4}
-                required
-                placeholder="Cuéntame sobre tu proyecto o idea..."
-                value={formData.message}
-                onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                onFocus={() => setFocusedField("message")}
-                onBlur={() => setFocusedField(null)}
-                className="
-                  w-full px-4 py-3 rounded-lg 
-                  bg-slate-800/60 text-white placeholder-slate-500
-                  border border-slate-600/30
-                  focus:outline-none focus:border-green-400/50 focus:bg-slate-800/80
-                  hover:border-slate-500/50
-                  transition-all duration-200
-                  resize-none text-sm
-                "
-              />
-              <div
-                className={`
-                  absolute bottom-0 left-0 h-px bg-gradient-to-r from-green-400/80 to-green-400/20
-                  transition-all duration-300 ease-out
-                  ${focusedField === "message" ? "w-full" : "w-0"}
-                `}
-              ></div>
-            </div>
-          </div>
-
-          {/* Footer con botón */}
           <div className="pt-2 border-t border-slate-700/20">
             <Button
-              onClick={handleSubmit}
+              type="submit"
               disabled={isSubmitting}
               translate="no"
-              className="
-                w-full py-3 
-                bg-green-500 hover:bg-green-400
-                text-slate-900 font-semibold text-sm uppercase tracking-wider
+              className={`
+                w-full py-3
+                ${isDark ? "bg-green-500 hover:bg-green-400 text-slate-900" : "bg-green-500 hover:bg-green-400 text-white"}
+                font-semibold text-sm uppercase tracking-wider
                 rounded-lg
                 hover:shadow-lg hover:shadow-green-500/20
                 active:scale-98
                 disabled:opacity-70 disabled:cursor-not-allowed
                 transition-all duration-200
                 flex items-center justify-center gap-2
-              "
+              `}
             >
               {isSubmitting ? (
                 <>
@@ -261,16 +200,8 @@ const ContactForm = () => {
                 </>
               )}
             </Button>
-
-            <div className="flex items-center justify-center gap-1 mt-4">
-              <div className="w-1 h-1 bg-green-400/60 rounded-full"></div>
-              <div className="w-1 h-1 bg-green-400/40 rounded-full"></div>
-              <div className="w-1 h-1 bg-green-400/20 rounded-full"></div>
-            </div>
           </div>
         </form>
-
-        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-green-400/40 to-transparent"></div>
       </div>
     </div>
   );

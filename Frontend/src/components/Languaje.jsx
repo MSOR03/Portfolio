@@ -1,9 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
+import { useTheme } from "next-themes";
 
 const idiomas = [
   {
     nombre: "Español",
-    nivel: 100,
+    nivel: 97,
     bandera: "https://flagcdn.com/48x36/es.png",
     banderaAlt: "ES",
     countryCode: "es",
@@ -13,15 +14,15 @@ const idiomas = [
   },
   {
     nombre: "Inglés",
-    nivel: 65,
+    nivel: 70,
     bandera: "https://flagcdn.com/48x36/gb.png",
     banderaAlt: "GB",
     countryCode: "gb",
     descripcion: "Intermedio",
-    certificacion: "B1 Progreso en YESBOGOTA",
+    certificacion: "B1 Colombo Americano YESBOGOTA",
     soundWave: [2, 6, 3, 7, 4, 8, 2, 5, 6, 4]
   },
-  {
+  /*{{
     nombre: "Alemán",
     nivel: 5,
     bandera: "https://flagcdn.com/48x36/de.png",
@@ -30,7 +31,7 @@ const idiomas = [
     descripcion: "Básico",
     certificacion: "A1 En Progreso",
     soundWave: [1, 3, 2, 4, 1, 3, 2, 4, 1, 3]
-  },
+  },*/
 ];
 
 function getPalette(level) {
@@ -58,7 +59,38 @@ function getPalette(level) {
   };
 }
 
-const LanguageCard = ({ idioma, index, isActive, onHover, onLeave }) => {
+// Función para obtener los colores según el tema
+function getThemeColors(theme) {
+  return {
+    cardBg: theme === 'dark' 
+      ? 'linear-gradient(160deg, rgba(10,16,12,0.95) 0%, rgba(12,18,14,0.92) 40%, rgba(9,14,10,0.95) 100%)'
+      : 'linear-gradient(160deg, rgba(255,255,255,0.95) 0%, rgba(248,250,252,0.92) 40%, rgba(241,245,249,0.95) 100%)',
+    cardBorder: theme === 'dark' 
+      ? 'rgba(255,255,255,0.08)' 
+      : 'rgba(0,0,0,0.08)',
+    cardShadow: theme === 'dark'
+      ? '0 10px 36px rgba(0,0,0,0.35)'
+      : '0 10px 36px rgba(0,0,0,0.15)',
+    titleColor: theme === 'dark' ? 'text-white' : 'text-gray-900',
+    descriptionColor: theme === 'dark' ? 'text-gray-300' : 'text-gray-600',
+    levelTextColor: theme === 'dark' ? 'text-gray-400' : 'text-gray-500',
+    progressBg: theme === 'dark' ? 'bg-white/5' : 'bg-gray-200/50',
+    progressBorder: theme === 'dark' ? 'border-white/10' : 'border-gray-300/30',
+    statBg: theme === 'dark' 
+      ? 'rgba(255,255,255,0.04)' 
+      : 'rgba(0,0,0,0.04)',
+    statBorder: theme === 'dark' 
+      ? 'rgba(255,255,255,0.1)' 
+      : 'rgba(0,0,0,0.1)',
+    noiseColor: theme === 'dark' ? '#ffffff' : '#000000',
+    noiseOpacity: theme === 'dark' ? '0.06' : '0.04',
+    radialGradient: theme === 'dark'
+      ? 'rgba(255,255,255,0.05)'
+      : 'rgba(0,0,0,0.03)'
+  };
+}
+
+const LanguageCard = ({ idioma, index, isActive, onHover, onLeave, theme }) => {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [isHovered, setIsHovered] = useState(false);
   const [particlePositions, setParticlePositions] = useState([]);
@@ -67,6 +99,7 @@ const LanguageCard = ({ idioma, index, isActive, onHover, onLeave }) => {
   const rafRef = useRef(null);
 
   const palette = getPalette(idioma.nivel);
+  const themeColors = getThemeColors(theme);
 
   // Generate particles based on language level
   useEffect(() => {
@@ -153,19 +186,20 @@ const LanguageCard = ({ idioma, index, isActive, onHover, onLeave }) => {
         className="relative p-8 rounded-2xl border overflow-hidden transition-all duration-500"
         style={{
           background: `
-            linear-gradient(160deg, rgba(10,16,12,0.95) 0%, rgba(12,18,14,0.92) 40%, rgba(9,14,10,0.95) 100%),
-            radial-gradient(1200px 400px at ${50 + mousePosition.x * 0.3}% ${40 + mousePosition.y * 0.3}%, rgba(255,255,255,0.05), transparent 70%)
+            ${themeColors.cardBg},
+            radial-gradient(1200px 400px at ${50 + mousePosition.x * 0.3}% ${40 + mousePosition.y * 0.3}%, ${themeColors.radialGradient}, transparent 70%)
           `,
-          borderColor: isHovered ? palette.glow.replace('0.3','0.5') : 'rgba(255,255,255,0.08)',
+          borderColor: isHovered ? palette.glow.replace('0.3','0.5') : themeColors.cardBorder,
           boxShadow: isHovered
             ? `0 24px 48px ${palette.glow.replace('0.3','0.22')}, 0 0 24px ${palette.glow}`
-            : '0 10px 36px rgba(0,0,0,0.35)',
+            : themeColors.cardShadow,
           backdropFilter: 'blur(16px)'
         }}
       >
         {/* Subtle noise/pattern */}
-        <div className="absolute inset-0 opacity-[0.06] pointer-events-none" style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%23ffffff' stroke-width='1' opacity='0.35'%3E%3Cpath d='M20 20h60v60H20z'/%3E%3Cpath d='M30 30h40v40H30z'/%3E%3Cpath d='M40 40h20v20H40z'/%3E%3C/g%3E%3C/svg%3E")`,
+        <div className="absolute inset-0 pointer-events-none" style={{
+          opacity: themeColors.noiseOpacity,
+          backgroundImage: `url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%23${themeColors.noiseColor.replace('#', '')}' stroke-width='1' opacity='0.35'%3E%3Cpath d='M20 20h60v60H20z'/%3E%3Cpath d='M30 30h40v40H30z'/%3E%3Cpath d='M40 40h20v20H40z'/%3E%3C/g%3E%3C/svg%3E")`,
           backgroundSize: '80px 80px'
         }}/>
 
@@ -256,12 +290,12 @@ const LanguageCard = ({ idioma, index, isActive, onHover, onLeave }) => {
 
             {/* Language info */}
             <div className="space-y-2">
-              <h3 className="text-2xl font-bold text-white tracking-wide" style={{
+              <h3 className={`text-2xl font-bold tracking-wide ${themeColors.titleColor}`} style={{
                 textShadow: `0 0 ${isHovered ? 18 : 10}px ${palette.glow.replace('0.3','0.8')}`
               }}>
                 {idioma.nombre}
               </h3>
-              <p className="text-gray-300 text-sm font-medium">{idioma.descripcion}</p>
+              <p className={`text-sm font-medium ${themeColors.descriptionColor}`}>{idioma.descripcion}</p>
               <span
                 className="inline-block px-3 py-1 rounded-full text-xs font-semibold text-white"
                 style={{
@@ -283,16 +317,16 @@ const LanguageCard = ({ idioma, index, isActive, onHover, onLeave }) => {
             }}>
               {idioma.nivel}%
             </div>
-            <div className="text-gray-400 text-xs uppercase tracking-wider">Competencia</div>
+            <div className={`text-xs uppercase tracking-wider ${themeColors.levelTextColor}`}>Competencia</div>
           </div>
         </div>
 
         {/* Enhanced progress bar */}
         <div className="relative mb-6">
-          <div className="relative w-full h-4 bg-white/5 rounded-full overflow-hidden backdrop-blur-sm border border-white/10">
+          <div className={`relative w-full h-4 ${themeColors.progressBg} rounded-full overflow-hidden backdrop-blur-sm border ${themeColors.progressBorder}`}>
             {/* Background dots */}
             <div className="absolute inset-0 opacity-20" style={{
-              backgroundImage: `url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' opacity='0.12'%3E%3Ccircle cx='10' cy='10' r='1'/%3E%3C/g%3E%3C/svg%3E")`,
+              backgroundImage: `url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23${themeColors.noiseColor.replace('#', '')}' opacity='0.12'%3E%3Ccircle cx='10' cy='10' r='1'/%3E%3C/g%3E%3C/svg%3E")`,
               backgroundSize: '10px 10px'
             }}/>
 
@@ -328,8 +362,9 @@ const LanguageCard = ({ idioma, index, isActive, onHover, onLeave }) => {
             </div>
 
             {/* Progress indicator knob */}
-            <div className="absolute top-1/2 -translate-y-1/2 w-6 h-6 rounded-full border-2 bg-white/20 backdrop-blur-sm" style={{
+            <div className="absolute top-1/2 -translate-y-1/2 w-6 h-6 rounded-full border-2 backdrop-blur-sm" style={{
               left: `calc(${idioma.nivel}% - 12px)`,
+              backgroundColor: theme === 'dark' ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.8)',
               borderColor: palette.glow.replace('0.3','0.85'),
               boxShadow: `0 0 16px ${palette.glow.replace('0.3','0.6')}`,
               transform: `translateY(-50%) scale(${isHovered ? 1.12 : 1})`,
@@ -354,9 +389,9 @@ const LanguageCard = ({ idioma, index, isActive, onHover, onLeave }) => {
               key={i}
               className="text-center p-3 rounded-lg transition-all duration-300"
               style={{
-                background: 'rgba(255,255,255,0.04)',
+                background: themeColors.statBg,
                 backdropFilter: 'blur(10px)',
-                border: '1px solid rgba(255,255,255,0.1)',
+                border: `1px solid ${themeColors.statBorder}`,
                 transform: `translateY(${isHovered ? -4 : 0}px)`,
                 transitionDelay: `${i * 60}ms`
               }}
@@ -367,7 +402,7 @@ const LanguageCard = ({ idioma, index, isActive, onHover, onLeave }) => {
               }}>
                 {Math.min(100, stat.value)}%
               </div>
-              <div className="text-xs text-gray-400 uppercase tracking-wide">{stat.label}</div>
+              <div className={`text-xs uppercase tracking-wide ${themeColors.levelTextColor}`}>{stat.label}</div>
             </div>
           ))}
         </div>
@@ -378,7 +413,13 @@ const LanguageCard = ({ idioma, index, isActive, onHover, onLeave }) => {
         @keyframes pulse { 0%, 100% { transform: scaleY(1); } 50% { transform: scaleY(1.3); } }
         @keyframes rotateSlow { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         @keyframes sweep { 0% { transform: translateX(-100%); opacity: 0; } 30% { opacity: 1; } 100% { transform: translateX(220%); opacity: 0; } }
-        .shimmer { background: linear-gradient(90deg, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0.20) 50%, rgba(255,255,255,0.07) 100%); animation: shimmerMove 1.2s ease-in-out infinite; }
+        .shimmer { 
+          background: ${theme === 'dark' 
+            ? 'linear-gradient(90deg, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0.20) 50%, rgba(255,255,255,0.07) 100%)'
+            : 'linear-gradient(90deg, rgba(0,0,0,0.07) 0%, rgba(0,0,0,0.15) 50%, rgba(0,0,0,0.07) 100%)'
+          }; 
+          animation: shimmerMove 1.2s ease-in-out infinite; 
+        }
         @keyframes shimmerMove { from { transform: translateX(-60%); } to { transform: translateX(60%); } }
         @media (prefers-reduced-motion: reduce) {
           * { animation: none !important; transition: none !important; }
@@ -389,18 +430,16 @@ const LanguageCard = ({ idioma, index, isActive, onHover, onLeave }) => {
 };
 
 const LanguageProgress = () => {
+  const { theme } = useTheme();
   const [activeIndex, setActiveIndex] = useState(-1);
 
   return (
     <section className="py-5 w-full bg-transparent relative overflow-hidden">
-      {/* Background grid + soft vignette */}
-     
-
       <div className="max-w-4xl mx-auto px-4 relative z-10">
         <div className="space-y-8">
           {idiomas.map((idioma, i) => (
             <div
-              key={i}
+              key={`language-${i}-${idioma.nombre}`}
               style={{
                 animationDelay: `${i * 120}ms`,
                 opacity: 0,
@@ -414,6 +453,7 @@ const LanguageProgress = () => {
                 isActive={activeIndex === i}
                 onHover={(idx) => setActiveIndex(idx)}
                 onLeave={() => setActiveIndex(-1)}
+                theme={theme}
               />
             </div>
           ))}

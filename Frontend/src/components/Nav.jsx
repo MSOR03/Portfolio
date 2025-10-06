@@ -5,6 +5,7 @@ import { GrUserWorker } from "react-icons/gr";
 import { CiHome, CiServer } from "react-icons/ci";
 import { Link as ScrollLink } from "react-scroll";
 
+
 const links = [
   { name: "Inicio", id: "home", icon: <CiHome size={20} /> },
   { name: "Servicios", id: "services", icon: <CiServer size={20} /> },
@@ -36,6 +37,7 @@ const Nav = () => {
           <span className="capitalize">{link.name}</span>
         </ScrollLink>
       ))}
+      
     </nav>
   );
 };

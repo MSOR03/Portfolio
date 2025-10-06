@@ -1,8 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
+import { useTheme } from "next-themes";
 import { FaLaptopCode, FaProjectDiagram, FaTools, FaGithub } from "react-icons/fa";
 
+// Datos de estadísticas
 const stats = [
   {
     num: 1,
@@ -38,87 +40,158 @@ const stats = [
   },
 ];
 
-const colorVariants = {
-  emerald: {
+// Colores por tema y categoría
+const colorVariants = (theme) => ({
+  emerald: theme === 'dark' ? {
     text: "text-emerald-400",
     glow: "shadow-emerald-500/30",
     glowHover: "hover:shadow-emerald-500/50",
     border: "border-emerald-500/30",
     bg: "from-emerald-500/10 to-emerald-600/5",
-    ring: "ring-emerald-500/20"
+    ring: "ring-emerald-500/20",
+    textSecondary: "text-gray-400"
+  } : {
+    text: "text-emerald-700",
+    glow: "shadow-emerald-300/30",
+    glowHover: "hover:shadow-emerald-500/50",
+    border: "border-emerald-300/50",
+    bg: "from-emerald-200/70 to-emerald-100/80",
+    ring: "ring-emerald-400/20",
+    textSecondary: "text-gray-700"
   },
-  blue: {
+  blue: theme === 'dark' ? {
     text: "text-blue-400",
     glow: "shadow-blue-500/30",
     glowHover: "hover:shadow-blue-500/50",
     border: "border-blue-500/30",
     bg: "from-blue-500/10 to-blue-600/5",
-    ring: "ring-blue-500/20"
+    ring: "ring-blue-500/20",
+    textSecondary: "text-gray-400"
+  } : {
+    text: "text-blue-700",
+    glow: "shadow-blue-300/30",
+    glowHover: "hover:shadow-blue-500/50",
+    border: "border-blue-300/50",
+    bg: "from-blue-200/70 to-blue-100/80",
+    ring: "ring-blue-400/20",
+    textSecondary: "text-gray-700"
   },
-  purple: {
+  purple: theme === 'dark' ? {
     text: "text-purple-400",
     glow: "shadow-purple-500/30",
     glowHover: "hover:shadow-purple-500/50",
     border: "border-purple-500/30",
     bg: "from-purple-500/10 to-purple-600/5",
-    ring: "ring-purple-500/20"
+    ring: "ring-purple-500/20",
+    textSecondary: "text-gray-400"
+  } : {
+    text: "text-purple-700",
+    glow: "shadow-purple-300/30",
+    glowHover: "hover:shadow-purple-500/50",
+    border: "border-purple-300/50",
+    bg: "from-purple-200/70 to-purple-100/80",
+    ring: "ring-purple-400/20",
+    textSecondary: "text-gray-700"
   },
-  cyan: {
+  cyan: theme === 'dark' ? {
     text: "text-cyan-400",
     glow: "shadow-cyan-500/30",
     glowHover: "hover:shadow-cyan-500/50",
     border: "border-cyan-500/30",
     bg: "from-cyan-500/10 to-cyan-600/5",
-    ring: "ring-cyan-500/20"
+    ring: "ring-cyan-500/20",
+    textSecondary: "text-gray-400"
+  } : {
+    text: "text-cyan-700",
+    glow: "shadow-cyan-300/30",
+    glowHover: "hover:shadow-cyan-500/50",
+    border: "border-cyan-300/50",
+    bg: "from-cyan-200/70 to-cyan-100/80",
+    ring: "ring-cyan-400/20",
+    textSecondary: "text-gray-700"
   }
-};
+});
 
+// Animación de conteo mejorada
 const CountUpAnimation = ({ end, duration = 2.5, suffix = "", delay = 0 }) => {
   const [count, setCount] = useState(0);
   const [hasStarted, setHasStarted] = useState(false);
-  
-  useEffect(() => {
-    if (!hasStarted) return;
-    
-    let start = 0;
-    const increment = end / (duration * 60); // 60 FPS aproximadamente
-    
-    const timer = setInterval(() => {
-      start += increment;
-      if (start >= end) {
-        setCount(end);
-        clearInterval(timer);
-      } else {
-        setCount(Math.floor(start));
-      }
-    }, 16); // ~60 FPS
-    
-    return () => clearInterval(timer);
-  }, [end, duration, hasStarted]);
+  const intervalRef = useRef(null);
+  const timeoutRef = useRef(null);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setHasStarted(true);
-    }, delay);
+    // Limpiar timers previos
+    if (intervalRef.current) clearInterval(intervalRef.current);
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
     
-    return () => clearTimeout(timer);
-  }, [delay]);
-  
+    // Resetear estado
+    setCount(0);
+    setHasStarted(false);
+
+    timeoutRef.current = setTimeout(() => {
+      setHasStarted(true);
+      
+      const startTime = Date.now();
+      const durationMs = duration * 1000;
+      
+      const updateCount = () => {
+        const elapsed = Date.now() - startTime;
+        const progress = Math.min(elapsed / durationMs, 1);
+        
+        // Función de easing suave
+        const easeOutQuart = 1 - Math.pow(1 - progress, 4);
+        const currentCount = Math.floor(easeOutQuart * end);
+        
+        setCount(currentCount);
+        
+        if (progress < 1) {
+          intervalRef.current = requestAnimationFrame(updateCount);
+        } else {
+          setCount(end); // Asegurar el valor final
+        }
+      };
+      
+      intervalRef.current = requestAnimationFrame(updateCount);
+    }, delay);
+
+    // Cleanup
+    return () => {
+      if (intervalRef.current) {
+        if (typeof intervalRef.current === 'number') {
+          cancelAnimationFrame(intervalRef.current);
+        } else {
+          clearInterval(intervalRef.current);
+        }
+      }
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    };
+  }, [end, duration, delay]);
+
   return <span>{count}{suffix}</span>;
 };
 
-const StatCard = ({ stat, index }) => {
-  const colors = colorVariants[stat.color];
+// Tarjeta de estadísticas
+const StatCard = ({ stat, index, theme }) => {
+  const colors = useMemo(() => colorVariants(theme)[stat.color], [stat.color, theme]);
   const [isVisible, setIsVisible] = useState(false);
-  
+  const timeoutRef = useRef(null);
+
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsVisible(true);
-    }, index * 200); // Delay escalonado para cada tarjeta
+    // Limpiar timeout previo
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
     
-    return () => clearTimeout(timer);
+    // Resetear visibilidad
+    setIsVisible(false);
+    
+    timeoutRef.current = setTimeout(() => {
+      setIsVisible(true);
+    }, index * 200);
+
+    return () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    };
   }, [index]);
-  
+
   return (
     <div
       className={`group relative transform transition-all duration-700 ${
@@ -126,72 +199,39 @@ const StatCard = ({ stat, index }) => {
           ? 'opacity-100 translate-y-0 scale-100' 
           : 'opacity-0 translate-y-12 scale-95'
       }`}
-      style={{
-        transform: isVisible ? 'none' : 'translateY(50px) scale(0.8)',
-      }}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.transform = 'scale(1.05) rotateY(5deg)';
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.transform = 'scale(1) rotateY(0deg)';
-      }}
     >
-      {/* Glow effect de fondo */}
       <div className={`absolute inset-0 bg-gradient-to-br ${colors.bg} rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500`}></div>
       
-      <div className={`relative bg-gradient-to-br from-gray-900/90 to-gray-800/70 border ${colors.border} backdrop-blur-xl rounded-2xl p-8 shadow-2xl ${colors.glow} ${colors.glowHover} transition-all duration-500 overflow-hidden min-h-[200px] w-[250px]`}>
-        {/* Efecto de brillo animado */}
+      <div className={`relative bg-gradient-to-br ${theme === 'dark' ? 'from-gray-900/90 to-gray-800/70' : 'from-white/95 to-gray-100'} border ${colors.border} backdrop-blur-xl rounded-2xl p-8 shadow-2xl ${colors.glow} ${colors.glowHover} transition-all duration-500 overflow-hidden min-h-[200px] w-[250px]`}>
         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
-        
-        {/* Decoración de esquina */}
         <div className={`absolute top-0 right-0 w-20 h-20 bg-gradient-to-br ${colors.bg} rounded-bl-full opacity-20`}></div>
-        
+
         <div className="relative z-10 flex flex-col items-center text-center h-full">
-          {/* Icono con animación */}
           <div 
-            className={`mb-6 p-4 rounded-full bg-gradient-to-br from-gray-800/80 to-gray-700/60 border border-white/10 ${colors.ring} ring-2 transition-transform duration-600 group-hover:rotate-360 group-hover:scale-110`}
-            style={{
-              transition: 'transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275)'
-            }}
+            className={`mb-6 p-4 rounded-full bg-gradient-to-br ${theme === 'dark' ? 'from-gray-800/80 to-gray-700/60' : 'from-white/80 to-gray-50'} border border-white/10 ${colors.ring} ring-2 transition-transform duration-600 group-hover:rotate-360 group-hover:scale-110`}
           >
-            <div className={colors.text}>
-              {stat.icon}
-            </div>
+            <div className={colors.text}>{stat.icon}</div>
           </div>
 
-          {/* Número principal */}
-          <div
-            className={`text-5xl font-black ${colors.text} mb-2 leading-none transition-all duration-500 ${
-              isVisible ? 'scale-100 opacity-100' : 'scale-50 opacity-0'
-            }`}
-          >
-            <CountUpAnimation 
-              end={stat.num} 
-              suffix={stat.suffix} 
-              delay={500 + index * 100}
-            />
+          <div className={`text-5xl font-black ${colors.text} mb-2 leading-none transition-all duration-500 ${isVisible ? 'scale-100 opacity-100' : 'scale-50 opacity-0'}`}>
+            {isVisible && (
+              <CountUpAnimation 
+                end={stat.num} 
+                suffix={stat.suffix} 
+                delay={200} 
+                duration={2}
+              />
+            )}
           </div>
 
-          {/* Texto principal */}
-          <h3 className="text-white font-bold text-lg mb-2 group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-gray-300 group-hover:bg-clip-text transition-all duration-300">
+          <h3 className={`font-bold text-lg mb-2 ${theme === 'dark' ? 'text-white' : 'text-gray-800'}`}>
             {stat.text}
           </h3>
 
-          {/* Descripción */}
-          <p className="text-gray-400 text-sm leading-relaxed group-hover:text-gray-300 transition-colors duration-300">
-            {stat.description}
-          </p>
+          <p className={`${colors.textSecondary} text-sm leading-relaxed`}>{stat.description}</p>
 
-          {/* Barra decorativa */}
-          <div className="mt-4 w-full h-1 bg-gray-800/50 rounded-full overflow-hidden">
-            <div
-              className={`h-full bg-gradient-to-r ${colors.bg} rounded-full transition-all duration-1500 ${
-                isVisible ? 'w-full' : 'w-0'
-              }`}
-              style={{
-                transitionDelay: `${800 + index * 100}ms`
-              }}
-            />
+          <div className="mt-4 w-full h-1 rounded-full overflow-hidden bg-gray-200 dark:bg-gray-800/50">
+            <div className={`h-full bg-gradient-to-r ${colors.bg} rounded-full transition-all duration-1500 ${isVisible ? 'w-full' : 'w-0'}`} style={{ transitionDelay: `${800 + index * 100}ms` }} />
           </div>
         </div>
       </div>
@@ -199,50 +239,45 @@ const StatCard = ({ stat, index }) => {
   );
 };
 
+// Componente principal
 const Stats = () => {
+  const { theme } = useTheme();
   const [headerVisible, setHeaderVisible] = useState(false);
   const [footerVisible, setFooterVisible] = useState(false);
-  
+  const headerTimeoutRef = useRef(null);
+  const footerTimeoutRef = useRef(null);
+
   useEffect(() => {
-    const headerTimer = setTimeout(() => setHeaderVisible(true), 100);
-    const footerTimer = setTimeout(() => setFooterVisible(true), 2000);
+    // Limpiar timeouts previos
+    if (headerTimeoutRef.current) clearTimeout(headerTimeoutRef.current);
+    if (footerTimeoutRef.current) clearTimeout(footerTimeoutRef.current);
+    
+    // Resetear estado
+    setHeaderVisible(false);
+    setFooterVisible(false);
+
+    headerTimeoutRef.current = setTimeout(() => setHeaderVisible(true), 100);
+    footerTimeoutRef.current = setTimeout(() => setFooterVisible(true), 2000);
     
     return () => {
-      clearTimeout(headerTimer);
-      clearTimeout(footerTimer);
+      if (headerTimeoutRef.current) clearTimeout(headerTimeoutRef.current);
+      if (footerTimeoutRef.current) clearTimeout(footerTimeoutRef.current);
     };
   }, []);
-  
+
   return (
     <section className="py-16 bg-transparent">
       <div className="container mx-auto px-4">
-        {/* Header */}
-        <div
-          className={`text-center mb-12 transition-all duration-800 ${
-            headerVisible 
-              ? 'opacity-100 translate-y-0' 
-              : 'opacity-0 -translate-y-5'
-          }`}
-        >
-         
-        </div>
-
         {/* Grid de estadísticas */}
         <div className="flex flex-wrap justify-center gap-8">
           {stats.map((stat, index) => (
-            <StatCard key={index} stat={stat} index={index} />
+            <StatCard key={`stat-${index}-${stat.num}`} stat={stat} index={index} theme={theme} />
           ))}
         </div>
 
         {/* Resumen inferior */}
-        <div
-          className={`text-center mt-12 transition-all duration-800 ${
-            footerVisible 
-              ? 'opacity-100 translate-y-0' 
-              : 'opacity-0 translate-y-8'
-          }`}
-        >
-          <p className="text-gray-400 text-lg max-w-2xl mx-auto">
+        <div className={`text-center mt-12 transition-all duration-800 ${footerVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+          <p className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-700'} text-lg max-w-2xl mx-auto`}>
             Cada número representa horas de dedicación, aprendizaje continuo y pasión por crear soluciones tecnológicas innovadoras.
           </p>
         </div>
