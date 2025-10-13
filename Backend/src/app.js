@@ -8,20 +8,37 @@ dotenv.config();
 
 const app = express();
 
-// Middlewares
+// ✅ Define allowed origins
+const allowedOrigins = [
+  process.env.FRONTEND_URL || "http://localhost:3000", // desarrollo local
+  process.env.FRONTEND_PROD_URL || "https://portfolio-so.vercel.app" // producción
+];
+
+// ✅ Middlewares
 app.use(cors({
-  origin: "*", // frontend URL
-  methods: ["POST", "GET"]
+  origin: (origin, callback) => {
+    // Permitir requests sin origen (por ejemplo Postman)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    } else {
+      console.warn(`❌ CORS blocked for origin: ${origin}`);
+      return callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true,
+  methods: ["GET", "POST"],
 }));
+
 app.use(express.json());
 app.use(morgan("dev"));
 
-// Routes
+// ✅ Routes
 app.use("/api/email", emailRoutes);
 app.use("/api/github", githubRoutes);
 
 app.get("/", (req, res) => {
-  res.send("Hello from the secure backend");
+  res.send("✅ Hello from the secure backend");
 });
 
 export default app;

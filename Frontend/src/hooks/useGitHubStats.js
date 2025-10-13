@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 
 export const useGitHubStats = () => {
   const [githubStats, setGithubStats] = useState(null);
@@ -8,18 +8,24 @@ export const useGitHubStats = () => {
   useEffect(() => {
     const fetchGitHubStats = async () => {
       try {
-        const response = await fetch('https://localhost:5000/api/github/stats' || process.env.BACKEND_GITHUB_STATS);
+        const response = await fetch(
+          `${
+            process.env.NODE_ENV === "production"
+              ? process.env.BACKEND_GITHUB_STATS
+              : process.env.NEXT_PUBLIC_BACKEND_LOCAL_API_GITHUB_STATS
+          }`
+        );
+
         
         if (!response.ok) {
-          throw new Error('Error fetching GitHub stats');
+          throw new Error("Error fetching GitHub stats");
         }
-        
 
         const data = await response.json();
         setGithubStats(data.stats);
       } catch (err) {
         setError(err.message);
-        console.error('Error:', err);
+        console.error("Error:", err);
       } finally {
         setLoading(false);
       }

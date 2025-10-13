@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
@@ -22,21 +22,29 @@ const ContactForm = () => {
     setStatus(null);
 
     if (!formData.name || !formData.email || !formData.message) {
-      setStatus({ type: "warning", message: "Por favor completa todos los campos." });
+      setStatus({
+        type: "warning",
+        message: "Por favor completa todos los campos.",
+      });
       return;
     }
 
     setIsSubmitting(true);
 
     try {
-      const response = await fetch("https://localhost:5000/api/email/send" || process.env.BACKEND_EMAIL, {
-        method: 
-        "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
+      const response = await fetch(
+        `${
+          process.env.NODE_ENV === "production"
+            ? process.env.BACKEND_EMAIL_SEND
+            : process.env.NEXT_PUBLIC_BACKEND_LOCAL_API_EMAIL_SEND
+        }`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(formData),
+        }
+      );
 
-      
       const data = await response.json();
 
       if (data.success) {
@@ -47,7 +55,10 @@ const ContactForm = () => {
       }
     } catch (error) {
       console.error(error);
-      setStatus({ type: "error", message: "Hubo un problema con el servidor ❌" });
+      setStatus({
+        type: "error",
+        message: "Hubo un problema con el servidor ❌",
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -69,28 +80,50 @@ const ContactForm = () => {
       <div
         className={`
           relative rounded-2xl
-          ${isDark ? "bg-slate-900/95 border border-green-400/20" : "bg-white/95 border border-gray-300"}
+          ${
+            isDark
+              ? "bg-slate-900/95 border border-green-400/20"
+              : "bg-white/95 border border-gray-300"
+          }
           backdrop-blur-sm
           overflow-hidden
           transition-all duration-300 ease-out
           hover:border-green-400/30
         `}
       >
-        <div className={`relative p-6 pb-4 border-b ${isDark ? "border-slate-700/30" : "border-gray-200"}`}>
+        <div
+          className={`relative p-6 pb-4 border-b ${
+            isDark ? "border-slate-700/30" : "border-gray-200"
+          }`}
+        >
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 bg-green-400 rounded-full"></div>
               <div className="w-2 h-2 bg-green-400/60 rounded-full"></div>
               <div className="w-2 h-2 bg-green-400/30 rounded-full"></div>
             </div>
-            <div className={`text-xs ${isDark ? "text-green-400/70" : "text-green-600/70"} font-mono`}>CONTACTO</div>
+            <div
+              className={`text-xs ${
+                isDark ? "text-green-400/70" : "text-green-600/70"
+              } font-mono`}
+            >
+              CONTACTO
+            </div>
           </div>
 
           <div className="mt-4">
-            <h2 className={`text-xl sm:text-2xl font-bold mb-1 ${isDark ? "text-white" : "text-gray-900"}`}>
+            <h2
+              className={`text-xl sm:text-2xl font-bold mb-1 ${
+                isDark ? "text-white" : "text-gray-900"
+              }`}
+            >
               Contáctame
             </h2>
-            <p className={`${isDark ? "text-slate-400" : "text-gray-600"} text-sm`}>
+            <p
+              className={`${
+                isDark ? "text-slate-400" : "text-gray-600"
+              } text-sm`}
+            >
               ¿Tienes un proyecto o idea? ¡Hablemos!
             </p>
           </div>
@@ -103,7 +136,9 @@ const ContactForm = () => {
                 p-3 rounded-md text-sm font-medium mb-4 transition-all duration-300
                 ${status.type === "success" ? "bg-green-600/80 text-white" : ""}
                 ${status.type === "error" ? "bg-red-600/80 text-white" : ""}
-                ${status.type === "warning" ? "bg-yellow-500/80 text-white" : ""}
+                ${
+                  status.type === "warning" ? "bg-yellow-500/80 text-white" : ""
+                }
               `}
             >
               {status.message}
@@ -114,9 +149,15 @@ const ContactForm = () => {
             <div className="space-y-2" key={field}>
               <label
                 htmlFor={field}
-                className={`block ${isDark ? "text-green-400/90" : "text-green-600/90"} text-xs font-medium uppercase tracking-widest`}
+                className={`block ${
+                  isDark ? "text-green-400/90" : "text-green-600/90"
+                } text-xs font-medium uppercase tracking-widest`}
               >
-                {field === "name" ? "Nombre" : field === "email" ? "Correo electrónico" : "Mensaje"}
+                {field === "name"
+                  ? "Nombre"
+                  : field === "email"
+                  ? "Correo electrónico"
+                  : "Mensaje"}
               </label>
               <div className="relative">
                 {field !== "message" ? (
@@ -131,7 +172,9 @@ const ContactForm = () => {
                         : "example@example.com"
                     }
                     value={formData[field]}
-                    onChange={(e) => setFormData({ ...formData, [field]: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, [field]: e.target.value })
+                    }
                     onFocus={() => setFocusedField(field)}
                     onBlur={() => setFocusedField(null)}
                     className={`${inputBaseClasses} ${inputThemeClasses}`}
@@ -144,7 +187,9 @@ const ContactForm = () => {
                     required
                     placeholder="Cuéntame sobre tu proyecto o idea..."
                     value={formData.message}
-                    onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, message: e.target.value })
+                    }
                     onFocus={() => setFocusedField(field)}
                     onBlur={() => setFocusedField(null)}
                     className={`${inputBaseClasses} ${inputThemeClasses} resize-none`}
@@ -168,7 +213,11 @@ const ContactForm = () => {
               translate="no"
               className={`
                 w-full py-3
-                ${isDark ? "bg-green-500 hover:bg-green-400 text-slate-900" : "bg-green-500 hover:bg-green-400 text-white"}
+                ${
+                  isDark
+                    ? "bg-green-500 hover:bg-green-400 text-slate-900"
+                    : "bg-green-500 hover:bg-green-400 text-white"
+                }
                 font-semibold text-sm uppercase tracking-wider
                 rounded-lg
                 hover:shadow-lg hover:shadow-green-500/20
