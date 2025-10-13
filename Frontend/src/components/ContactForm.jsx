@@ -31,6 +31,10 @@ const ContactForm = () => {
 
     setIsSubmitting(true);
     const API_URL = process.env.NEXT_PUBLIC_API_URL;
+    
+    console.log('🚀 Enviando a:', `${API_URL}/api/email/send`);
+    console.log('📧 Datos:', formData);
+    
     try {
       const response = await fetch(
         `${API_URL}/api/email/send`,
@@ -41,7 +45,9 @@ const ContactForm = () => {
         }
       );
 
+      console.log('📥 Response status:', response.status);
       const data = await response.json();
+      console.log('📦 Response data:', data);
 
       if (data.success) {
         setStatus({ type: "success", message: "Correo enviado con éxito ✅" });
@@ -50,7 +56,7 @@ const ContactForm = () => {
         setStatus({ type: "error", message: "Error al enviar el correo ❌" });
       }
     } catch (error) {
-      console.error(error);
+      console.error('❌ Error completo:', error);
       setStatus({
         type: "error",
         message: "Hubo un problema con el servidor ❌",

@@ -10,22 +10,13 @@ const app = express();
 
 // ✅ Define allowed origins
 const allowedOrigins = [
-  process.env.FRONTEND_URL || "http://localhost:3000", // desarrollo local
-  process.env.FRONTEND_URL_PROD || "https://sebastianolarte.vercel.app" // producción
+  process.env.FRONTEND_URL, // desarrollo local
+  process.env.FRONTEND_URL_PROD // producción
 ];
 
 // ✅ Middlewares
 app.use(cors({
-  origin: (origin, callback) => {
-    // Permitir requests sin origen (por ejemplo Postman)
-    if (!origin) return callback(null, true);
-    if (allowedOrigins.includes(origin)) {
-      return callback(null, true);
-    } else {
-      console.warn(`❌ CORS blocked for origin: ${origin}`);
-      return callback(new Error("Not allowed by CORS"));
-    }
-  },
+  origin: true, // ⚠️ Solo para debugging
   credentials: true,
   methods: ["GET", "POST"],
 }));
