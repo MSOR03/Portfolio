@@ -8,24 +8,22 @@ export const useGitHubStats = () => {
   useEffect(() => {
     const fetchGitHubStats = async () => {
       try {
-        const response = await fetch(
-          `${
-            process.env.NODE_ENV === "production"
-              ? process.env.BACKEND_GITHUB_STATS
-              : process.env.NEXT_PUBLIC_BACKEND_LOCAL_API_GITHUB_STATS
-          }`
-        );
-
+        // ✅ Usa NEXT_PUBLIC_ para que esté disponible en el cliente
+        const API_URL = process.env.NEXT_PUBLIC_API_URL;
         
+        console.log('🔍 Fetching from:', `${API_URL}/api/github/stats`); // Debug
+        
+        const response = await fetch(`${API_URL}/api/github/stats`);
+
         if (!response.ok) {
-          throw new Error("Error fetching GitHub stats");
+          throw new Error(`Error: ${response.status} - ${response.statusText}`);
         }
 
         const data = await response.json();
         setGithubStats(data.stats);
       } catch (err) {
         setError(err.message);
-        console.error("Error:", err);
+        console.error("❌ Error fetching GitHub stats:", err);
       } finally {
         setLoading(false);
       }

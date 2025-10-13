@@ -30,14 +30,10 @@ const ContactForm = () => {
     }
 
     setIsSubmitting(true);
-
+    const API_URL = process.env.NEXT_PUBLIC_API_URL;
     try {
       const response = await fetch(
-        `${
-          process.env.NODE_ENV === "production"
-            ? process.env.BACKEND_EMAIL_SEND
-            : process.env.NEXT_PUBLIC_BACKEND_LOCAL_API_EMAIL_SEND
-        }`,
+        `${API_URL}/api/email/send`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

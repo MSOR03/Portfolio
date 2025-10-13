@@ -11,7 +11,7 @@ const app = express();
 // ✅ Define allowed origins
 const allowedOrigins = [
   process.env.FRONTEND_URL || "http://localhost:3000", // desarrollo local
-  process.env.FRONTEND_PROD_URL || "https://sebastianolarte.vercel.app" // producción
+  process.env.FRONTEND_URL_PROD || "https://sebastianolarte.vercel.app" // producción
 ];
 
 // ✅ Middlewares
