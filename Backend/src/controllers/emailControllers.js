@@ -1,4 +1,4 @@
-import { sendMail } from "../config/mailer.js";
+import { sendMail } from "../config/resend.js";
 
 export const sendEmail = async (req, res) => {
   try {
