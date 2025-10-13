@@ -13,7 +13,7 @@ const idiomas = [
   },
   {
     nombre: "Inglés",
-    nivel: 70,
+    nivel: 65,
     bandera: "https://flagcdn.com/48x36/gb.png",
     banderaAlt: "GB",
     descripcion: "Intermedio",

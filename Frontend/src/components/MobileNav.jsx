@@ -31,12 +31,12 @@ const MobileNav = () => {
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetTrigger aria-label="Abrir menú móvil" className="p-2">
-        <CiMenuFries className="text-[32px] text-green-400 hover:text-green-500 transition-colors" />
+        <CiMenuFries className="text-[32px] text-green-400 hover:text-green-500 transition-colors dark:text-green-400 dark:hover:text-green-500" />
       </SheetTrigger>
 
       <SheetContent
         side="left"
-        className="bg-black/90 backdrop-blur-lg text-white border-none px-8 py-12 flex flex-col"
+        className="bg-white/95 dark:bg-black/90 backdrop-blur-lg text-gray-900 dark:text-white border-none px-8 py-12 flex flex-col"
       >
         {/* Accesibility Title */}
         <SheetTitle className="sr-only">Menú de navegación móvil</SheetTitle>
@@ -44,7 +44,7 @@ const MobileNav = () => {
         {/* Logo */}
         <div className="flex flex-col items-center gap-2 mb-12">
           <Image src="/assets/Logo.png" alt="Logo" width={70} height={70} />
-          <p className="text-lg font-semibold select-none">
+          <p className="text-lg font-semibold select-none text-gray-900 dark:text-white">
             SOR<span className="text-green-400">.</span>
           </p>
         </div>
@@ -61,7 +61,7 @@ const MobileNav = () => {
               spy={true}
               onClick={closeMenu}
               activeClass="text-green-400"
-              className="relative flex items-center gap-3 px-4 py-2 rounded-lg cursor-pointer transition-colors duration-300 text-white/90 hover:text-green-400 hover:bg-green-900/30"
+              className="relative flex items-center gap-3 px-4 py-2 rounded-lg cursor-pointer transition-colors duration-300 text-gray-700 dark:text-white/90 hover:text-green-400 hover:bg-green-100/50 dark:hover:bg-green-900/30"
             >
               <span className="text-lg">{link.icon}</span>
               <span className="capitalize">{link.name}</span>
@@ -83,6 +83,8 @@ const MobileNav = () => {
               className="
                 uppercase mt-6 border-green-400 text-green-400
                 hover:bg-green-500 hover:text-black
+                dark:border-green-400 dark:text-green-400
+                dark:hover:bg-green-500 dark:hover:text-black
                 transition-all duration-400 shadow-lg hover:shadow-green-500/80
                 transform hover:-translate-y-1
                 animate-pulse-slow

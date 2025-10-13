@@ -29,16 +29,16 @@ ChartSkeleton.displayName = "ChartSkeleton";
 
 // Datos
 const SKILLS_SYSTEMS = [
-  { label: "Frontend", value: 80, max: 100, color: "#3b82f6" },
-  { label: "Backend", value: 70, max: 100, color: "#ef4444" },
+  { label: "Frontend", value: 60, max: 100, color: "#3b82f6" },
+  { label: "Backend", value: 55, max: 100, color: "#ef4444" },
   { label: "DevOps", value: 50, max: 100, color: "#10b981" },
   { label: "Bases de Datos", value: 60, max: 100, color: "#f59e0b" },
 ];
 
 const SKILLS_TOPOGRAPHY = [
   { label: "GIS", value: 75, max: 100, color: "#14b8a6" },
-  { label: "BIM", value: 65, max: 100, color: "#6366f1" },
-  { label: "Bases de datos espaciales", value: 55, max: 100, color: "#8b5cf6" },
+  { label: "BIM", value: 60, max: 100, color: "#6366f1" },
+  { label: "Bases de datos espaciales", value: 70, max: 100, color: "#8b5cf6" },
   { label: "Cartografía", value: 70, max: 100, color: "#f97316" },
 ];
 
@@ -46,7 +46,7 @@ const EXPERIENCIA = [
   {
     role: "Asistente de ingeniería",
     company: "Ingeterra Projects S.A.S.",
-    date: "2023 - Presente",
+    date: "2024 - 2025",
     description: "Lleve a cabo trabajos de avaluos y GIS enfocados en ingeniería",
     techs: ["AutoCAD", "QGIS", "ArcGIS","Excel"],
     logo: "/assets/Logo.png",
@@ -149,7 +149,7 @@ const Home = () => {
                 Hola, soy <span className="text-green-400">Sebastián</span>
               </h1>
               <p className="text-gray-700 dark:text-white/80 text-lg mb-8">
-                Ingeniero Topográfico e Ingeniero de Sistemas con habilidades en desarrollo de software (Móvil, Web), Sistemas de Información, además, cualidades en diseño con <span className="text-green-300">Civil3D</span>, <span className="text-green-300">ArcGIS</span>, <span className="text-green-300">QGIS</span>.
+                Ingeniero Topográfico y Estudiante de ultimos semestres Ingeniería de Sistemas con habilidades en desarrollo de software (Móvil, Web), Sistemas de Información, además, cualidades en diseño con <span className="text-green-300">Civil3D</span>, <span className="text-green-300">ArcGIS</span>, <span className="text-green-300">QGIS</span>.
               </p>
               <div className="flex flex-col sm:flex-row items-center gap-6">
                 <Button
@@ -202,7 +202,7 @@ const Home = () => {
         <Technologies />
       </div>
 
-      <div className="scroll-mt-20" id="services" />
+      <div className="scroll-mt-20" id="degrees" />
       <div id="aboutme" className="container mx-auto px-4 mt-24 scroll-mt-50">
         <SectionTitle 
           title="Mis Estudios" 
@@ -218,7 +218,7 @@ const Home = () => {
           <LanguageProgress />
         </div>
         
-        <div className="mt-5">
+        <div className="mt-5" id="experience">
           <SectionTitle 
             title="Mi Experiencia" 
             subtitle="Trayectoria profesional en desarrollo GIS y topografía aplicada" 
@@ -228,7 +228,7 @@ const Home = () => {
           </div>
         </div>
 
-        <div className="mt-5">
+        <div className="mt-5" id="projects">
           <Carousel />
         </div>
       </div>
@@ -249,7 +249,7 @@ const Home = () => {
         </div>
       </div>
 
-      <div className="mt-0">
+      <div className="mt-0" id="testimonials">
         <Testimonials />
       </div>
     </section>

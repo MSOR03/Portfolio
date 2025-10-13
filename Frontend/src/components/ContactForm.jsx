@@ -29,13 +29,14 @@ const ContactForm = () => {
     setIsSubmitting(true);
 
     try {
-      const response = await fetch("https://localhost:5000/api/email/send", {
+      const response = await fetch("https://localhost:5000/api/email/send" || process.env.BACKEND_EMAIL, {
         method: 
         "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
 
+      
       const data = await response.json();
 
       if (data.success) {

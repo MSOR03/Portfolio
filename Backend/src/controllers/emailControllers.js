@@ -9,7 +9,7 @@ export const sendEmail = async (req, res) => {
     }
 
     await sendMail({
-      to: process.env.EMAIL_USER, // Te llega a tu propio correo
+      to: process.env.EMAIL_USER2, // Te llega a tu propio correo
       text: message,
       html: `
         <h3>Nuevo mensaje desde el portafolio</h3>

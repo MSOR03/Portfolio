@@ -25,23 +25,23 @@ const Footer = () => {
   // Data arrays memoizados
   const socialLinks = useMemo(() => [
     { icon: FaFacebook, href: "/", label: "Facebook", color: "hover:bg-blue-600" },
-    { icon: FaYoutube, href: "/", label: "YouTube", color: "hover:bg-red-600" },
+    { icon: FaYoutube, href: "https://www.youtube.com/@Sebasti%C3%A1nOlarteRam%C3%ADrez", label: "YouTube", color: "hover:bg-red-600" },
     { icon: FaSquareWhatsapp, href: "/", label: "WhatsApp", color: "hover:bg-green-600" },
     { icon: FaInstagram, href: "/", label: "Instagram", color: "hover:bg-pink-600" },
   ], []);
 
   const skillsData = useMemo(() => [
-    { skill: "Desarrollo Web", level: "95%" },
-    { skill: "Sistemas GIS", level: "85%" },
-    { skill: "Diseño UX/UI", level: "80%" },
-    { skill: "DevOps", level: "75%" }
+    { skill: "Desarrollo Web", level: "60%" },
+    { skill: "Sistemas GIS", level: "75%" },
+    { skill: "Diseño UX/UI", level: "50%" },
+    { skill: "DevOps", level: "50%" }
   ], []);
 
   const specializationLinks = useMemo(() => [
-    { name: "Sistemas de Información", href: "https://comunidad.udistrital.edu.co/investudcn10/red-bacata-it/" },
-    { name: "Computación Avanzada", href: "https://fambiental.udistrital.edu.co/" },
-    { name: "Ciencia de Datos", href: "https://www.udistrital.edu.co/inicio" },
-    { name: "Desarrollo Gaming", href: "#gaming" }
+    { name: "GIS/BIM", href: "https://www.esri.com/es-es/industries/aec/overview/gis-and-bim" },
+    { name: "Desarrollo de software", href: "https://www.ibm.com/es-es/think/topics/software-development" },
+    { name: "Ciencia de Datos", href: "https://aws.amazon.com/es/what-is/data-science/" },
+    { name: "Ingenieria de Transporte", href: "https://www.autonoma.pe/blog/ramas-ingenieria-civil/" }
   ], []);
 
   const contactInfo = useMemo(() => [

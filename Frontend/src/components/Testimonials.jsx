@@ -3,7 +3,15 @@
 import { useMemo, useState, useEffect, useCallback } from "react";
 import { useTheme } from "next-themes";
 import ScrollAnimation from "./ui/scroll-animation";
-import { FaQuoteLeft, FaStar, FaBriefcase, FaMapMarkedAlt, FaChartLine, FaProjectDiagram } from "react-icons/fa";
+import Link from "next/link";
+import {
+  FaQuoteLeft,
+  FaStar,
+  FaBriefcase,
+  FaMapMarkedAlt,
+  FaChartLine,
+  FaProjectDiagram,
+} from "react-icons/fa";
 
 const Testimonials = () => {
   const { resolvedTheme } = useTheme();
@@ -15,47 +23,59 @@ const Testimonials = () => {
     setMounted(true);
   }, []);
 
-  const testimonials = useMemo(() => [
-    {
-      name: "Alex Vergara",
-      role: "Cliente",
-      company: "N/A",
-      feedback: "Sebastián es un profesional comprometido y creativo. Su ayuda fue clave para el desarrollo de la página de la Red Bacata. La calidad de su trabajo superó nuestras expectativas.",
-      rating: 5,
-      project: "Red Bacata",
-      icon: <FaProjectDiagram className="text-blue-500 dark:text-blue-400" />,
-      avatar: "AV",
-      skills: ["Desarrollo Web", "Investigación"],
-    },
-    {
-      name: "Astrid Olarte",
-      role: "Cliente", 
-      company: "N/A",
-      feedback: "Sebastián nos ayudó a crear una página web noCode para nuestro trabajo de grado. Su profesionalismo y creatividad fueron clave para el éxito del proyecto.",
-      rating: 5,
-      project: "Análisis Geoespacial Avanzado",
-      icon: <FaMapMarkedAlt className="text-emerald-600 dark:text-emerald-400" />,
-      avatar: "AO",
-      skills: ["ArcGIS", "QGIS", "Geoanálisis"],
-    },
-    {
-      name: "Ricardo Bacca Ávila",
-      role: "Ingeniero en Ingeterra Projects S.A.S.",
-      company: "Ingeterra Projects S.A.S.",
-      feedback: "Sebastián ha colaborado con nosotros en varios trabajos de la organización. Puedo decir que es un profesional comprometido y con una gran capacidad de aprendizaje. Su trabajo en GIS y Civil3D ha sido excepcional.",
-      rating: 5,
-      project: "Varios trabajos",
-      icon: <FaChartLine className="text-orange-600 dark:text-orange-400" />,
-      avatar: "RB",
-      skills: ["Avalúos", "Planos", "SIG"],
-    },
-  ], []);
+  const testimonials = useMemo(
+    () => [
+      {
+        name: "Alex Vergara",
+        role: "Cliente",
+        company: "N/A",
+        feedback:
+          "Sebastián es un profesional comprometido y creativo. Su ayuda fue clave para el desarrollo de la página de la Red Bacata. La calidad de su trabajo superó nuestras expectativas.",
+        rating: 5,
+        project: "Red Bacata",
+        icon: <FaProjectDiagram className="text-blue-500 dark:text-blue-400" />,
+        avatar: "AV",
+        skills: ["Desarrollo Web", "Investigación"],
+      },
+      {
+        name: "Astrid Olarte",
+        role: "Cliente",
+        company: "N/A",
+        feedback:
+          "Sebastián nos ayudó a crear una página web noCode para nuestro trabajo de grado. Su profesionalismo y creatividad fueron clave para el éxito del proyecto.",
+        rating: 5,
+        project: "Análisis Geoespacial Avanzado",
+        icon: (
+          <FaMapMarkedAlt className="text-emerald-600 dark:text-emerald-400" />
+        ),
+        avatar: "AO",
+        skills: ["ArcGIS", "QGIS", "Geoanálisis"],
+      },
+      {
+        name: "Ricardo Bacca Ávila",
+        role: "Ingeniero en Ingeterra Projects S.A.S.",
+        company: "Ingeterra Projects S.A.S.",
+        feedback:
+          "Sebastián ha colaborado con nosotros en varios trabajos de la organización. Puedo decir que es un profesional comprometido y con una gran capacidad de aprendizaje. Su trabajo en GIS y Civil3D ha sido excepcional.",
+        rating: 5,
+        project: "Varios trabajos",
+        icon: <FaChartLine className="text-orange-600 dark:text-orange-400" />,
+        avatar: "RB",
+        skills: ["Avalúos", "Planos", "SIG"],
+      },
+    ],
+    []
+  );
 
   const renderStars = useCallback((rating) => {
     return Array.from({ length: 5 }, (_, i) => (
       <FaStar
         key={i}
-        className={i < rating ? "text-yellow-500 dark:text-yellow-400" : "text-gray-300 dark:text-gray-600"}
+        className={
+          i < rating
+            ? "text-yellow-500 dark:text-yellow-400"
+            : "text-gray-300 dark:text-gray-600"
+        }
         size={14}
       />
     ));
@@ -63,7 +83,7 @@ const Testimonials = () => {
 
   useEffect(() => {
     if (!isAutoPlaying) return;
-    
+
     const interval = setInterval(() => {
       setCurrentTestimonial((prev) => (prev + 1) % testimonials.length);
     }, 5000);
@@ -89,7 +109,10 @@ const Testimonials = () => {
             <div className="h-32 bg-gray-200 dark:bg-gray-800 rounded-3xl" />
             <div className="grid md:grid-cols-3 gap-8">
               {[1, 2, 3].map((i) => (
-                <div key={i} className="h-64 bg-gray-200 dark:bg-gray-800 rounded-2xl" />
+                <div
+                  key={i}
+                  className="h-64 bg-gray-200 dark:bg-gray-800 rounded-2xl"
+                />
               ))}
             </div>
           </div>
@@ -156,7 +179,7 @@ const Testimonials = () => {
                     <blockquote className="text-lg leading-relaxed mb-6 italic text-gray-900 dark:text-white">
                       "{currentTestimonialData.feedback}"
                     </blockquote>
-                    
+
                     <div className="space-y-4">
                       <div className="flex items-center gap-3">
                         {currentTestimonialData.icon}
@@ -164,7 +187,7 @@ const Testimonials = () => {
                           Proyecto: {currentTestimonialData.project}
                         </span>
                       </div>
-                      
+
                       <div className="flex flex-wrap gap-2">
                         {currentTestimonialData.skills.map((skill, index) => (
                           <span
@@ -187,12 +210,19 @@ const Testimonials = () => {
                     key={index}
                     onClick={() => handleTestimonialChange(index)}
                     className={`w-3 h-3 rounded-full transition-all ${
-                      index === currentTestimonial ? "scale-125" : "hover:scale-110"
+                      index === currentTestimonial
+                        ? "scale-125"
+                        : "hover:scale-110"
                     }`}
                     style={{
-                      backgroundColor: index === currentTestimonial 
-                        ? resolvedTheme === 'dark' ? '#34d399' : '#059669'
-                        : resolvedTheme === 'dark' ? '#6b7280' : '#9ca3af'
+                      backgroundColor:
+                        index === currentTestimonial
+                          ? resolvedTheme === "dark"
+                            ? "#34d399"
+                            : "#059669"
+                          : resolvedTheme === "dark"
+                          ? "#6b7280"
+                          : "#9ca3af",
                     }}
                     aria-label={`Ver testimonio de ${testimonials[index].name}`}
                   />
@@ -211,7 +241,11 @@ const Testimonials = () => {
                   group bg-white/95 dark:bg-gray-900/90 backdrop-blur-sm p-6 rounded-2xl 
                   border border-gray-200 dark:border-gray-700 shadow-lg hover:shadow-2xl 
                   transition-all duration-500 hover:-translate-y-2 cursor-pointer
-                  ${index === currentTestimonial ? 'ring-2 ring-emerald-500 dark:ring-emerald-400' : ''}
+                  ${
+                    index === currentTestimonial
+                      ? "ring-2 ring-emerald-500 dark:ring-emerald-400"
+                      : ""
+                  }
                 `}
               >
                 <div className="relative z-10">
@@ -247,7 +281,7 @@ const Testimonials = () => {
                     <p className="text-sm truncate text-gray-600 dark:text-gray-400">
                       {testimonial.company}
                     </p>
-                    
+
                     <div className="flex flex-wrap gap-1 mt-3">
                       {testimonial.skills.slice(0, 2).map((skill, i) => (
                         <span
@@ -276,11 +310,14 @@ const Testimonials = () => {
                 ¿Listo para ser el próximo testimonio?
               </h3>
               <p className="mb-6 max-w-2xl mx-auto text-gray-700 dark:text-gray-300">
-                Únete a estos clientes satisfechos y descubre cómo puedo ayudarte a alcanzar tus objetivos tecnológicos.
+                Únete a estos clientes satisfechos y descubre cómo puedo
+                ayudarte a alcanzar tus objetivos tecnológicos.
               </p>
-              <button className="bg-gradient-to-r from-emerald-500 to-blue-500 text-white px-8 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl hover:scale-105 transition-all">
-                Iniciar Proyecto
-              </button>
+              <Link href="#contact" scroll={true}>
+                <button className="bg-gradient-to-r from-emerald-500 to-blue-500 text-white px-8 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl hover:scale-105 transition-all">
+                  Iniciar Proyecto
+                </button>
+              </Link>
             </div>
           </div>
         </div>

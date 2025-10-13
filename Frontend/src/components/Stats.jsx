@@ -3,42 +3,7 @@
 import { useState, useEffect, useMemo, useRef } from "react";
 import { useTheme } from "next-themes";
 import { FaLaptopCode, FaProjectDiagram, FaTools, FaGithub } from "react-icons/fa";
-
-// Datos de estadísticas
-const stats = [
-  {
-    num: 1,
-    text: "Años de experiencia",
-    icon: <FaLaptopCode className="text-5xl" />,
-    color: "emerald",
-    suffix: "+",
-    description: "Desarrollando soluciones"
-  },
-  {
-    num: 6,
-    text: "Proyectos de Software",
-    icon: <FaProjectDiagram className="text-5xl" />,
-    color: "blue",
-    suffix: "+",
-    description: "Aplicaciones completadas"
-  },
-  {
-    num: 5,
-    text: "Tecnologías",
-    icon: <FaTools className="text-5xl" />,
-    color: "purple",
-    suffix: "+",
-    description: "Dominadas actualmente"
-  },
-  {
-    num: 69,
-    text: "Commits",
-    icon: <FaGithub className="text-5xl" />,
-    color: "cyan",
-    suffix: "+",
-    description: "Contribuciones en GitHub"
-  },
-];
+import { useGitHubStats } from "../hooks/useGitHubStats.js";
 
 // Colores por tema y categoría
 const colorVariants = (theme) => ({
@@ -231,14 +196,16 @@ const StatCard = ({ stat, index, theme }) => {
   );
 };
 
-// Componente principal - EL FIX ESTÁ AQUÍ
+// Componente principal - ACTUALIZADO
 const Stats = () => {
   const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const [footerVisible, setFooterVisible] = useState(false);
   const footerTimeoutRef = useRef(null);
+  
+  // ✅ Obtener estadísticas de GitHub
+  const { githubStats, loading, error } = useGitHubStats();
 
-  // FIX: Esperar a que el componente esté montado
   useEffect(() => {
     setMounted(true);
   }, []);
@@ -254,17 +221,58 @@ const Stats = () => {
     };
   }, []);
 
-  // FIX: No renderizar hasta que esté montado
   if (!mounted) {
     return null;
   }
 
-  // FIX: Usar resolvedTheme en lugar de theme
   const currentTheme = resolvedTheme || 'dark';
+
+  // ✅ Datos de estadísticas con datos dinámicos de GitHub
+  const stats = [
+    {
+      num: 1,
+      text: "Años de experiencia",
+      icon: <FaLaptopCode className="text-5xl" />,
+      color: "emerald",
+      suffix: "+",
+      description: "Desarrollando soluciones"
+    },
+    {
+      num: 6,
+      text: "Proyectos de Software",
+      icon: <FaProjectDiagram className="text-5xl" />,
+      color: "blue",
+      suffix: "+",
+      description: "Aplicaciones completadas"
+    },
+    {
+      num: 5,
+      text: "Tecnologías",
+      icon: <FaTools className="text-5xl" />,
+      color: "purple",
+      suffix: "+",
+      description: "Dominadas actualmente"
+    },
+    {
+      num: githubStats?.commits || 0, // ✅ Valor dinámico con fallback
+      text: "Commits",
+      icon: <FaGithub className="text-5xl" />,
+      color: "cyan",
+      suffix: "+",
+      description: loading ? "Cargando..." : error ? "No disponible" : "Contribuciones en GitHub"
+    },
+  ];
 
   return (
     <section className="py-16 bg-transparent">
       <div className="container mx-auto px-4">
+        {/* Indicador de carga (opcional) */}
+        {loading && (
+          <div className="text-center mb-4">
+            <p className="text-gray-400 animate-pulse">Cargando estadísticas de GitHub...</p>
+          </div>
+        )}
+
         {/* Grid de estadísticas */}
         <div className="flex flex-wrap justify-center gap-8">
           {stats.map((stat, index) => (

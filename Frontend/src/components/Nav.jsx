@@ -8,10 +8,11 @@ import { Link as ScrollLink } from "react-scroll";
 
 const links = [
   { name: "Inicio", id: "home", icon: <CiHome size={20} /> },
-  { name: "Servicios", id: "services", icon: <CiServer size={20} /> },
-  { name: "Acerca", id: "aboutme", icon: <FaPersonCircleQuestion size={20} /> },
-  { name: "Trabajos", id: "projects", icon: <GrUserWorker size={20} /> },
+  { name: "Experiencia", id: "experience", icon: <CiServer size={20} /> },
+  { name: "Proyectos", id: "projects", icon: <FaPersonCircleQuestion size={20} /> },
+  { name: "Testimonios", id: "testimonials", icon: <GrUserWorker size={20} /> },
 ];
+
 
 const Nav = () => {
   return (

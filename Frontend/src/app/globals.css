@@ -3,7 +3,9 @@
 @tailwind utilities;
 @import "flag-icons/css/flag-icons.min.css";
 @import "@fontsource/sora/latin.css";
-
+html {
+  scroll-behavior: smooth;
+}
 
 :root {
   --font-primary: 'Sora', sans-serif;
