@@ -27,6 +27,7 @@
   },
 
   "overrides": {
+  "get-intrinsic": "^1.2.2",
   "gopd": "1.0.1"
 }
 
