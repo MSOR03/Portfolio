@@ -8,7 +8,7 @@ import { ChevronLeft, ChevronRight, Play, Pause, ExternalLink } from "lucide-rea
 const VIDEOS_DATA = [
   {
     id: "sig-project",
-    thumbnail: "/assets/sig.jpg",
+    thumbnail: "/assets/sig.avif",
     url: "https://www.youtube.com/embed/nZTCakPbKG0?si=2JIixPdFhb1PN9Yb",
     videoId: "nZTCakPbKG0",
     title: "Sistema de Información Geográfica",
@@ -20,7 +20,7 @@ const VIDEOS_DATA = [
   },
   {
     id: "web-dev-project", 
-    thumbnail: "/assets/Cover_web.png",
+    thumbnail: "/assets/Cover_web.avif",
     url: "https://www.youtube.com/embed/dCkPToMO8-M?si=Br2Xz_ntUC5x5mTC",
     videoId: "dCkPToMO8-M",
     title: "Plataforma Web Administrativa",

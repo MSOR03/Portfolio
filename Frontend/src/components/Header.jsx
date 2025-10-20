@@ -102,7 +102,7 @@ const Header = () => {
             `} />
             
             <Image
-              src="/assets/Logo.png"
+              src="/assets/Logo.avif"
               alt="LOGO"
               width={90}
               height={90}

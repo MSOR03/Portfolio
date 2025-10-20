@@ -1,9 +1,9 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { memo, useMemo, useCallback, useState, useEffect } from "react";
+import { memo } from "react";
 
-// Datos estáticos - calculados una sola vez
+// Datos estáticos
 const ESTUDIOS_DATA = [
   {
     grado: "Bachillerato",
@@ -11,8 +11,6 @@ const ESTUDIOS_DATA = [
     año: "2007 - 2019",
     descripcion: "Graduado con honores en ciencias.",
     icono: "🎓",
-    inicio: 2007,
-    fin: 2019,
     avance: 100,
     color: "emerald",
     estado: "Completado"
@@ -23,8 +21,6 @@ const ESTUDIOS_DATA = [
     año: "2017 - 2019",
     descripcion: "Formación técnica en gestión y administración.",
     icono: "🗂️",
-    inicio: 2017,
-    fin: 2019,
     avance: 100,
     color: "emerald",
     estado: "Completado"
@@ -35,8 +31,6 @@ const ESTUDIOS_DATA = [
     año: "2020 - 2025",
     descripcion: "En curso, enfoque en geodesia y sistemas de información geográfica.",
     icono: "📏",
-    inicio: 2020,
-    fin: 2025,
     avance: 100,
     color: "blue",
     estado: "Completado"
@@ -47,16 +41,14 @@ const ESTUDIOS_DATA = [
     año: "2022 - Presente",
     descripcion: "En curso, enfoque en desarrollo web, inteligencia artificial y sistemas distribuidos.",
     icono: "💻",
-    inicio: 2022,
-    fin: 2027,
     avance: 45,
     color: "purple",
     estado: "En curso"
   },
 ];
 
-// Colores pre-calculados
-const COLORS = {
+// Clases pre-computadas para evitar concatenación en render
+const COLOR_CLASSES = {
   emerald: {
     bg: "from-emerald-500/20 to-emerald-600/30",
     border: "border-emerald-500/40",
@@ -80,54 +72,10 @@ const COLORS = {
   }
 };
 
-// Hook para detectar si el dispositivo es móvil
-const useIsMobile = () => {
-  const [isMobile, setIsMobile] = useState(false);
-  
-  useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 768);
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
-  
-  return isMobile;
-};
-
-// Barra de progreso simplificada
-const ProgressBar = memo(({ progreso, color, idx, isMobile }) => {
-  const colors = COLORS[color];
-  
-  return (
-    <div className="space-y-2">
-      <div className="flex justify-between items-center">
-        <span className="text-sm font-medium text-gray-400">Progreso</span>
-        <span className={`text-sm font-bold ${colors.text}`}>{progreso}%</span>
-      </div>
-      
-      <div className="relative h-3 bg-gray-800/50 rounded-full overflow-hidden">
-        <motion.div
-          initial={{ width: 0 }}
-          whileInView={{ width: `${progreso}%` }}
-          viewport={{ once: true, amount: 0.3 }}
-          transition={{ 
-            duration: isMobile ? 0.8 : 1.2,
-            delay: isMobile ? idx * 0.1 : idx * 0.2,
-            ease: "easeOut"
-          }}
-          className={`h-full bg-gradient-to-r ${colors.progress} rounded-full`}
-        />
-      </div>
-    </div>
-  );
-});
-
-ProgressBar.displayName = 'ProgressBar';
-
-// Badge de estado simplificado
+// Badge de estado - versión ligera
 const StatusBadge = memo(({ estado }) => (
   <span className={`absolute top-4 right-4 px-3 py-1 rounded-full text-xs font-semibold ${
-    estado === 'Completado' 
+    estado === 'Completado'
       ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' 
       : 'bg-orange-500/20 text-orange-300 border border-orange-500/30'
   }`}>
@@ -137,64 +85,75 @@ const StatusBadge = memo(({ estado }) => (
 
 StatusBadge.displayName = 'StatusBadge';
 
+// Barra de progreso simplificada y reparada
+const ProgressBar = memo(({ progreso, colorClasses, idx }) => (
+  <div className="space-y-2">
+    <div className="flex justify-between items-center">
+      <span className="text-sm font-medium text-gray-400">Progreso</span>
+      <span className={`text-sm font-bold ${colorClasses.text}`}>{progreso}%</span>
+    </div>
+    
+    <div className="relative h-3 bg-gray-800/50 rounded-full overflow-hidden">
+      <motion.div
+        initial={{ width: 0 }}
+        animate={{ width: `${progreso}%` }}
+        transition={{ 
+          duration: 1.2,
+          delay: idx * 0.15,
+          ease: [0.4, 0, 0.2, 1]
+        }}
+        className={`h-full bg-gradient-to-r ${colorClasses.progress} rounded-full`}
+      />
+    </div>
+  </div>
+));
+
+ProgressBar.displayName = 'ProgressBar';
+
 // Tarjeta de estudio optimizada
-const EstudioCard = memo(({ estudio, idx, isMobile }) => {
-  const colors = COLORS[estudio.color];
+const EstudioCard = memo(({ estudio, idx }) => {
+  const colorClasses = COLOR_CLASSES[estudio.color];
   
-  // Animaciones condicionales según dispositivo
-  const cardAnimation = useMemo(() => ({
-    initial: { opacity: 0, x: isMobile ? 0 : -30, y: isMobile ? 20 : 0 },
-    whileInView: { opacity: 1, x: 0, y: 0 },
-    viewport: { once: true, amount: 0.2 },
-    transition: { 
-      duration: isMobile ? 0.4 : 0.6,
-      delay: isMobile ? idx * 0.05 : idx * 0.1
-    }
-  }), [idx, isMobile]);
-
-  const hoverAnimation = isMobile ? {} : {
-    whileHover: { scale: 1.02, transition: { duration: 0.2 } }
-  };
-
   return (
     <motion.div
-      {...cardAnimation}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ 
+        duration: 0.5,
+        delay: idx * 0.1,
+        ease: "easeOut"
+      }}
       className="relative pl-16 md:pl-20 pb-8 md:pb-12 last:pb-0"
     >
       {/* Punto timeline */}
-      <div className={`absolute left-5 md:left-6 top-6 w-4 h-4 md:w-5 md:h-5 ${colors.dot} rounded-full ring-2 md:ring-4 ring-gray-900/50`}>
-        {!isMobile && (
-          <div className={`absolute inset-0 ${colors.dot} rounded-full animate-ping opacity-30`} />
-        )}
-      </div>
+      <div className={`absolute left-5 md:left-6 top-6 w-4 h-4 md:w-5 md:h-5 ${colorClasses.dot} rounded-full ring-4 ring-gray-900/50`} />
 
       {/* Icono */}
-      <div className={`absolute left-3 md:left-4 top-4 w-7 h-7 md:w-9 md:h-9 ${colors.dot} rounded-lg md:rounded-xl flex items-center justify-center text-sm md:text-lg`}>
+      <div className={`absolute left-3 md:left-4 top-4 w-7 h-7 md:w-9 md:h-9 ${colorClasses.dot} rounded-lg md:rounded-xl flex items-center justify-center text-sm md:text-lg shadow-lg`}>
         {estudio.icono}
       </div>
 
       {/* Card */}
       <motion.div
-        {...hoverAnimation}
-        className={`bg-gradient-to-br ${colors.bg} border ${colors.border} backdrop-blur-sm rounded-xl md:rounded-2xl p-4 md:p-6 shadow-lg md:shadow-2xl group relative overflow-hidden`}
+        whileHover={{ scale: 1.02 }}
+        transition={{ duration: 0.2 }}
+        className={`bg-gradient-to-br ${colorClasses.bg} border ${colorClasses.border} backdrop-blur-sm rounded-xl md:rounded-2xl p-4 md:p-6 shadow-xl group relative overflow-hidden`}
       >
-        {/* Efecto brillo solo en desktop */}
-        {!isMobile && (
-          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
-        )}
+        {/* Efecto brillo - solo desktop */}
+        <div className="hidden md:block absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
         
         <StatusBadge estado={estudio.estado} />
 
         <div className="relative z-10">
-          <h3 className="text-lg md:text-2xl font-bold text-white mb-2 pr-16 md:pr-20">
+          <h3 className="text-lg md:text-2xl font-bold text-white mb-2 pr-20">
             {estudio.grado}
           </h3>
           
           <div className="flex flex-col md:flex-row md:items-center gap-1 md:gap-2 mb-3">
-            <span className={`${colors.text} font-semibold text-xs md:text-sm`}>
+            <span className={`${colorClasses.text} font-semibold text-xs md:text-sm`}>
               {estudio.institucion}
             </span>
-            <span className="hidden md:inline text-gray-500 text-sm">•</span>
+            <span className="hidden md:inline text-gray-500">•</span>
             <span className="text-gray-400 text-xs md:text-sm">
               {estudio.año}
             </span>
@@ -206,9 +165,8 @@ const EstudioCard = memo(({ estudio, idx, isMobile }) => {
 
           <ProgressBar 
             progreso={estudio.avance} 
-            color={estudio.color}
+            colorClasses={colorClasses}
             idx={idx}
-            isMobile={isMobile}
           />
         </div>
       </motion.div>
@@ -220,23 +178,20 @@ EstudioCard.displayName = 'EstudioCard';
 
 // Componente principal
 const EstudiosBarChart = () => {
-  const isMobile = useIsMobile();
-
   return (
-    <section className="py-0 bg-transparent">
+    <section className="py-8 md:py-12 bg-transparent">
       <div className="max-w-6xl mx-auto px-4">
         <div className="relative">
           {/* Línea timeline */}
           <div className="absolute left-7 md:left-8 top-0 bottom-0 w-0.5 bg-gradient-to-b from-emerald-500/60 via-blue-500/60 to-purple-500/60" />
           
           {/* Lista de estudios */}
-          <div className="space-y-0">
+          <div>
             {ESTUDIOS_DATA.map((estudio, idx) => (
               <EstudioCard 
                 key={estudio.grado}
                 estudio={estudio}
                 idx={idx}
-                isMobile={isMobile}
               />
             ))}
           </div>

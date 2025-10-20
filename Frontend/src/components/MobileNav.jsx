@@ -43,7 +43,7 @@ const MobileNav = () => {
 
         {/* Logo */}
         <div className="flex flex-col items-center gap-2 mb-12">
-          <Image src="/assets/Logo.png" alt="Logo" width={70} height={70} />
+          <Image src="/assets/Logo.avif" alt="Logo" width={70} height={70} />
           <p className="text-lg font-semibold select-none text-gray-900 dark:text-white">
             SOR<span className="text-green-400">.</span>
           </p>

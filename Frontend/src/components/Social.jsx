@@ -1,52 +1,92 @@
 "use client";
 
 import Link from "next/link";
+import { memo } from "react";
 import { FaGithub, FaLinkedin } from "react-icons/fa";
 import { SiGmail } from "react-icons/si";
 
-const handleEmailClick = (e) => {
-  e.preventDefault();
-  window.location.href = "mailto:olarteramirezsebastian830@gmail.com";
-};
+const SOCIAL_LINKS = [
+  {
+    href: "https://github.com/MSOR03",
+    icon: FaGithub,
+    label: "GitHub",
+    ariaLabel: "Visitar perfil de GitHub"
+  },
+  {
+    href: "https://www.linkedin.com/in/maicol-sebastian-olarte-ramirez-b34966295/?originalSubdomain=co",
+    icon: FaLinkedin,
+    label: "LinkedIn",
+    ariaLabel: "Visitar perfil de LinkedIn"
+  },
+  {
+    href: "mailto:olarteramirezsebastian830@gmail.com",
+    icon: SiGmail,
+    label: "Gmail",
+    ariaLabel: "Enviar correo electrónico",
+    isEmail: true
+  }
+];
 
-const iconClass =
-  "flex items-center justify-center w-12 h-12 rounded-full bg-black/30 backdrop-blur-sm border border-green-600 text-green-400 shadow-lg transition-transform duration-500 transform-gpu group perspective";
+// Componente de ícono individual optimizado
+const SocialIcon = memo(({ href, icon: Icon, label, ariaLabel, isEmail }) => {
+  const handleClick = (e) => {
+    if (isEmail) {
+      e.preventDefault();
+      window.location.href = href;
+    }
+  };
+
+  return (
+    <Link
+      href={href}
+      onClick={isEmail ? handleClick : undefined}
+      aria-label={ariaLabel}
+      className="group relative flex items-center justify-center w-12 h-12 rounded-full
+                 bg-white/80 dark:bg-black/40 
+                 border-2 border-green-500/40 dark:border-green-600/60
+                 hover:border-green-500 dark:hover:border-green-400
+                 shadow-md hover:shadow-xl hover:shadow-green-500/30
+                 transition-all duration-300 ease-out
+                 hover:scale-110 active:scale-95
+                 backdrop-blur-sm"
+    >
+      {/* Ícono con color correcto en ambos modos */}
+      <Icon 
+        size={22} 
+        className="text-green-600 dark:text-green-400 
+                   group-hover:text-green-700 dark:group-hover:text-green-300
+                   transition-colors duration-300 relative z-10" 
+      />
+      
+      {/* Efecto de brillo al hover */}
+      <span 
+        className="absolute inset-0 rounded-full 
+                   bg-gradient-to-tr from-green-400/0 to-green-600/0
+                   group-hover:from-green-400/20 group-hover:to-green-600/20
+                   dark:group-hover:from-green-400/10 dark:group-hover:to-green-600/10
+                   transition-all duration-300 pointer-events-none"
+      />
+      
+      {/* Anillo exterior animado */}
+      <span 
+        className="absolute inset-0 rounded-full border-2 border-green-500/0 
+                   group-hover:border-green-500/50 dark:group-hover:border-green-400/50
+                   group-hover:scale-110 transition-all duration-300 pointer-events-none"
+      />
+    </Link>
+  );
+});
+
+SocialIcon.displayName = "SocialIcon";
 
 const Social = () => {
   return (
     <div className="flex gap-4 mt-4">
-      {/* GitHub */}
-      <Link
-        href="https://github.com/MSOR03"
-        className={`${iconClass} hover:rotate-[8deg] hover:-rotate-x-[6deg] hover:scale-110 relative group`}
-        aria-label="GitHub"
-      >
-        <FaGithub size={22} className="group-hover:animate-[wiggle_0.6s_ease-in-out]" />
-        <span className="absolute inset-0 rounded-full bg-gradient-to-tr from-green-500 to-green-700 opacity-0 group-hover:opacity-10 transition-opacity duration-300 pointer-events-none" />
-      </Link>
-
-      {/* LinkedIn */}
-      <Link
-        href="https://www.linkedin.com/in/maicol-sebastian-olarte-ramirez-b34966295/?originalSubdomain=co"
-        className={`${iconClass} hover:-rotate-[8deg] hover:rotate-x-[6deg] hover:scale-110 relative group`}
-        aria-label="LinkedIn"
-      >
-        <FaLinkedin size={22} className="group-hover:animate-[wiggle_0.6s_ease-in-out]" />
-        <span className="absolute inset-0 rounded-full bg-gradient-to-tr from-green-500 to-green-700 opacity-0 group-hover:opacity-10 transition-opacity duration-300 pointer-events-none" />
-      </Link>
-
-      {/* Gmail */}
-      <Link
-        href="mailto:olarteramirezsebastian830@gmail.com"
-        onClick={handleEmailClick}
-        className={`${iconClass} hover:rotate-[8deg] hover:-rotate-x-[6deg] hover:scale-110 relative group`}
-        aria-label="Gmail"
-      >
-        <SiGmail size={22} className="group-hover:animate-[wiggle_0.6s_ease-in-out]" />
-        <span className="absolute inset-0 rounded-full bg-gradient-to-tr from-green-500 to-green-700 opacity-0 group-hover:opacity-10 transition-opacity duration-300 pointer-events-none" />
-      </Link>
+      {SOCIAL_LINKS.map((link) => (
+        <SocialIcon key={link.label} {...link} />
+      ))}
     </div>
   );
 };
 
-export default Social;
+export default memo(Social);

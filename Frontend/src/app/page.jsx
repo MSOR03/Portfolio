@@ -49,7 +49,7 @@ const EXPERIENCIA = [
     date: "2024 - 2025",
     description: "Lleve a cabo trabajos de avaluos y GIS enfocados en ingeniería",
     techs: ["AutoCAD", "QGIS", "ArcGIS","Excel"],
-    logo: "/assets/Logo.png",
+    logo: "/assets/Logo.avif",
   },
   {
     role: "Monitor Universidad Distrital",
