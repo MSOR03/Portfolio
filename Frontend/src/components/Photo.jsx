@@ -4,7 +4,7 @@ import { memo, useMemo } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 
-// Variantes pre-calculadas para mejor performance
+// Variantes pre-calculadas - optimizadas
 const imageVariants = {
   initial: { y: 0, opacity: 1 },
   animate: {
@@ -13,7 +13,9 @@ const imageVariants = {
     transition: { 
       duration: 6, 
       repeat: Infinity, 
-      ease: "easeInOut" 
+      ease: "easeInOut",
+      // Optimización: reduce el número de updates por segundo
+      repeatType: "reverse"
     },
   },
   whileHover: {
@@ -32,13 +34,22 @@ const circleVariants = {
   },
 };
 
-// Componente de halo externo separado
+// Componente de halo externo optimizado
 const OuterHalo = memo(() => (
   <motion.div
-    className="absolute -inset-2 pointer-events-none will-change-transform"
+    className="absolute -inset-2 pointer-events-none"
     initial={{ rotate: 0 }}
     animate={{ rotate: 360 }}
-    transition={{ duration: 45, repeat: Infinity, ease: "linear" }}
+    transition={{ 
+      duration: 45, 
+      repeat: Infinity, 
+      ease: "linear",
+      // Optimización: no usar will-change constantemente
+    }}
+    style={{ 
+      // Forzar aceleración GPU sin will-change excesivo
+      transform: 'translateZ(0)',
+    }}
   >
     <svg
       className="w-full h-full"
@@ -69,11 +80,9 @@ const OuterHalo = memo(() => (
 ));
 OuterHalo.displayName = "OuterHalo";
 
-// Componente de círculo interno separado
+// Componente de círculo interno optimizado
 const InnerCircle = memo(() => (
-  <motion.div
-    className="absolute inset-0 flex justify-center items-center pointer-events-none"
-  >
+  <motion.div className="absolute inset-0 flex justify-center items-center pointer-events-none">
     <motion.svg
       className="w-[320px] h-[320px] md:w-[360px] md:h-[360px] lg:w-[440px] lg:h-[440px] xl:w-[520px] xl:h-[520px]"
       fill="transparent"
@@ -106,7 +115,7 @@ const InnerCircle = memo(() => (
 ));
 InnerCircle.displayName = "InnerCircle";
 
-// Componente de puntos decorativos
+// Componente de puntos decorativos optimizado
 const DecorativeDots = memo(() => {
   // Pre-calcular posiciones de puntos
   const dots = useMemo(() => 
@@ -119,18 +128,24 @@ const DecorativeDots = memo(() => {
 
   return (
     <motion.div
-      className="absolute -inset-8 pointer-events-none will-change-transform"
+      className="absolute -inset-8 pointer-events-none"
       initial={{ rotate: 0 }}
       animate={{ rotate: -360 }}
       transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
+      style={{ 
+        // Optimización GPU
+        transform: 'translateZ(0)',
+      }}
     >
       {dots.map((dot, i) => (
         <motion.div
           key={i}
-          className="absolute w-1 h-1 bg-emerald-400 rounded-full will-change-transform"
+          className="absolute w-1 h-1 bg-emerald-400 rounded-full"
           style={{
             top: dot.top,
             left: dot.left,
+            // Optimización GPU
+            transform: 'translateZ(0)',
           }}
           initial={{ opacity: 0.3, scale: 0.5 }}
           animate={{
@@ -164,20 +179,23 @@ const Photo = () => {
           initial="initial"
           animate="animate"
           whileHover="whileHover"
-          className="w-[298px] h-[298px] md:w-[340px] md:h-[340px] lg:w-[420px] lg:h-[420px] xl:w-[500px] xl:h-[500px] 
-                     mix-blend-lighten relative rounded-2xl overflow-hidden cursor-pointer
-                     shadow-lg hover:shadow-2xl transition-shadow duration-300 will-change-transform"
+          className="w-[298px] h-[298px] md:w-[340px] md:h-[340px] lg:w-[420px] lg:h-[420px] xl:w-[500px] xl:h-[500px] mix-blend-lighten relative rounded-2xl overflow-hidden cursor-pointer shadow-lg hover:shadow-2xl transition-shadow duration-300"
+          style={{
+            // CRÍTICO: Aceleración GPU
+            transform: 'translateZ(0)',
+            backfaceVisibility: 'hidden',
+          }}
         >
+          {/* OPTIMIZACIÓN CRÍTICA: priority y fetchPriority para LCP */}
           <Image
             src="/assets/Photo.avif"
-            priority
+            priority={true}
+            fetchPriority="high"
             quality={85}
             fill
             alt="Profile photo"
             className="object-cover rounded-2xl"
             sizes="(max-width: 768px) 298px, (max-width: 1024px) 340px, (max-width: 1280px) 420px, 500px"
-            placeholder="blur"
-            blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTAwIiBoZWlnaHQ9IjUwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iNTAwIiBoZWlnaHQ9IjUwMCIgZmlsbD0iIzFhMWExYSIvPjwvc3ZnPg=="
           />
           
           {/* Overlay sutil para mejor contraste */}

@@ -18,7 +18,7 @@ export const metadata = {
   description:
     "Ingeniero Topográfico e Ingeniero de Sistemas - Desarrollo de Software y Soluciones Digitales",
   icons: {
-    icon: [{ url: "/assets/Logo.png", sizes: "48x48", type: "image/png" }],
+    icon: [{ url: "/assets/Logo.avif", sizes: "48x48", type: "image/png" }],
   },
 };
 
