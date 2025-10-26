@@ -201,6 +201,7 @@ const Photo = () => {
             className="object-cover rounded-2xl"
             sizes="(max-width: 768px) 298px, (max-width: 1024px) 340px, (max-width: 1280px) 420px, 500px"
             loading="eager"
+            fetchPriority="high"
           />
           
           {/* Overlay sutil */}

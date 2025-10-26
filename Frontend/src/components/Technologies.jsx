@@ -246,20 +246,6 @@ const Technologies = () => {
     <section className="py-12 bg-transparent">
       <div className="container mx-auto px-4">
         {/* Header */}
-        <div className="text-center mb-12 opacity-0 animate-fadeInUp">
-          <h2 className={`text-4xl md:text-5xl font-bold bg-gradient-to-r bg-clip-text text-transparent mb-4 ${
-            isDark
-              ? 'from-emerald-400 via-cyan-400 to-blue-400'
-              : 'from-emerald-700 via-teal-600 to-cyan-700'
-          }`}>
-            Habilidades
-          </h2>
-          <p className={`text-lg ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-            Tecnologías que uso
-          </p>
-          <div className="mt-4 w-24 h-1 bg-gradient-to-r from-emerald-400 to-cyan-400 rounded-full mx-auto" />
-        </div>
-
         {/* GIS y BIM */}
         <div className="mb-12">
           <div className="flex items-center gap-4 mb-6">

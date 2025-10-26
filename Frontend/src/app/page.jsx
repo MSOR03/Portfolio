@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { FiDownload } from "react-icons/fi";
 import { memo, useMemo, lazy, Suspense } from "react";
+import { FaQuoteLeft } from "react-icons/fa";
 
 import Social from "@/components/Social";
 import Photo from "@/components/Photo";
@@ -99,7 +100,7 @@ const SectionTitle = memo(({ title, subtitle, className = "" }) => {
   const titleWords = useMemo(() => title.split(" "), [title]);
 
   return (
-  <div className={`text-center mb-16 px-4 ${className}`}>
+  <div className={`text-center mb-10 px-4 ${className}`}>
     <div className="relative inline-block">
       <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
         {titleWords.map((word, index) => (
@@ -236,6 +237,10 @@ const Home = () => {
       </div>
 
       <div className="mt-5">
+        <SectionTitle
+          title="Habilidades"
+          subtitle="Tecnologías que uso"
+        />
         <Technologies />
       </div>
 
@@ -266,30 +271,32 @@ const Home = () => {
         </div>
 
         <div className="mt-5" id="projects">
+          <SectionTitle
+            title="Mis Proyectos"
+            subtitle="Explora algunos de mis trabajos más destacados en desarrollo web, topografía y sistemas de información geográfica."
+          />
           <Carousel />
         </div>
       </div>
 
       <div id="projects" className="mt-10 scroll-mt-20" />
       <div className="mt-10">
-        <div className="container mx-auto px-4 text-center mb-5">
-          <h2 className="text-4xl md:text-5xl font-bold mb-5">
-            <span className="text-gray-900 dark:text-white">
-              ¿Quieres trabajar{" "}
-            </span>
-            <span className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-emerald-600 to-blue-600 dark:from-emerald-500 dark:to-blue-500" style={{ WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>conmigo?</span>
-          </h2>
-          <p className="text-gray-600 dark:text-white/70 text-xl mt-8 max-w-3xl mx-auto">
-            Estoy disponible para colaboraciones, proyectos freelance o
-            propuestas laborales. Convirtamos tu visión en realidad digital.
-          </p>
-        </div>
+        <SectionTitle
+          title="¿Quieres trabajar conmigo?"
+          subtitle="Estoy disponible para colaboraciones, proyectos freelance o propuestas laborales. Convirtamos tu visión en realidad digital."
+        />
         <div id="contact" className="scroll-mt-20">
           <ContactSection />
         </div>
       </div>
 
       <div className="mt-0" id="testimonials">
+        
+        <SectionTitle
+        
+          title="Testimonios"
+          subtitle="Experiencias de clientes que han confiado en mi trabajo"
+        />
         <Testimonials />
       </div>
     </section>

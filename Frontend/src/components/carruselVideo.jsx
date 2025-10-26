@@ -303,21 +303,7 @@ const OptimizedVideoCarousel = () => {
   return (
     <section className="py-16 bg-transparent">
       <div className="max-w-7xl mx-auto px-4">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: -30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          viewport={{ once: true }}
-          className="text-center mb-12"
-        >
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
-  Mis <span className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-emerald-600 to-blue-600 dark:from-emerald-500 dark:to-blue-500" style={{ WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>Proyectos</span>
-</h2>
-          <p className="text-gray-700 dark:text-gray-300 text-lg max-w-2xl mx-auto">
-            Explora algunos de mis trabajos más destacados en desarrollo web, topografía y sistemas de información geográfica.
-          </p>
-        </motion.div>
+        
 
         {/* Carrusel */}
         <div className="relative">

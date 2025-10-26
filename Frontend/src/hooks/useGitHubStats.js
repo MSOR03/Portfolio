@@ -11,8 +11,7 @@ export const useGitHubStats = () => {
         // ✅ Usa NEXT_PUBLIC_ para que esté disponible en el cliente
         const API_URL = process.env.NEXT_PUBLIC_API_URL;
         
-        console.log('🔍 Fetching from:', `${API_URL}/api/github/stats`); // Debug
-        
+      
         const response = await fetch(`${API_URL}/api/github/stats`);
 
         if (!response.ok) {

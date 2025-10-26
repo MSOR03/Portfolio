@@ -129,21 +129,6 @@ const Testimonials = () => {
   return (
     <section className="py-16 bg-transparent">
       <div className="container mx-auto px-4 max-w-6xl">
-        {/* Header */}
-        <div className="text-center mb-12">
-          <div className="inline-flex items-center gap-3 mb-3">
-            <div className="w-10 h-10 bg-gradient-to-r from-emerald-500 to-blue-500 rounded-full flex items-center justify-center">
-              <FaQuoteLeft className="text-white" size={16} />
-            </div>
-            <h2 className="text-3xl font-bold bg-gradient-to-r from-emerald-500 to-blue-500 bg-clip-text text-transparent">
-              Testimonios
-            </h2>
-          </div>
-          <p className={`text-lg max-w-2xl mx-auto ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
-            Experiencias de clientes que han confiado en mi trabajo
-          </p>
-        </div>
-
         {/* Featured Testimonial */}
         <div className="mb-12">
           <div className={`rounded-2xl p-6 md:p-8 border transition-all duration-500 ${
