@@ -1,61 +1,39 @@
 "use client";
 
-import { memo, useMemo } from "react";
+import { memo } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 
-// Variantes pre-calculadas - optimizadas
+// SOLO animación flotante - lo más importante visualmente
 const imageVariants = {
-  initial: { y: 0, opacity: 1 },
   animate: {
     y: [0, -8, 0],
-    opacity: 1,
     transition: { 
       duration: 6, 
       repeat: Infinity, 
       ease: "easeInOut",
-      // Optimización: reduce el número de updates por segundo
       repeatType: "reverse"
     },
   },
   whileHover: {
     scale: 1.03,
-    boxShadow: "0 8px 32px rgba(0, 255, 153, 0.3)",
-    transition: { duration: 0.3, ease: "easeOut" },
+    transition: { duration: 0.3 },
   }
 };
 
-const circleVariants = {
-  initial: { strokeDasharray: "15 85" },
-  animate: {
-    strokeDasharray: ["15 85", "75 25", "15 85"],
-    rotate: [0, 360],
-    opacity: [0.6, 1, 0.6],
-  },
-};
-
-// Componente de halo externo optimizado
+// Halo externo - PURO CSS (mucho más eficiente)
 const OuterHalo = memo(() => (
-  <motion.div
+  <div 
     className="absolute -inset-2 pointer-events-none"
-    initial={{ rotate: 0 }}
-    animate={{ rotate: 360 }}
-    transition={{ 
-      duration: 45, 
-      repeat: Infinity, 
-      ease: "linear",
-      // Optimización: no usar will-change constantemente
-    }}
-    style={{ 
-      // Forzar aceleración GPU sin will-change excesivo
-      transform: 'translateZ(0)',
+    style={{
+      animation: 'spin 45s linear infinite',
+      transform: 'translateZ(0)', // GPU acceleration
     }}
   >
     <svg
       className="w-full h-full"
       viewBox="0 0 100 100"
       fill="none"
-      xmlns="http://www.w3.org/2000/svg"
     >
       <circle
         cx="50"
@@ -64,7 +42,7 @@ const OuterHalo = memo(() => (
         stroke="url(#outerGradient)"
         strokeWidth="0.5"
         strokeLinecap="round"
-        opacity="0.8"
+        opacity="0.7"
       />
       <defs>
         <linearGradient id="outerGradient" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -76,91 +54,70 @@ const OuterHalo = memo(() => (
         </linearGradient>
       </defs>
     </svg>
-  </motion.div>
+  </div>
 ));
 OuterHalo.displayName = "OuterHalo";
 
-// Componente de círculo interno optimizado
+// Círculo interno - SIMPLIFICADO (solo opacidad pulse)
 const InnerCircle = memo(() => (
-  <motion.div className="absolute inset-0 flex justify-center items-center pointer-events-none">
-    <motion.svg
+  <div className="absolute inset-0 flex justify-center items-center pointer-events-none">
+    <svg
       className="w-[320px] h-[320px] md:w-[360px] md:h-[360px] lg:w-[440px] lg:h-[440px] xl:w-[520px] xl:h-[520px]"
       fill="transparent"
       viewBox="0 0 100 100"
-      xmlns="http://www.w3.org/2000/svg"
+      style={{
+        animation: 'pulse-opacity 4s ease-in-out infinite'
+      }}
     >
-      <motion.circle
+      <circle
         cx="50"
         cy="50"
         r="48"
         stroke="#00ff99"
         strokeWidth="0.8"
+        strokeDasharray="20 80"
         strokeLinecap="round"
-        strokeLinejoin="round"
         style={{ 
           filter: "drop-shadow(0 0 8px rgba(0, 255, 153, 0.5))",
-          opacity: 0.9 
-        }}
-        variants={circleVariants}
-        initial="initial"
-        animate="animate"
-        transition={{
-          duration: 25,
-          repeat: Infinity,
-          ease: "easeInOut",
+          opacity: 0.8,
+          animation: 'spin 25s linear infinite'
         }}
       />
-    </motion.svg>
-  </motion.div>
+    </svg>
+  </div>
 ));
 InnerCircle.displayName = "InnerCircle";
 
-// Componente de puntos decorativos optimizado
+// Puntos decorativos - 8 BURBUJAS con CSS puro (súper eficiente)
 const DecorativeDots = memo(() => {
-  // Pre-calcular posiciones de puntos
-  const dots = useMemo(() => 
-    Array.from({ length: 8 }, (_, i) => ({
-      top: `${50 + 45 * Math.sin((i * Math.PI) / 4)}%`,
-      left: `${50 + 45 * Math.cos((i * Math.PI) / 4)}%`,
-      delay: i * 0.2,
-    })), []
-  );
+  // Calculamos 8 posiciones en círculo
+  const positions = Array.from({ length: 8 }, (_, i) => {
+    const angle = (i * Math.PI * 2) / 8;
+    return {
+      top: `${50 + 45 * Math.sin(angle)}%`,
+      left: `${50 + 45 * Math.cos(angle)}%`,
+    };
+  });
 
   return (
-    <motion.div
+    <div 
       className="absolute -inset-8 pointer-events-none"
-      initial={{ rotate: 0 }}
-      animate={{ rotate: -360 }}
-      transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
-      style={{ 
-        // Optimización GPU
-        transform: 'translateZ(0)',
+      style={{
+        animation: 'spin-reverse 60s linear infinite'
       }}
     >
-      {dots.map((dot, i) => (
-        <motion.div
+      {positions.map((pos, i) => (
+        <div
           key={i}
           className="absolute w-1 h-1 bg-emerald-400 rounded-full"
           style={{
-            top: dot.top,
-            left: dot.left,
-            // Optimización GPU
-            transform: 'translateZ(0)',
-          }}
-          initial={{ opacity: 0.3, scale: 0.5 }}
-          animate={{
-            opacity: [0.3, 0.8, 0.3],
-            scale: [0.5, 1, 0.5],
-          }}
-          transition={{
-            duration: 3,
-            repeat: Infinity,
-            delay: dot.delay,
-            ease: "easeInOut",
+            ...pos,
+            transform: 'translate(-50%, -50%)',
+            animation: `pulse-dot 3s ease-in-out infinite ${i * 0.375}s`
           }}
         />
       ))}
-    </motion.div>
+    </div>
   );
 });
 DecorativeDots.displayName = "DecorativeDots";
@@ -168,49 +125,80 @@ DecorativeDots.displayName = "DecorativeDots";
 const Photo = () => {
   return (
     <div className="w-full h-full relative flex justify-center items-center">
-      <motion.div
-        initial={false}
-        animate={{ opacity: 1 }}
-        className="relative"
-      >
-        {/* Contenedor principal de la imagen */}
+      <div className="relative">
+        {/* Contenedor principal - SOLO una animación Framer Motion */}
         <motion.div
           variants={imageVariants}
-          initial="initial"
           animate="animate"
           whileHover="whileHover"
-          className="w-[298px] h-[298px] md:w-[340px] md:h-[340px] lg:w-[420px] lg:h-[420px] xl:w-[500px] xl:h-[500px] mix-blend-lighten relative rounded-2xl overflow-hidden cursor-pointer shadow-lg hover:shadow-2xl transition-shadow duration-300"
+          className="w-[298px] h-[298px] md:w-[340px] md:h-[340px] lg:w-[420px] lg:h-[420px] xl:w-[500px] xl:h-[500px] 
+                     mix-blend-lighten relative rounded-2xl overflow-hidden cursor-pointer
+                     shadow-lg hover:shadow-2xl transition-shadow duration-300"
           style={{
-            // CRÍTICO: Aceleración GPU
-            transform: 'translateZ(0)',
-            backfaceVisibility: 'hidden',
+            transform: 'translate3d(0, 0, 0)',
+            willChange: 'transform',
           }}
         >
-          {/* OPTIMIZACIÓN CRÍTICA: priority y fetchPriority para LCP */}
+          {/* IMAGEN - optimizada al máximo */}
           <Image
             src="/assets/Photo.avif"
-            priority={true}
-            fetchPriority="high"
+            priority
             quality={85}
             fill
             alt="Profile photo"
             className="object-cover rounded-2xl"
             sizes="(max-width: 768px) 298px, (max-width: 1024px) 340px, (max-width: 1280px) 420px, 500px"
+            loading="eager"
+            decoding="async"
           />
           
-          {/* Overlay sutil para mejor contraste */}
+          {/* Overlay */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent rounded-2xl pointer-events-none" />
           
-          {/* Halo externo rotativo */}
+          {/* Halo externo - CSS puro */}
           <OuterHalo />
         </motion.div>
 
-        {/* Círculo interno animado */}
+        {/* Círculo interno - CSS puro */}
         <InnerCircle />
 
-        {/* Puntos decorativos */}
+        {/* Solo 4 puntos - CSS puro */}
         <DecorativeDots />
-      </motion.div>
+      </div>
+
+      {/* Estilos CSS en el head - MUY eficientes */}
+      <style jsx>{`
+        @keyframes spin {
+          to { transform: rotate(360deg); }
+        }
+        
+        @keyframes spin-reverse {
+          to { transform: rotate(-360deg); }
+        }
+        
+        @keyframes pulse-opacity {
+          0%, 100% { opacity: 0.6; }
+          50% { opacity: 1; }
+        }
+        
+        @keyframes pulse-dot {
+          0%, 100% { 
+            opacity: 0.3; 
+            transform: translate(-50%, -50%) scale(0.5); 
+          }
+          50% { 
+            opacity: 0.9; 
+            transform: translate(-50%, -50%) scale(1.2); 
+          }
+        }
+        
+        /* Hint al navegador para optimizar */
+        @media (prefers-reduced-motion: no-preference) {
+          :global(.animate-optimized) {
+            will-change: transform;
+          }
+        }
+      `}</style>
     </div>
   );
 };
