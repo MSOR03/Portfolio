@@ -13,7 +13,7 @@ const SOCIAL_LINKS = [
     ariaLabel: "Visitar perfil de GitHub"
   },
   {
-    href: "https://www.linkedin.com/in/maicol-sebastian-olarte-ramirez-b34966295/?originalSubdomain=co",
+    href: "https://www.linkedin.com/in/sebastian-olarte-ramirez-b34966295/?locale=en_US",
     icon: FaLinkedin,
     label: "LinkedIn",
     ariaLabel: "Visitar perfil de LinkedIn"

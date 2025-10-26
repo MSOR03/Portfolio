@@ -6,7 +6,15 @@ import dynamic from "next/dynamic";
 import { useTheme } from "next-themes";
 import { useState, useEffect } from "react";
 
-const Map = dynamic(() => import("./Map"), { ssr: false });
+// Carga diferida del mapa
+const Map = dynamic(() => import("./Map"), { 
+  ssr: false,
+  loading: () => (
+    <div className="w-full h-full min-h-[400px] rounded-2xl bg-gray-200 dark:bg-gray-800 flex items-center justify-center">
+      <div className="text-gray-400 dark:text-gray-600 text-sm">Cargando mapa...</div>
+    </div>
+  )
+});
 
 const ContactSection = () => {
   const { resolvedTheme } = useTheme();
@@ -16,12 +24,12 @@ const ContactSection = () => {
     setMounted(true);
   }, []);
 
-  // Skeleton durante SSR
+  // Skeleton durante SSR - sin animate-pulse para mejor rendimiento
   if (!mounted) {
     return (
       <section className="py-5 bg-transparent">
         <div className="container mx-auto px-4">
-          <div className="grid lg:grid-cols-2 gap-8 animate-pulse">
+          <div className="grid lg:grid-cols-2 gap-8">
             <div className="h-[600px] bg-gray-200 dark:bg-gray-800 rounded-2xl" />
             <div className="h-[600px] bg-gray-200 dark:bg-gray-800 rounded-2xl" />
           </div>
@@ -39,11 +47,11 @@ const ContactSection = () => {
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(34,197,94,0.1),transparent_20%)] dark:bg-[radial-gradient(circle_at_30%_50%,rgba(34,197,94,0.15),transparent_20%)]" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_50%,rgba(34,197,94,0.05),transparent_20%)] dark:bg-[radial-gradient(circle_at_70%_50%,rgba(34,197,94,0.08),transparent_20%)]" />
 
-      {/* Decorative elements */}
-      <div className="absolute top-10 left-10 w-20 h-20 border border-emerald-500/20 dark:border-emerald-400/30 rounded-full animate-pulse" />
-      <div className="absolute bottom-10 right-10 w-16 h-16 border border-emerald-400/30 dark:border-emerald-300/40 rounded-full animate-bounce" />
-      <div className="absolute top-1/2 left-1/4 w-2 h-2 bg-emerald-500 dark:bg-emerald-400 rounded-full animate-ping" />
-      <div className="absolute top-1/3 right-1/3 w-1 h-1 bg-emerald-400 dark:bg-emerald-300 rounded-full animate-pulse" />
+      {/* Decorative elements - animaciones reducidas */}
+      <div className="absolute top-10 left-10 w-20 h-20 border border-emerald-500/20 dark:border-emerald-400/30 rounded-full" />
+      <div className="absolute bottom-10 right-10 w-16 h-16 border border-emerald-400/30 dark:border-emerald-300/40 rounded-full" />
+      <div className="absolute top-1/2 left-1/4 w-2 h-2 bg-emerald-500 dark:bg-emerald-400 rounded-full opacity-60" />
+      <div className="absolute top-1/3 right-1/3 w-1 h-1 bg-emerald-400 dark:bg-emerald-300 rounded-full opacity-40" />
 
       <ScrollAnimation>
         <div className="container mx-auto px-4 relative z-10">
@@ -51,8 +59,12 @@ const ContactSection = () => {
           <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-stretch">
             {/* Map Section */}
             <div className="group relative">
-              <div className="absolute -inset-0.5 bg-gradient-to-r from-emerald-500 to-emerald-400 rounded-2xl blur opacity-30 group-hover:opacity-50 transition duration-1000 group-hover:duration-200" />
-              <div className="relative rounded-2xl p-8 flex flex-col h-full shadow-2xl border backdrop-blur-xl transition-colors duration-500 bg-white/80 dark:bg-gray-900/90 border-gray-200/50 dark:border-gray-700/50">
+              {/* Glow effect optimizado */}
+              <div 
+                className="absolute -inset-0.5 bg-gradient-to-r from-emerald-500 to-emerald-400 rounded-2xl blur opacity-30 transition-opacity duration-500 group-hover:opacity-50"
+                style={{ willChange: 'opacity' }}
+              />
+              <div className="relative rounded-2xl p-8 flex flex-col h-full shadow-2xl border backdrop-blur-xl transition-colors duration-300 bg-white/80 dark:bg-gray-900/90 border-gray-200/50 dark:border-gray-700/50">
                 {/* Map Header */}
                 <div className="flex items-center gap-3 mb-6">
                   <div className="w-12 h-12 rounded-xl flex items-center justify-center bg-emerald-100 dark:bg-emerald-500/20">
@@ -118,8 +130,12 @@ const ContactSection = () => {
 
             {/* Contact Form Section */}
             <div className="group relative">
-              <div className="absolute -inset-0.5 bg-gradient-to-r from-emerald-400 to-emerald-500 rounded-2xl blur opacity-30 group-hover:opacity-50 transition duration-1000 group-hover:duration-200" />
-              <div className="relative rounded-2xl p-8 flex flex-col h-full shadow-2xl border backdrop-blur-xl transition-colors duration-500 bg-white/80 dark:bg-gray-900/90 border-gray-200/50 dark:border-gray-700/50">
+              {/* Glow effect optimizado */}
+              <div 
+                className="absolute -inset-0.5 bg-gradient-to-r from-emerald-400 to-emerald-500 rounded-2xl blur opacity-30 transition-opacity duration-500 group-hover:opacity-50"
+                style={{ willChange: 'opacity' }}
+              />
+              <div className="relative rounded-2xl p-8 flex flex-col h-full shadow-2xl border backdrop-blur-xl transition-colors duration-300 bg-white/80 dark:bg-gray-900/90 border-gray-200/50 dark:border-gray-700/50">
                 {/* Form Header */}
                 <div className="flex items-center gap-3 mb-6">
                   <div className="w-12 h-12 rounded-xl flex items-center justify-center bg-emerald-100 dark:bg-emerald-500/20">
@@ -192,7 +208,7 @@ const ContactSection = () => {
                     </a>
                     {/* LinkedIn */}
                     <a
-                      href="https://linkedin.com/in/tu-perfil"
+                      href="https://www.linkedin.com/in/sebastian-olarte-ramirez-b34966295/?locale=en_US"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex items-center gap-2 px-4 py-2 rounded-lg transition-colors duration-200 text-sm bg-gray-100/50 hover:bg-gray-200/50 dark:bg-gray-800/50 dark:hover:bg-gray-700/50"

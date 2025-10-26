@@ -57,7 +57,7 @@ const EXPERIENCIA = [
     date: "2025 - 2025",
     description: "Monitor en las areas de SIG y diseño computacional de vias",
     techs: ["Civil3D", "QGIS", "ArcGIS"],
-    logo: "/assets/Logo.png",
+    logo: "/assets/Logo.avif",
   },
   {
     role: "Freelance Developer",
@@ -65,7 +65,7 @@ const EXPERIENCIA = [
     date: "2024 - Actual",
     description: "He llevado a cabo alguno proyectos freelance en desarrollo web y paginas NoCode",
     techs: ["JavaScript", "HTML/CSS", "React", "Next.js", "Bootstrap", "Tailwind CSS", "MongoDB"],
-    logo: "/assets/Logo.png",
+    logo: "/assets/Logo.avif",
   },
 ];
 

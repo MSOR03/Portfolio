@@ -9,24 +9,33 @@ mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
 const Map = () => {
   const mapContainer = useRef(null);
   const map = useRef(null);
+  const marker = useRef(null);
 
   useEffect(() => {
     if (map.current) return;
 
+    // Configuración optimizada del mapa
     map.current = new mapboxgl.Map({
       container: mapContainer.current,
       style: "mapbox://styles/msor03-web/cmbd5evje002v01s0b2c62xm6",
       center: [-74.06, 4.65],
       zoom: 12,
       attributionControl: false,
+      // Optimizaciones críticas de rendimiento
+      antialias: false, // Reduce carga GPU en móviles
+      maxZoom: 18,
+      minZoom: 10,
+      renderWorldCopies: false,
+      preserveDrawingBuffer: false,
     });
 
-    // Popup mejorado que siempre está visible
+    // Popup optimizado - HTML simplificado sin perder diseño
     const popup = new mapboxgl.Popup({ 
       offset: 25, 
       closeButton: false, 
       closeOnClick: false,
-      closeOnMove: false
+      closeOnMove: false,
+      maxWidth: '220px'
     }).setHTML(`
       <div style="
         background: linear-gradient(135deg, rgba(23, 23, 23, 0.95), rgba(30, 30, 30, 0.95));
@@ -36,11 +45,7 @@ const Map = () => {
         border-radius: 16px;
         color: white;
         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        max-width: 220px;
-        box-shadow: 
-          0 8px 32px rgba(0, 0, 0, 0.4),
-          0 0 0 1px rgba(34, 197, 94, 0.2),
-          inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(34, 197, 94, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1);
         position: relative;
       ">
         <div style="
@@ -113,8 +118,8 @@ const Map = () => {
       </style>
     `);
 
-    // Marcador con efecto hover mejorado
-    const marker = new mapboxgl.Marker({ 
+    // Marcador con referencia guardada
+    marker.current = new mapboxgl.Marker({ 
       color: "#22c55e",
       scale: 1.2
     })
@@ -122,29 +127,53 @@ const Map = () => {
       .setPopup(popup)
       .addTo(map.current);
 
-    // Mostrar el popup automáticamente y mantenerlo fijo
+    // Mostrar el popup automáticamente después de cargar
     map.current.on('load', () => {
-      marker.togglePopup();
+      // Pequeño delay para asegurar rendering completo
+      requestAnimationFrame(() => {
+        marker.current?.togglePopup();
+      });
     });
 
-    // Efectos sutiles del mapa
-    map.current.on('mouseenter', () => {
-      map.current.getCanvas().style.cursor = 'grab';
-    });
+    // Efectos del cursor - usar variable para canvas
+    const canvas = map.current.getCanvas();
 
-    map.current.on('mousedown', () => {
-      map.current.getCanvas().style.cursor = 'grabbing';
-    });
+    const handleMouseEnter = () => {
+      canvas.style.cursor = 'grab';
+    };
 
-    map.current.on('mouseup', () => {
-      map.current.getCanvas().style.cursor = 'grab';
-    });
+    const handleMouseDown = () => {
+      canvas.style.cursor = 'grabbing';
+    };
 
-    map.current.on('mouseleave', () => {
-      map.current.getCanvas().style.cursor = '';
-    });
+    const handleMouseUp = () => {
+      canvas.style.cursor = 'grab';
+    };
 
+    const handleMouseLeave = () => {
+      canvas.style.cursor = '';
+    };
+
+    // Agregar listeners
+    map.current.on('mouseenter', handleMouseEnter);
+    map.current.on('mousedown', handleMouseDown);
+    map.current.on('mouseup', handleMouseUp);
+    map.current.on('mouseleave', handleMouseLeave);
+
+    // Cleanup mejorado con remoción de listeners
     return () => {
+      if (map.current) {
+        map.current.off('mouseenter', handleMouseEnter);
+        map.current.off('mousedown', handleMouseDown);
+        map.current.off('mouseup', handleMouseUp);
+        map.current.off('mouseleave', handleMouseLeave);
+      }
+      
+      if (marker.current) {
+        marker.current.remove();
+        marker.current = null;
+      }
+      
       if (map.current) {
         map.current.remove();
         map.current = null;
@@ -155,7 +184,21 @@ const Map = () => {
   return (
     <div
       ref={mapContainer}
-      className="w-full h-full min-h-[400px] rounded-2xl border border-green-400/50 shadow-lg transition-all duration-300 hover:border-green-400/70 hover:shadow-xl hover:shadow-green-400/5 hover:scale-[1.005]"
+      className="w-full h-full min-h-[400px] rounded-2xl border border-green-400/50 shadow-lg will-change-transform"
+      style={{
+        // CSS directo para transiciones más eficientes
+        transition: 'border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease'
+      }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.borderColor = 'rgba(34, 197, 94, 0.7)';
+        e.currentTarget.style.boxShadow = '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04), 0 0 15px rgba(34, 197, 94, 0.05)';
+        e.currentTarget.style.transform = 'scale(1.005)';
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.borderColor = 'rgba(34, 197, 94, 0.5)';
+        e.currentTarget.style.boxShadow = '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)';
+        e.currentTarget.style.transform = 'scale(1)';
+      }}
     />
   );
 };

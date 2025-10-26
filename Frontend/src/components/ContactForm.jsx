@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { useState, useCallback, useMemo, memo } from "react";
+import { useState, useCallback, memo } from "react";
 import { useTheme } from "next-themes";
 
 const ContactForm = memo(() => {
@@ -64,30 +64,22 @@ const ContactForm = memo(() => {
   const handleFocus = useCallback((field) => () => setFocusedField(field), []);
   const handleBlur = useCallback(() => setFocusedField(null), []);
 
-  const inputClasses = useMemo(() => ({
-    base: "w-full px-4 py-3 rounded-lg border focus:outline-none transition-all duration-200 text-sm",
-    theme: isDark
-      ? "bg-slate-800/60 text-white placeholder-slate-500 border-slate-600/30 focus:border-green-400/50 focus:bg-slate-800/80 hover:border-slate-500/50"
-      : "bg-white text-gray-900 placeholder-gray-400 border-gray-300 focus:border-green-400/50 focus:bg-gray-100 hover:border-gray-400"
-  }), [isDark]);
-
-  const containerClasses = useMemo(() => 
-    `relative rounded-2xl backdrop-blur-sm overflow-hidden transition-all duration-300 ease-out hover:border-green-400/30 ${
-      isDark
-        ? "bg-slate-900/95 border border-green-400/20"
-        : "bg-white/95 border border-gray-300"
-    }`
-  , [isDark]);
-
-  const fields = useMemo(() => [
-    { name: "name", label: "Nombre", type: "text", placeholder: "Maicol Sebastián Olarte Ramírez" },
-    { name: "email", label: "Correo electrónico", type: "email", placeholder: "example@example.com" },
-    { name: "message", label: "Mensaje", type: "textarea", placeholder: "Cuéntame sobre tu proyecto o idea..." }
-  ], []);
+  // Clases estáticas - sin useMemo innecesario
+  const baseInputClass = "w-full px-4 py-3 rounded-lg border focus:outline-none transition-colors duration-200 text-sm";
+  const darkInputClass = "bg-slate-800/60 text-white placeholder-slate-500 border-slate-600/30 focus:border-green-400/50 focus:bg-slate-800/80";
+  const lightInputClass = "bg-white text-gray-900 placeholder-gray-400 border-gray-300 focus:border-green-400/50 focus:bg-gray-100";
+  
+  const inputClass = `${baseInputClass} ${isDark ? darkInputClass : lightInputClass}`;
+  
+  const containerClass = `relative rounded-2xl backdrop-blur-sm overflow-hidden transition-colors duration-200 ${
+    isDark
+      ? "bg-slate-900/95 border border-green-400/20"
+      : "bg-white/95 border border-gray-300"
+  }`;
 
   return (
     <div className="w-full max-w-lg mx-auto p-4">
-      <div className={containerClasses}>
+      <div className={containerClass}>
         <div className={`relative p-6 pb-4 border-b ${isDark ? "border-slate-700/30" : "border-gray-200"}`}>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
@@ -112,7 +104,7 @@ const ContactForm = memo(() => {
 
         <form className="p-6 space-y-5" onSubmit={handleSubmit}>
           {status && (
-            <div className={`p-3 rounded-md text-sm font-medium mb-4 transition-all duration-300 ${
+            <div className={`p-3 rounded-md text-sm font-medium mb-4 ${
               status.type === "success" ? "bg-green-600/80 text-white" :
               status.type === "error" ? "bg-red-600/80 text-white" :
               "bg-yellow-500/80 text-white"
@@ -121,61 +113,97 @@ const ContactForm = memo(() => {
             </div>
           )}
 
-          {fields.map(({ name, label, type, placeholder }) => (
-            <div className="space-y-2" key={name}>
-              <label
-                htmlFor={name}
-                className={`block ${isDark ? "text-green-400/90" : "text-green-600/90"} text-xs font-medium uppercase tracking-widest`}
-              >
-                {label}
-              </label>
-              <div className="relative">
-                {type === "textarea" ? (
-                  <textarea
-                    id={name}
-                    name={name}
-                    rows={4}
-                    required
-                    placeholder={placeholder}
-                    value={formData[name]}
-                    onChange={handleInputChange(name)}
-                    onFocus={handleFocus(name)}
-                    onBlur={handleBlur}
-                    className={`${inputClasses.base} ${inputClasses.theme} resize-none`}
-                  />
-                ) : (
-                  <input
-                    type={type}
-                    id={name}
-                    name={name}
-                    required
-                    placeholder={placeholder}
-                    value={formData[name]}
-                    onChange={handleInputChange(name)}
-                    onFocus={handleFocus(name)}
-                    onBlur={handleBlur}
-                    className={`${inputClasses.base} ${inputClasses.theme}`}
-                  />
-                )}
-                <div
-                  className={`absolute bottom-0 left-0 h-px bg-gradient-to-r from-green-400/80 to-green-400/20 transition-all duration-300 ease-out ${
-                    focusedField === name ? "w-full" : "w-0"
-                  }`}
-                />
-              </div>
+          {/* Campo Nombre */}
+          <div className="space-y-2">
+            <label
+              htmlFor="name"
+              className={`block ${isDark ? "text-green-400/90" : "text-green-600/90"} text-xs font-medium uppercase tracking-widest`}
+            >
+              Nombre
+            </label>
+            <div className="relative">
+              <input
+                type="text"
+                id="name"
+                name="name"
+                required
+                placeholder="Maicol Sebastián Olarte Ramírez"
+                value={formData.name}
+                onChange={handleInputChange("name")}
+                onFocus={handleFocus("name")}
+                onBlur={handleBlur}
+                className={inputClass}
+              />
+              {focusedField === "name" && (
+                <div className="absolute bottom-0 left-0 h-px w-full bg-gradient-to-r from-green-400/80 to-green-400/20" />
+              )}
             </div>
-          ))}
+          </div>
+
+          {/* Campo Email */}
+          <div className="space-y-2">
+            <label
+              htmlFor="email"
+              className={`block ${isDark ? "text-green-400/90" : "text-green-600/90"} text-xs font-medium uppercase tracking-widest`}
+            >
+              Correo electrónico
+            </label>
+            <div className="relative">
+              <input
+                type="email"
+                id="email"
+                name="email"
+                required
+                placeholder="example@example.com"
+                value={formData.email}
+                onChange={handleInputChange("email")}
+                onFocus={handleFocus("email")}
+                onBlur={handleBlur}
+                className={inputClass}
+              />
+              {focusedField === "email" && (
+                <div className="absolute bottom-0 left-0 h-px w-full bg-gradient-to-r from-green-400/80 to-green-400/20" />
+              )}
+            </div>
+          </div>
+
+          {/* Campo Mensaje */}
+          <div className="space-y-2">
+            <label
+              htmlFor="message"
+              className={`block ${isDark ? "text-green-400/90" : "text-green-600/90"} text-xs font-medium uppercase tracking-widest`}
+            >
+              Mensaje
+            </label>
+            <div className="relative">
+              <textarea
+                id="message"
+                name="message"
+                rows={4}
+                required
+                placeholder="Cuéntame sobre tu proyecto o idea..."
+                value={formData.message}
+                onChange={handleInputChange("message")}
+                onFocus={handleFocus("message")}
+                onBlur={handleBlur}
+                className={`${inputClass} resize-none`}
+              />
+              {focusedField === "message" && (
+                <div className="absolute bottom-0 left-0 h-px w-full bg-gradient-to-r from-green-400/80 to-green-400/20" />
+              )}
+            </div>
+          </div>
 
           <div className="pt-2 border-t border-slate-700/20">
             <Button
               type="submit"
               disabled={isSubmitting}
               translate="no"
-              className={`w-full py-3 font-semibold text-sm uppercase tracking-wider rounded-lg hover:shadow-lg hover:shadow-green-500/20 active:scale-98 disabled:opacity-70 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center gap-2 ${
+              className={`w-full py-3 font-semibold text-sm uppercase tracking-wider rounded-lg transition-all duration-200 flex items-center justify-center gap-2 ${
                 isDark
                   ? "bg-green-500 hover:bg-green-400 text-slate-900"
                   : "bg-green-500 hover:bg-green-400 text-white"
-              }`}
+              } disabled:opacity-70 disabled:cursor-not-allowed`}
             >
               {isSubmitting ? (
                 <>
