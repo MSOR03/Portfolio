@@ -1,39 +1,53 @@
 "use client";
 
-import { memo } from "react";
+import { memo, useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 
-// SOLO animación flotante - lo más importante visualmente
-const imageVariants = {
-  animate: {
-    y: [0, -8, 0],
-    transition: { 
-      duration: 6, 
-      repeat: Infinity, 
-      ease: "easeInOut",
-      repeatType: "reverse"
-    },
-  },
-  whileHover: {
-    scale: 1.03,
-    transition: { duration: 0.3 },
-  }
+// Hook optimizado para detectar móvil
+const useIsMobile = () => {
+  const [isMobile, setIsMobile] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkMobile();
+    
+    // Throttle resize events para mejor performance
+    let timeoutId;
+    const handleResize = () => {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(checkMobile, 150);
+    };
+    
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      clearTimeout(timeoutId);
+    };
+  }, []);
+
+  return { isMobile, mounted };
 };
 
-// Halo externo - PURO CSS (mucho más eficiente)
-const OuterHalo = memo(() => (
+// Halo externo - ultra simplificado
+const OuterHalo = memo(({ animate }) => (
   <div 
     className="absolute -inset-2 pointer-events-none"
-    style={{
+    style={animate ? {
       animation: 'spin 45s linear infinite',
-      transform: 'translateZ(0)', // GPU acceleration
-    }}
+      willChange: 'transform',
+    } : undefined}
   >
     <svg
       className="w-full h-full"
       viewBox="0 0 100 100"
       fill="none"
+      xmlns="http://www.w3.org/2000/svg"
     >
       <circle
         cx="50"
@@ -42,15 +56,13 @@ const OuterHalo = memo(() => (
         stroke="url(#outerGradient)"
         strokeWidth="0.5"
         strokeLinecap="round"
-        opacity="0.7"
+        opacity="0.5"
       />
       <defs>
         <linearGradient id="outerGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#00ff99" stopOpacity="0.8" />
-          <stop offset="25%" stopColor="#00ff99" stopOpacity="0.2" />
+          <stop offset="0%" stopColor="#00ff99" stopOpacity="0.6" />
           <stop offset="50%" stopColor="#00ff99" stopOpacity="0" />
-          <stop offset="75%" stopColor="#00ff99" stopOpacity="0.2" />
-          <stop offset="100%" stopColor="#00ff99" stopOpacity="0.8" />
+          <stop offset="100%" stopColor="#00ff99" stopOpacity="0.6" />
         </linearGradient>
       </defs>
     </svg>
@@ -58,16 +70,18 @@ const OuterHalo = memo(() => (
 ));
 OuterHalo.displayName = "OuterHalo";
 
-// Círculo interno - SIMPLIFICADO (solo opacidad pulse)
-const InnerCircle = memo(() => (
+// Círculo interno - solo para desktop
+const InnerCircle = memo(({ animate }) => (
   <div className="absolute inset-0 flex justify-center items-center pointer-events-none">
     <svg
       className="w-[320px] h-[320px] md:w-[360px] md:h-[360px] lg:w-[440px] lg:h-[440px] xl:w-[520px] xl:h-[520px]"
       fill="transparent"
       viewBox="0 0 100 100"
-      style={{
-        animation: 'pulse-opacity 4s ease-in-out infinite'
-      }}
+      xmlns="http://www.w3.org/2000/svg"
+      style={animate ? {
+        animation: 'spin-slow 25s linear infinite',
+        willChange: 'transform',
+      } : undefined}
     >
       <circle
         cx="50"
@@ -77,43 +91,42 @@ const InnerCircle = memo(() => (
         strokeWidth="0.8"
         strokeDasharray="20 80"
         strokeLinecap="round"
-        style={{ 
-          filter: "drop-shadow(0 0 8px rgba(0, 255, 153, 0.5))",
-          opacity: 0.8,
-          animation: 'spin 25s linear infinite'
-        }}
+        style={{ opacity: 0.6 }}
       />
     </svg>
   </div>
 ));
 InnerCircle.displayName = "InnerCircle";
 
-// Puntos decorativos - 8 BURBUJAS con CSS puro (súper eficiente)
-const DecorativeDots = memo(() => {
-  // Calculamos 8 posiciones en círculo
-  const positions = Array.from({ length: 8 }, (_, i) => {
-    const angle = (i * Math.PI * 2) / 8;
+// Puntos decorativos optimizados
+const DecorativeDots = memo(({ animate, count }) => {
+  // Pre-calcular posiciones (se hace una sola vez)
+  const positions = Array.from({ length: count }, (_, i) => {
+    const angle = (i * Math.PI * 2) / count;
     return {
-      top: `${50 + 45 * Math.sin(angle)}%`,
-      left: `${50 + 45 * Math.cos(angle)}%`,
+      top: `${(50 + 45 * Math.sin(angle)).toFixed(4)}%`,
+      left: `${(50 + 45 * Math.cos(angle)).toFixed(4)}%`,
     };
   });
 
   return (
     <div 
       className="absolute -inset-8 pointer-events-none"
-      style={{
-        animation: 'spin-reverse 60s linear infinite'
-      }}
+      style={animate ? {
+        animation: 'spin-reverse 60s linear infinite',
+        willChange: 'transform',
+      } : undefined}
     >
       {positions.map((pos, i) => (
         <div
           key={i}
           className="absolute w-1 h-1 bg-emerald-400 rounded-full"
           style={{
-            ...pos,
+            top: pos.top,
+            left: pos.left,
             transform: 'translate(-50%, -50%)',
-            animation: `pulse-dot 3s ease-in-out infinite ${i * 0.375}s`
+            opacity: 0.4,
+            animation: animate ? `pulse-dot 3s ease-in-out infinite ${(i * (3 / count)).toFixed(2)}s` : undefined,
           }}
         />
       ))}
@@ -123,52 +136,103 @@ const DecorativeDots = memo(() => {
 DecorativeDots.displayName = "DecorativeDots";
 
 const Photo = () => {
+  const { isMobile, mounted } = useIsMobile();
+  
+  // Configuración adaptativa según dispositivo
+  const config = {
+    // Animaciones
+    enableFloat: !isMobile,
+    enableRotations: !isMobile,
+    
+    // Elementos visuales
+    enableHalo: true, // Siempre visible pero sin rotar en móvil
+    enableInnerCircle: !isMobile,
+    enableDots: true,
+    dotsCount: isMobile ? 4 : 6,
+    
+    // Calidad de imagen
+    imageQuality: isMobile ? 75 : 85,
+  };
+
+  // Variantes de animación (solo si está habilitada)
+  const imageVariants = config.enableFloat ? {
+    animate: {
+      y: [0, -8, 0],
+      transition: { 
+        duration: 6, 
+        repeat: Infinity, 
+        ease: "easeInOut",
+      },
+    },
+  } : {};
+
+  // Render skeleton durante SSR para evitar hydration mismatch
+  if (!mounted) {
+    return (
+      <div className="w-full h-full relative flex justify-center items-center">
+        <div className="w-[298px] h-[298px] md:w-[340px] md:h-[340px] lg:w-[420px] lg:h-[420px] xl:w-[500px] xl:h-[500px] rounded-2xl bg-gray-200 dark:bg-gray-800" />
+      </div>
+    );
+  }
+
   return (
     <div className="w-full h-full relative flex justify-center items-center">
       <div className="relative">
-        {/* Contenedor principal - SOLO una animación Framer Motion */}
+        {/* Contenedor principal de imagen */}
         <motion.div
-          variants={imageVariants}
-          animate="animate"
-          whileHover="whileHover"
+          {...(config.enableFloat && { 
+            variants: imageVariants,
+            animate: "animate" 
+          })}
           className="w-[298px] h-[298px] md:w-[340px] md:h-[340px] lg:w-[420px] lg:h-[420px] xl:w-[500px] xl:h-[500px] 
-                     mix-blend-lighten relative rounded-2xl overflow-hidden cursor-pointer
-                     shadow-lg hover:shadow-2xl transition-shadow duration-300"
+                     mix-blend-lighten relative rounded-2xl overflow-hidden
+                     shadow-lg transition-shadow duration-300"
           style={{
-            transform: 'translate3d(0, 0, 0)',
-            willChange: 'transform',
+            transform: 'translate3d(0, 0, 0)', // GPU acceleration
           }}
         >
-          {/* IMAGEN - optimizada al máximo */}
+          {/* IMAGEN optimizada */}
           <Image
             src="/assets/Photo.avif"
             priority
-            quality={85}
+            quality={config.imageQuality}
             fill
             alt="Profile photo"
             className="object-cover rounded-2xl"
             sizes="(max-width: 768px) 298px, (max-width: 1024px) 340px, (max-width: 1280px) 420px, 500px"
             loading="eager"
-            decoding="async"
           />
           
-          {/* Overlay */}
+          {/* Overlay sutil */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent rounded-2xl pointer-events-none" />
           
-          {/* Halo externo - CSS puro */}
-          <OuterHalo />
+          {/* Halo externo - siempre visible */}
+          {config.enableHalo && (
+            <OuterHalo animate={config.enableRotations} />
+          )}
         </motion.div>
 
-        {/* Círculo interno - CSS puro */}
-        <InnerCircle />
+        {/* Círculo interno - solo desktop */}
+        {config.enableInnerCircle && (
+          <InnerCircle animate={config.enableRotations} />
+        )}
 
-        {/* Solo 4 puntos - CSS puro */}
-        <DecorativeDots />
+        {/* Puntos decorativos */}
+        {config.enableDots && (
+          <DecorativeDots 
+            animate={config.enableRotations} 
+            count={config.dotsCount} 
+          />
+        )}
       </div>
 
-      {/* Estilos CSS en el head - MUY eficientes */}
+      {/* Estilos CSS - optimizados con will-change condicional */}
       <style jsx>{`
         @keyframes spin {
+          to { transform: rotate(360deg); }
+        }
+        
+        @keyframes spin-slow {
           to { transform: rotate(360deg); }
         }
         
@@ -176,26 +240,21 @@ const Photo = () => {
           to { transform: rotate(-360deg); }
         }
         
-        @keyframes pulse-opacity {
-          0%, 100% { opacity: 0.6; }
-          50% { opacity: 1; }
-        }
-        
         @keyframes pulse-dot {
           0%, 100% { 
             opacity: 0.3; 
-            transform: translate(-50%, -50%) scale(0.5); 
+            transform: translate(-50%, -50%) scale(0.8); 
           }
           50% { 
-            opacity: 0.9; 
-            transform: translate(-50%, -50%) scale(1.2); 
+            opacity: 0.6; 
+            transform: translate(-50%, -50%) scale(1); 
           }
         }
         
-        /* Hint al navegador para optimizar */
-        @media (prefers-reduced-motion: no-preference) {
-          :global(.animate-optimized) {
-            will-change: transform;
+        /* Desactivar animaciones en móvil y preferencias de usuario */
+        @media (max-width: 768px), (prefers-reduced-motion: reduce) {
+          @keyframes spin, @keyframes spin-slow, @keyframes spin-reverse, @keyframes pulse-dot {
+            to { transform: none; opacity: 0.4; }
           }
         }
       `}</style>

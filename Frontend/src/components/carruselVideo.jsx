@@ -312,8 +312,8 @@ const OptimizedVideoCarousel = () => {
           className="text-center mb-12"
         >
           <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
-            Mis <span className="text-emerald-600 dark:text-emerald-400">Proyectos</span>
-          </h2>
+  Mis <span className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-emerald-600 to-blue-600 dark:from-emerald-500 dark:to-blue-500" style={{ WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>Proyectos</span>
+</h2>
           <p className="text-gray-700 dark:text-gray-300 text-lg max-w-2xl mx-auto">
             Explora algunos de mis trabajos más destacados en desarrollo web, topografía y sistemas de información geográfica.
           </p>

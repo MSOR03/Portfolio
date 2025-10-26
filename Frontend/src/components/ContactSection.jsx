@@ -19,12 +19,17 @@ const Map = dynamic(() => import("./Map"), {
 const ContactSection = () => {
   const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     setMounted(true);
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  // Skeleton durante SSR - sin animate-pulse para mejor rendimiento
+  // Skeleton simple sin animaciones
   if (!mounted) {
     return (
       <section className="py-5 bg-transparent">
@@ -38,33 +43,48 @@ const ContactSection = () => {
     );
   }
 
+  // Configuración según dispositivo
+  const enableEffects = !isMobile;
+  const enableBlur = !isMobile; // backdrop-blur es muy pesado en móvil
+
   return (
     <section
       id="contacto"
       className="py-5 relative overflow-hidden bg-transparent"
     >
-      {/* Background effects */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(34,197,94,0.1),transparent_20%)] dark:bg-[radial-gradient(circle_at_30%_50%,rgba(34,197,94,0.15),transparent_20%)]" />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_50%,rgba(34,197,94,0.05),transparent_20%)] dark:bg-[radial-gradient(circle_at_70%_50%,rgba(34,197,94,0.08),transparent_20%)]" />
+      {/* Background effects - SOLO en desktop */}
+      {enableEffects && (
+        <>
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(34,197,94,0.08),transparent_20%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_50%,rgba(34,197,94,0.05),transparent_20%)]" />
+        </>
+      )}
 
-      {/* Decorative elements - animaciones reducidas */}
-      <div className="absolute top-10 left-10 w-20 h-20 border border-emerald-500/20 dark:border-emerald-400/30 rounded-full" />
-      <div className="absolute bottom-10 right-10 w-16 h-16 border border-emerald-400/30 dark:border-emerald-300/40 rounded-full" />
-      <div className="absolute top-1/2 left-1/4 w-2 h-2 bg-emerald-500 dark:bg-emerald-400 rounded-full opacity-60" />
-      <div className="absolute top-1/3 right-1/3 w-1 h-1 bg-emerald-400 dark:bg-emerald-300 rounded-full opacity-40" />
+      {/* Decorative elements - SOLO en desktop */}
+      {enableEffects && (
+        <>
+          <div className="absolute top-10 left-10 w-20 h-20 border border-emerald-500/20 rounded-full" />
+          <div className="absolute bottom-10 right-10 w-16 h-16 border border-emerald-400/30 rounded-full" />
+          <div className="absolute top-1/2 left-1/4 w-2 h-2 bg-emerald-500 rounded-full opacity-40" />
+          <div className="absolute top-1/3 right-1/3 w-1 h-1 bg-emerald-400 rounded-full opacity-30" />
+        </>
+      )}
 
-      <ScrollAnimation>
+      <ScrollAnimation disabled={isMobile}>
         <div className="container mx-auto px-4 relative z-10">
           {/* Grid de contenido */}
           <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-stretch">
             {/* Map Section */}
             <div className="group relative">
-              {/* Glow effect optimizado */}
-              <div 
-                className="absolute -inset-0.5 bg-gradient-to-r from-emerald-500 to-emerald-400 rounded-2xl blur opacity-30 transition-opacity duration-500 group-hover:opacity-50"
-                style={{ willChange: 'opacity' }}
-              />
-              <div className="relative rounded-2xl p-8 flex flex-col h-full shadow-2xl border backdrop-blur-xl transition-colors duration-300 bg-white/80 dark:bg-gray-900/90 border-gray-200/50 dark:border-gray-700/50">
+              {/* Glow effect - SOLO en desktop */}
+              {enableEffects && (
+                <div className="absolute -inset-0.5 bg-gradient-to-r from-emerald-500 to-emerald-400 rounded-2xl blur opacity-20 transition-opacity duration-500 group-hover:opacity-40" />
+              )}
+              
+              <div className={`relative rounded-2xl p-6 md:p-8 flex flex-col h-full shadow-xl border transition-colors duration-300 
+                ${enableBlur ? 'backdrop-blur-xl bg-white/80 dark:bg-gray-900/90' : 'bg-white dark:bg-gray-900'} 
+                border-gray-200/50 dark:border-gray-700/50`}>
+                
                 {/* Map Header */}
                 <div className="flex items-center gap-3 mb-6">
                   <div className="w-12 h-12 rounded-xl flex items-center justify-center bg-emerald-100 dark:bg-emerald-500/20">
@@ -89,7 +109,7 @@ const ContactSection = () => {
                     </svg>
                   </div>
                   <div>
-                    <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
+                    <h3 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">
                       Mi Ubicación
                     </h3>
                     <p className="text-sm text-emerald-600 dark:text-emerald-400">
@@ -118,7 +138,9 @@ const ContactSection = () => {
                       Disponibilidad
                     </span>
                     <div className="flex items-center gap-2">
-                      <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
+                      {/* Punto sin animate-pulse (CSS puro más ligero) */}
+                      <div className="w-2 h-2 bg-emerald-500 rounded-full" 
+                           style={enableEffects ? { animation: 'pulse-dot 2s ease-in-out infinite' } : undefined} />
                       <span className="text-emerald-600 dark:text-emerald-400 font-medium">
                         En línea
                       </span>
@@ -130,12 +152,15 @@ const ContactSection = () => {
 
             {/* Contact Form Section */}
             <div className="group relative">
-              {/* Glow effect optimizado */}
-              <div 
-                className="absolute -inset-0.5 bg-gradient-to-r from-emerald-400 to-emerald-500 rounded-2xl blur opacity-30 transition-opacity duration-500 group-hover:opacity-50"
-                style={{ willChange: 'opacity' }}
-              />
-              <div className="relative rounded-2xl p-8 flex flex-col h-full shadow-2xl border backdrop-blur-xl transition-colors duration-300 bg-white/80 dark:bg-gray-900/90 border-gray-200/50 dark:border-gray-700/50">
+              {/* Glow effect - SOLO en desktop */}
+              {enableEffects && (
+                <div className="absolute -inset-0.5 bg-gradient-to-r from-emerald-400 to-emerald-500 rounded-2xl blur opacity-20 transition-opacity duration-500 group-hover:opacity-40" />
+              )}
+              
+              <div className={`relative rounded-2xl p-6 md:p-8 flex flex-col h-full shadow-xl border transition-colors duration-300
+                ${enableBlur ? 'backdrop-blur-xl bg-white/80 dark:bg-gray-900/90' : 'bg-white dark:bg-gray-900'} 
+                border-gray-200/50 dark:border-gray-700/50`}>
+                
                 {/* Form Header */}
                 <div className="flex items-center gap-3 mb-6">
                   <div className="w-12 h-12 rounded-xl flex items-center justify-center bg-emerald-100 dark:bg-emerald-500/20">
@@ -154,7 +179,7 @@ const ContactSection = () => {
                     </svg>
                   </div>
                   <div>
-                    <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
+                    <h3 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">
                       Contáctame
                     </h3>
                     <p className="text-sm text-emerald-600 dark:text-emerald-400">
@@ -164,8 +189,8 @@ const ContactSection = () => {
                 </div>
 
                 {/* Description */}
-                <div className="mb-8">
-                  <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
+                <div className="mb-6">
+                  <p className="text-sm md:text-base text-gray-700 dark:text-gray-300 leading-relaxed">
                     ¿Tienes un proyecto en mente? Me especializo en crear
                     soluciones digitales innovadoras que impulsan el crecimiento
                     de tu negocio.
@@ -178,16 +203,16 @@ const ContactSection = () => {
                 </div>
 
                 {/* Quick Contact Options */}
-                <div className="mt-8 pt-6 border-t border-gray-200/50 dark:border-gray-700/50">
+                <div className="mt-6 pt-6 border-t border-gray-200/50 dark:border-gray-700/50">
                   <p className="text-sm mb-4 text-gray-600 dark:text-gray-400">
                     O contáctame directamente:
                   </p>
 
-                  <div className="flex flex-wrap gap-4">
+                  <div className="flex flex-wrap gap-3">
                     {/* Email */}
                     <a
                       href="mailto:tu-email@gmail.com"
-                      className="flex items-center gap-2 px-4 py-2 rounded-lg transition-colors duration-200 text-sm bg-gray-100/50 hover:bg-gray-200/50 dark:bg-gray-800/50 dark:hover:bg-gray-700/50"
+                      className="flex items-center gap-2 px-3 py-2 rounded-lg transition-colors duration-200 text-sm bg-gray-100/50 hover:bg-gray-200/50 dark:bg-gray-800/50 dark:hover:bg-gray-700/50"
                     >
                       <svg
                         className="w-4 h-4 text-emerald-600 dark:text-emerald-400"
@@ -211,7 +236,7 @@ const ContactSection = () => {
                       href="https://www.linkedin.com/in/sebastian-olarte-ramirez-b34966295/?locale=en_US"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-2 px-4 py-2 rounded-lg transition-colors duration-200 text-sm bg-gray-100/50 hover:bg-gray-200/50 dark:bg-gray-800/50 dark:hover:bg-gray-700/50"
+                      className="flex items-center gap-2 px-3 py-2 rounded-lg transition-colors duration-200 text-sm bg-gray-100/50 hover:bg-gray-200/50 dark:bg-gray-800/50 dark:hover:bg-gray-700/50"
                     >
                       <svg
                         className="w-4 h-4 text-emerald-600 dark:text-emerald-400"
@@ -231,8 +256,8 @@ const ContactSection = () => {
           </div>
 
           {/* Bottom CTA */}
-          <div className="text-center mt-16">
-            <div className="inline-flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+          <div className="text-center mt-12 md:mt-16">
+            <div className="inline-flex items-center gap-2 text-xs md:text-sm text-gray-600 dark:text-gray-400">
               <svg
                 className="w-4 h-4"
                 fill="none"
@@ -251,6 +276,14 @@ const ContactSection = () => {
           </div>
         </div>
       </ScrollAnimation>
+
+      {/* Animación ligera para el punto verde */}
+      <style jsx>{`
+        @keyframes pulse-dot {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.5; }
+        }
+      `}</style>
     </section>
   );
 };

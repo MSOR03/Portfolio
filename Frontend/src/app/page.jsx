@@ -18,7 +18,9 @@ import useDownloadCV from "@/components/downloadCV";
 
 // Lazy loading con preload
 const RadarChart = lazy(() => import("@/components/RadarChart"));
-const RadialProgressChart = lazy(() => import("@/components/RadialProgressChart"));
+const RadialProgressChart = lazy(() =>
+  import("@/components/RadialProgressChart")
+);
 const ClientOnly = lazy(() => import("@/components/ClientOnly"));
 
 // Skeleton OPTIMIZADO
@@ -47,8 +49,9 @@ const EXPERIENCIA = [
     role: "Asistente de ingeniería",
     company: "Ingeterra Projects S.A.S.",
     date: "2024 - 2025",
-    description: "Lleve a cabo trabajos de avaluos y GIS enfocados en ingeniería",
-    techs: ["AutoCAD", "QGIS", "ArcGIS","Excel"],
+    description:
+      "Lleve a cabo trabajos de avaluos y GIS enfocados en ingeniería",
+    techs: ["AutoCAD", "QGIS", "ArcGIS", "Excel"],
     logo: "/assets/Logo.avif",
   },
   {
@@ -63,8 +66,17 @@ const EXPERIENCIA = [
     role: "Freelance Developer",
     company: "N/A",
     date: "2024 - Actual",
-    description: "He llevado a cabo alguno proyectos freelance en desarrollo web y paginas NoCode",
-    techs: ["JavaScript", "HTML/CSS", "React", "Next.js", "Bootstrap", "Tailwind CSS", "MongoDB"],
+    description:
+      "He llevado a cabo alguno proyectos freelance en desarrollo web y paginas NoCode",
+    techs: [
+      "JavaScript",
+      "HTML/CSS",
+      "React",
+      "Next.js",
+      "Bootstrap",
+      "Tailwind CSS",
+      "MongoDB",
+    ],
     logo: "/assets/Logo.avif",
   },
 ];
@@ -73,13 +85,13 @@ const CHART_CONFIGS = [
   {
     title: "Habilidades Ingeniería de Sistemas",
     skills: SKILLS_SYSTEMS,
-    gradient: "from-blue-500/10 to-purple-500/10"
+    gradient: "from-blue-500/10 to-purple-500/10",
   },
   {
-    title: "Habilidades Ingeniería Topográfica", 
+    title: "Habilidades Ingeniería Topográfica",
     skills: SKILLS_TOPOGRAPHY,
-    gradient: "from-orange-500/10 to-red-500/10"
-  }
+    gradient: "from-orange-500/10 to-red-500/10",
+  },
 ];
 
 // SectionTitle simplificado
@@ -87,22 +99,38 @@ const SectionTitle = memo(({ title, subtitle, className = "" }) => {
   const titleWords = useMemo(() => title.split(" "), [title]);
 
   return (
-    <div className={`text-center mb-16 px-4 ${className}`}>
-      <div className="relative inline-block">
-        <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
-          {titleWords.map((word, index) => (
-            <span key={index} className={index === titleWords.length - 1 ? "text-green-400" : ""}>
-              {word}{" "}
-            </span>
-          ))}
-        </h2>
-        <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-24 h-1 bg-green-400 rounded-full"></div>
-      </div>
-      <p className="text-lg text-gray-600 dark:text-white/70 mt-6 max-w-2xl mx-auto">
-        {subtitle}
-      </p>
+  <div className={`text-center mb-16 px-4 ${className}`}>
+    <div className="relative inline-block">
+      <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
+        {titleWords.map((word, index) => (
+          <span
+            key={index}
+            className={
+              index === titleWords.length - 1
+                ? "inline-block text-4xl md:text-5xl font-bold bg-gradient-to-r from-emerald-600 to-blue-600 dark:from-emerald-500 dark:to-blue-500"
+                : ""
+            }
+            style={
+              index === titleWords.length - 1
+                ? {
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    backgroundClip: 'text'
+                  }
+                : undefined
+            }
+          >
+            {word}{" "}
+          </span>
+        ))}
+      </h2>
+      <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-24 h-1 bg-gradient-to-r from-emerald-500 to-blue-500 rounded-full"></div>
     </div>
-  );
+    <p className="text-lg text-gray-600 dark:text-white/70 mt-6 max-w-2xl mx-auto">
+      {subtitle}
+    </p>
+  </div>
+);
 });
 SectionTitle.displayName = "SectionTitle";
 
@@ -123,17 +151,21 @@ OptimizedRadialChart.displayName = "OptimizedRadialChart";
 const Home = () => {
   const handleDownloadCV = useDownloadCV();
 
-  const experienceCards = useMemo(() => (
-    EXPERIENCIA.map((item, index) => (
-      <ExperienceCard key={`${item.company}-${index}`} {...item} />
-    ))
-  ), []);
+  const experienceCards = useMemo(
+    () =>
+      EXPERIENCIA.map((item, index) => (
+        <ExperienceCard key={`${item.company}-${index}`} {...item} />
+      )),
+    []
+  );
 
-  const radialCharts = useMemo(() => (
-    CHART_CONFIGS.map((config) => (
-      <OptimizedRadialChart key={config.title} config={config} />
-    ))
-  ), []);
+  const radialCharts = useMemo(
+    () =>
+      CHART_CONFIGS.map((config) => (
+        <OptimizedRadialChart key={config.title} config={config} />
+      )),
+    []
+  );
 
   return (
     <section className="h-full py-16 scroll-mt-20" id="home">
@@ -149,7 +181,12 @@ const Home = () => {
                 Hola, soy <span className="text-green-400">Sebastián</span>
               </h1>
               <p className="text-gray-700 dark:text-white/80 text-lg mb-8">
-                Ingeniero Topográfico y Estudiante de ultimos semestres Ingeniería de Sistemas con habilidades en desarrollo de software (Móvil, Web), Sistemas de Información, además, cualidades en diseño con <span className="text-green-300">Civil3D</span>, <span className="text-green-300">ArcGIS</span>, <span className="text-green-300">QGIS</span>.
+                Ingeniero Topográfico y Estudiante de ultimos semestres
+                Ingeniería de Sistemas con habilidades en desarrollo de software
+                (Móvil, Web), Sistemas de Información, además, cualidades en
+                diseño con <span className="text-green-300">Civil3D</span>,{" "}
+                <span className="text-green-300">ArcGIS</span>,{" "}
+                <span className="text-green-300">QGIS</span>.
               </p>
               <div className="flex flex-col sm:flex-row items-center gap-6">
                 <Button
@@ -174,11 +211,11 @@ const Home = () => {
 
       {/* Resto de secciones */}
       <div className="container mx-auto px-4 mt-24" id="cv">
-        <SectionTitle 
-          title="Mi Resumen" 
-          subtitle="Habilidades y competencias técnicas destacadas en desarrollo y topografía" 
+        <SectionTitle
+          title="Mi Resumen"
+          subtitle="Habilidades y competencias técnicas destacadas en desarrollo y topografía"
         />
-        
+
         <div className="flex justify-center items-start gap-12 flex-col lg:flex-row mx-auto max-w-7xl">
           <div className="w-full lg:w-1/2 flex justify-center">
             <div className="relative w-full max-w-2xl lg:max-w-[600px] bg-white/5 dark:bg-white/5 rounded-2xl p-6 border border-green-500/20">
@@ -204,24 +241,24 @@ const Home = () => {
 
       <div className="scroll-mt-20" id="degrees" />
       <div id="aboutme" className="container mx-auto px-4 mt-24 scroll-mt-50">
-        <SectionTitle 
-          title="Mis Estudios" 
-          subtitle="Formación académica y certificaciones que respaldan mi experiencia profesional" 
+        <SectionTitle
+          title="Mis Estudios"
+          subtitle="Formación académica y certificaciones que respaldan mi experiencia profesional"
         />
         <GradesTimeline />
-        
+
         <div className="mt-10">
-          <SectionTitle 
-            title="Mis Idiomas" 
-            subtitle="Competencias lingüísticas para comunicación internacional efectiva" 
+          <SectionTitle
+            title="Mis Idiomas"
+            subtitle="Competencias lingüísticas para comunicación internacional efectiva"
           />
           <LanguageProgress />
         </div>
-        
+
         <div className="mt-5" id="experience">
-          <SectionTitle 
-            title="Mi Experiencia" 
-            subtitle="Trayectoria profesional en desarrollo GIS y topografía aplicada" 
+          <SectionTitle
+            title="Mi Experiencia"
+            subtitle="Trayectoria profesional en desarrollo GIS y topografía aplicada"
           />
           <div className="flex flex-wrap justify-center gap-8 max-w-6xl mx-auto">
             {experienceCards}
@@ -237,11 +274,14 @@ const Home = () => {
       <div className="mt-10">
         <div className="container mx-auto px-4 text-center mb-5">
           <h2 className="text-4xl md:text-5xl font-bold mb-5">
-            <span className="text-gray-900 dark:text-white">¿Quieres trabajar </span>
-            <span className="text-green-400">conmigo?</span>
+            <span className="text-gray-900 dark:text-white">
+              ¿Quieres trabajar{" "}
+            </span>
+            <span className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-emerald-600 to-blue-600 dark:from-emerald-500 dark:to-blue-500" style={{ WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>conmigo?</span>
           </h2>
           <p className="text-gray-600 dark:text-white/70 text-xl mt-8 max-w-3xl mx-auto">
-            Estoy disponible para colaboraciones, proyectos freelance o propuestas laborales. Convirtamos tu visión en realidad digital.
+            Estoy disponible para colaboraciones, proyectos freelance o
+            propuestas laborales. Convirtamos tu visión en realidad digital.
           </p>
         </div>
         <div id="contact" className="scroll-mt-20">
