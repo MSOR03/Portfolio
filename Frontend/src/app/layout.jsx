@@ -7,14 +7,10 @@ import StairTransition from "@/components/StairTransition";
 import { ThemeProvider } from "next-themes";
 import ThemeSync from "@/components/ThemeSync";
 
-// Optimizar fuente con display: swap para mejor LCP
 const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
   weight: ["100", "200", "300", "400", "500", "600", "700", "800"],
   variable: "--font-jetbrainsMono",
-  display: "swap", // 🚀 CRÍTICO: Muestra texto inmediatamente con fuente fallback
-  preload: true,
-  fallback: ['monospace'], // Fuente fallback mientras carga
 });
 
 export const metadata = {
@@ -22,11 +18,7 @@ export const metadata = {
   description:
     "Ingeniero Topográfico e Ingeniero de Sistemas - Desarrollo de Software y Soluciones Digitales",
   icons: {
-    icon: [{ url: "/assets/Logo.avif", sizes: "48x48", type: "image/png" }],
-  },
-  // 🚀 Optimizaciones de conexión
-  other: {
-    'preconnect': 'https://events.mapbox.com https://api.mapbox.com https://portfolio-so.onrender.com',
+    icon: [{ url: "/assets/Logo.avif", sizes: "48x48", type: "image/avif" }],
   },
 };
 
@@ -83,11 +75,8 @@ export default function RootLayout({ children }) {
               <StairTransition />
               <PageTransition>
                 <div className="relative">
-                  {/* Líneas animadas adaptativas - Optimizadas */}
-                  <div 
-                    className="absolute inset-0 -z-10 pointer-events-none"
-                    style={{ willChange: 'auto' }} // Solo animar cuando sea necesario
-                  >
+                  {/* Líneas animadas adaptativas */}
+                  <div className="absolute inset-0 -z-10 pointer-events-none">
                     <div className="absolute top-20 left-10 w-32 h-px bg-gradient-to-r from-transparent via-green-400/30 to-transparent motion-safe:animate-pulse" />
                     <div className="absolute top-40 right-20 w-24 h-px bg-gradient-to-r from-transparent via-green-300/20 to-transparent motion-safe:animate-pulse-slow" />
                     <div className="absolute bottom-32 left-1/4 w-40 h-px bg-gradient-to-r from-transparent via-emerald-400/25 to-transparent motion-safe:animate-pulse-slower" />
@@ -100,14 +89,8 @@ export default function RootLayout({ children }) {
             <Footer />
           </div>
 
-          {/* Partículas adaptativas - Optimizadas */}
-          <div 
-            className="fixed inset-0 -z-20 pointer-events-none"
-            style={{ 
-              willChange: 'auto',
-              contain: 'layout style paint', // Optimización de rendering
-            }}
-          >
+          {/* Partículas adaptativas */}
+          <div className="fixed inset-0 -z-20 pointer-events-none">
             {[0, 2, 4, 1, 3].map((delay, i) => (
               <div
                 key={i}
@@ -116,44 +99,19 @@ export default function RootLayout({ children }) {
                   top: `${25 + i * 10}%`,
                   left: `${20 + (i % 2 === 0 ? 30 : -10)}%`,
                   animationDelay: `${delay}s`,
-                  transform: 'translate3d(0, 0, 0)', // GPU acceleration
                 }}
               />
             ))}
-            <div 
-              className="absolute top-1/6 right-1/6 w-2 h-2 bg-green-400/30 rounded-full blur-sm motion-safe:animate-pulse-slow"
-              style={{ transform: 'translate3d(0, 0, 0)' }}
-            />
-            <div 
-              className="absolute bottom-1/3 left-1/6 w-2 h-2 bg-emerald-400/25 rounded-full blur-sm motion-safe:animate-pulse-slower"
-              style={{ transform: 'translate3d(0, 0, 0)' }}
-            />
-            <div 
-              className="absolute bottom-1/4 right-1/4 w-2 h-2 bg-green-400/30 rounded-full blur-sm motion-safe:animate-pulse-slow"
-              style={{ transform: 'translate3d(0, 0, 0)' }}
-            />
+            <div className="absolute top-1/6 right-1/6 w-2 h-2 bg-green-400/30 rounded-full blur-sm motion-safe:animate-pulse-slow" />
+            <div className="absolute bottom-1/3 left-1/6 w-2 h-2 bg-emerald-400/25 rounded-full blur-sm motion-safe:animate-pulse-slower" />
+            <div className="absolute bottom-1/4 right-1/4 w-2 h-2 bg-green-400/30 rounded-full blur-sm motion-safe:animate-pulse-slow" />
           </div>
 
-          {/* Efectos de luz adaptativos - Optimizados */}
-          <div 
-            className="fixed inset-0 -z-40 pointer-events-none"
-            style={{ 
-              willChange: 'auto',
-              contain: 'layout style paint',
-            }}
-          >
-            <div 
-              className="absolute top-0 left-0 w-72 h-72 bg-green-400/10 rounded-full blur-3xl motion-safe:animate-pulse-slow"
-              style={{ transform: 'translate3d(0, 0, 0)' }}
-            />
-            <div 
-              className="absolute bottom-0 right-0 w-64 h-64 bg-emerald-400/8 rounded-full blur-3xl motion-safe:animate-pulse-slower"
-              style={{ transform: 'translate3d(0, 0, 0)' }}
-            />
-            <div 
-              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-60 h-60 bg-green-300/5 rounded-full blur-2xl motion-safe:animate-floating"
-              style={{ transform: 'translate3d(-50%, -50%, 0)' }}
-            />
+          {/* Efectos de luz adaptativos */}
+          <div className="fixed inset-0 -z-40 pointer-events-none">
+            <div className="absolute top-0 left-0 w-72 h-72 bg-green-400/10 rounded-full blur-3xl motion-safe:animate-pulse-slow" />
+            <div className="absolute bottom-0 right-0 w-64 h-64 bg-emerald-400/8 rounded-full blur-3xl motion-safe:animate-pulse-slower" />
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-60 h-60 bg-green-300/5 rounded-full blur-2xl motion-safe:animate-floating" />
           </div>
         </ThemeProvider>
       </body>
