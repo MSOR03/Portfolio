@@ -11,9 +11,9 @@ const nextConfig = {
   // 📦 Optimización de imágenes - OPTIMIZADO PARA MÓVIL
   images: {
     formats: ['image/avif', 'image/webp'],
-    // Tamaños optimizados para móvil primero
-    deviceSizes: [375, 640, 750, 828, 1080, 1200, 1920],
-    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
+    // Tamaños optimizados para móvil primero - AGREGADO 298 para Photo component
+    deviceSizes: [298, 375, 640, 750, 828, 1080, 1200, 1920],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256, 298, 384],
     minimumCacheTTL: 31536000, // Cache más agresivo (1 año)
     dangerouslyAllowSVG: true,
     contentDispositionType: 'attachment',

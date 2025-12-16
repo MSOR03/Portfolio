@@ -47,7 +47,9 @@ export default function RootLayout({ children }) {
           fetchPriority="high"
           type="image/avif"
         />
-        {/* DNS prefetch for external resources */}
+        {/* Preconnect a orígenes críticos para reducir latencia */}
+        <link rel="preconnect" href="https://events.mapbox.com" />
+        <link rel="preconnect" href="https://portfolio-so.onrender.com" />
         <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
         <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
         {/* Script MEJORADO para prevenir FOUC */}

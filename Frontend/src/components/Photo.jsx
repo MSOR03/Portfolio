@@ -184,7 +184,7 @@ const Photo = () => {
             transform: 'translate3d(0, 0, 0)', // GPU acceleration
           }}
         >
-          {/* IMAGEN optimizada */}
+          {/* IMAGEN optimizada - fill con sizes correctos para móvil */}
           <Image
             src="/assets/Photo.avif"
             priority
@@ -195,8 +195,6 @@ const Photo = () => {
             sizes="(max-width: 768px) 298px, (max-width: 1024px) 340px, (max-width: 1280px) 420px, 500px"
             loading="eager"
             fetchPriority="high"
-            // Optimización adicional para móvil
-            unoptimized={false}
           />
           
           {/* Overlay sutil */}

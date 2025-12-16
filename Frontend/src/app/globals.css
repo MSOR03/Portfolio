@@ -3,6 +3,12 @@
 @tailwind utilities;
 @import "flag-icons/css/flag-icons.min.css";
 @import "@fontsource/sora/latin.css";
+
+/* Optimización de fuentes - font-display swap para evitar render blocking */
+@font-face {
+  font-family: 'Sora';
+  font-display: swap;
+}
 html {
   scroll-behavior: smooth;
 }
