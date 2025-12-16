@@ -232,6 +232,24 @@ html {
     background-size: 40px 40px;
     opacity: 0.2;
   }
+  
+  /* Deshabilitar SOLO animaciones decorativas del layout - NO afectar contenido */
+  /* Solo las partículas y efectos de fondo específicos */
+  body > div > div[class*="fixed"][class*="pointer-events-none"] [class*="animate-floating"],
+  body > div > div[class*="fixed"][class*="pointer-events-none"] [class*="animate-pulse-slow"],
+  body > div > div[class*="fixed"][class*="pointer-events-none"] [class*="animate-pulse-slower"],
+  body > div > div[class*="fixed"][class*="pointer-events-none"] [class*="animate-pulse"] {
+    animation: none !important;
+  }
+  
+  /* Asegurar que las animaciones de contenido funcionen */
+  /* Las animaciones dentro de secciones y componentes de contenido deben funcionar */
+  section *,
+  [class*="SkillCard"] *,
+  [class*="ProgressCircle"] *,
+  [class*="Technologies"] * {
+    /* Permitir animaciones normales - no sobrescribir */
+  }
 }
 
 /* Accesibilidad */

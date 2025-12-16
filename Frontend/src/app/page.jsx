@@ -53,6 +53,12 @@ const LanguageProgress = dynamic(() => import("@/components/Languaje"), {
 
 const Carousel = dynamic(() => import("@/components/carruselVideo"), {
   ssr: false,
+  // Lazy load más agresivo - solo cargar cuando esté cerca del viewport
+  loading: () => (
+    <div className="py-16">
+      <div className="h-[600px] bg-gray-200 dark:bg-gray-800 rounded-2xl animate-pulse" />
+    </div>
+  ),
 });
 
 const RadarChart = dynamic(() => import("@/components/RadarChart"), {

@@ -99,8 +99,8 @@ export default function RootLayout({ children }) {
               <StairTransition />
               <PageTransition>
                 <div className="relative">
-                  {/* Líneas animadas adaptativas */}
-                  <div className="absolute inset-0 -z-10 pointer-events-none">
+                  {/* Líneas animadas adaptativas - DESHABILITADAS EN MÓVIL */}
+                  <div className="absolute inset-0 -z-10 pointer-events-none hidden md:block">
                     <div className="absolute top-20 left-10 w-32 h-px bg-gradient-to-r from-transparent via-green-400/30 to-transparent motion-safe:animate-pulse" />
                     <div className="absolute top-40 right-20 w-24 h-px bg-gradient-to-r from-transparent via-green-300/20 to-transparent motion-safe:animate-pulse-slow" />
                     <div className="absolute bottom-32 left-1/4 w-40 h-px bg-gradient-to-r from-transparent via-emerald-400/25 to-transparent motion-safe:animate-pulse-slower" />
@@ -113,8 +113,8 @@ export default function RootLayout({ children }) {
             <Footer />
           </div>
 
-          {/* Partículas adaptativas */}
-          <div className="fixed inset-0 -z-20 pointer-events-none">
+          {/* Partículas adaptativas - DESHABILITADAS EN MÓVIL para mejor rendimiento */}
+          <div className="fixed inset-0 -z-20 pointer-events-none hidden md:block">
             {[0, 2, 4, 1, 3].map((delay, i) => (
               <div
                 key={i}
@@ -131,8 +131,8 @@ export default function RootLayout({ children }) {
             <div className="absolute bottom-1/4 right-1/4 w-2 h-2 bg-green-400/30 rounded-full blur-sm motion-safe:animate-pulse-slow" />
           </div>
 
-          {/* Efectos de luz adaptativos */}
-          <div className="fixed inset-0 -z-40 pointer-events-none">
+          {/* Efectos de luz adaptativos - DESHABILITADOS EN MÓVIL */}
+          <div className="fixed inset-0 -z-40 pointer-events-none hidden md:block">
             <div className="absolute top-0 left-0 w-72 h-72 bg-green-400/10 rounded-full blur-3xl motion-safe:animate-pulse-slow" />
             <div className="absolute bottom-0 right-0 w-64 h-64 bg-emerald-400/8 rounded-full blur-3xl motion-safe:animate-pulse-slower" />
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-60 h-60 bg-green-300/5 rounded-full blur-2xl motion-safe:animate-floating" />

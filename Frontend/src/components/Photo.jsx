@@ -138,20 +138,20 @@ DecorativeDots.displayName = "DecorativeDots";
 const Photo = () => {
   const { isMobile } = useIsMobile();
   
-  // Configuración adaptativa según dispositivo
+  // Configuración adaptativa según dispositivo - OPTIMIZADA PARA MÓVIL
   const config = {
-    // Animaciones
+    // Animaciones - DESHABILITADAS EN MÓVIL para mejor rendimiento
     enableFloat: !isMobile,
     enableRotations: !isMobile,
     
-    // Elementos visuales
-    enableHalo: true, // Siempre visible pero sin rotar en móvil
+    // Elementos visuales - REDUCIDOS EN MÓVIL
+    enableHalo: !isMobile, // Deshabilitado en móvil
     enableInnerCircle: !isMobile,
-    enableDots: true,
-    dotsCount: isMobile ? 4 : 6,
+    enableDots: !isMobile, // Deshabilitado en móvil para reducir animaciones
+    dotsCount: isMobile ? 0 : 6,
     
-    // Calidad de imagen
-    imageQuality: isMobile ? 75 : 85,
+    // Calidad de imagen - REDUCIDA EN MÓVIL para carga más rápida
+    imageQuality: isMobile ? 60 : 85, // Reducido de 75 a 60 en móvil
   };
 
   // Variantes de animación (solo si está habilitada)
@@ -195,6 +195,8 @@ const Photo = () => {
             sizes="(max-width: 768px) 298px, (max-width: 1024px) 340px, (max-width: 1280px) 420px, 500px"
             loading="eager"
             fetchPriority="high"
+            // Optimización adicional para móvil
+            unoptimized={false}
           />
           
           {/* Overlay sutil */}

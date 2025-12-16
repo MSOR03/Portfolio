@@ -8,12 +8,13 @@ const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
   
-  // 📦 Optimización de imágenes
+  // 📦 Optimización de imágenes - OPTIMIZADO PARA MÓVIL
   images: {
     formats: ['image/avif', 'image/webp'],
-    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
+    // Tamaños optimizados para móvil primero
+    deviceSizes: [375, 640, 750, 828, 1080, 1200, 1920],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
-    minimumCacheTTL: 60,
+    minimumCacheTTL: 31536000, // Cache más agresivo (1 año)
     dangerouslyAllowSVG: true,
     contentDispositionType: 'attachment',
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
@@ -23,6 +24,8 @@ const nextConfig = {
         hostname: '**', // Permite todas las imágenes HTTPS
       },
     ],
+    // Optimización adicional para móvil
+    unoptimized: false,
   },
   
   // 🗜️ Remover console.log en producción
