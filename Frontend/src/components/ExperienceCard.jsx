@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useMemo, useCallback, memo } from 'react';
 import { useTheme } from "next-themes";
+import Image from "next/image";
 
 // Memoized sub-components
 const LoadingSkeleton = memo(() => (
@@ -19,7 +20,14 @@ const CompanyLogo = memo(({ logo, company, isDark }) => (
       }`}
     >
       {logo ? (
-        <img src={logo} alt={company} className="w-full h-full object-cover" loading="lazy" />
+        <Image 
+          src={logo} 
+          alt={company} 
+          fill
+          className="object-cover"
+          loading="lazy"
+          sizes="96px"
+        />
       ) : (
         <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-green-500 to-green-700">
           <span className="text-white font-bold text-xl">

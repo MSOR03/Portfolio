@@ -9,8 +9,9 @@ import ThemeSync from "@/components/ThemeSync";
 
 const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
-  weight: ["100", "200", "300", "400", "500", "600", "700", "800"],
+  weight: ["400", "500", "600", "700"], // Reduced from 8 weights to 4 for better performance
   variable: "--font-jetbrainsMono",
+  display: "swap", // Improve font loading performance
 });
 
 export const metadata = {
@@ -20,12 +21,35 @@ export const metadata = {
   icons: {
     icon: [{ url: "/assets/Logo.avif", sizes: "48x48", type: "image/avif" }],
   },
+  other: {
+    // Preload critical resources for LCP
+    "preload-image": "/assets/Photo.avif",
+  },
 };
 
 export default function RootLayout({ children }) {
   return (
     <html lang="es" className="scroll-smooth" suppressHydrationWarning>
       <head>
+        {/* Preload critical LCP image */}
+        <link
+          rel="preload"
+          href="/assets/Photo.avif"
+          as="image"
+          fetchPriority="high"
+          type="image/avif"
+        />
+        {/* Preload logo */}
+        <link
+          rel="preload"
+          href="/assets/Logo.avif"
+          as="image"
+          fetchPriority="high"
+          type="image/avif"
+        />
+        {/* DNS prefetch for external resources */}
+        <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+        <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
         {/* Script MEJORADO para prevenir FOUC */}
         <script
           dangerouslySetInnerHTML={{

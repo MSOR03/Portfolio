@@ -1,18 +1,10 @@
 "use client";
-import { AnimatePresence } from "framer-motion";
-import { usePathname } from "next/navigation";
-import Stairs from "./Stairs";
 
 const StairTransition = () => {
-  const pathname = usePathname();
-
-  return (
-    <AnimatePresence mode="wait">
-      <div key={pathname}>
-        <Stairs />
-      </div>
-    </AnimatePresence>
-  );
+  // Completamente deshabilitado para portfolio de una sola página
+  // Esto elimina el flash oscuro en la carga inicial
+  // Si en el futuro agregas más páginas, puedes reactivarlo
+  return null;
 };
 
 export default StairTransition;

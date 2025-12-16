@@ -2,7 +2,14 @@
 
 import { useState, useCallback, useMemo, memo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronLeft, ChevronRight, Play, Pause, ExternalLink } from "lucide-react";
+import Image from "next/image";
+import {
+  ChevronLeft,
+  ChevronRight,
+  Play,
+  Pause,
+  ExternalLink,
+} from "lucide-react";
 
 // Configuración de videos
 const VIDEOS_DATA = [
@@ -183,18 +190,22 @@ const IntegratedVideoPlayer = memo(({ video, isPlaying, onPlay, onStop }) => {
   }
 
   return (
-    <div 
+    <div
       className="relative w-full h-full group cursor-pointer"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onClick={handlePlayClick}
     >
       {/* Miniatura */}
-      <img
+      <Image
         src={video.thumbnail}
         alt={video.title}
-        className="w-full h-full object-cover transition-all duration-700"
-        style={{ filter: 'brightness(0.8)' }}
+        fill
+        priority={false}
+        loading="lazy"
+        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 70vw, 60vw"
+        className="object-cover transition-all duration-700"
+        style={{ filter: "brightness(0.8)" }}
       />
       
       {/* Overlay */}
@@ -370,10 +381,14 @@ const OptimizedVideoCarousel = () => {
                     : 'border-gray-300 dark:border-white/20 hover:border-gray-400 dark:hover:border-white/40'
                 }`}
               >
-                <img
+                <Image
                   src={video.thumbnail}
                   alt={video.title}
-                  className="w-full h-full object-cover"
+                  fill
+                  priority={false}
+                  loading="lazy"
+                  sizes="160px"
+                  className="object-cover"
                 />
                 <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
                   <div className="text-center px-2">

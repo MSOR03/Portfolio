@@ -92,8 +92,12 @@ const nextConfig = {
     optimizePackageImports: [
       'framer-motion',
       'lucide-react',
+      'react-icons',
     ],
   },
+  
+  // ⚡ Optimización adicional para reducir JavaScript
+  output: 'standalone', // Reduce bundle size
 };
 
 export default nextConfig;

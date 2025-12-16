@@ -207,7 +207,10 @@ const Stats = () => {
   const { githubStats, loading, error } = useGitHubStats();
 
   useEffect(() => {
-    setMounted(true);
+    // Montar inmediatamente usando requestAnimationFrame
+    requestAnimationFrame(() => {
+      setMounted(true);
+    });
   }, []);
 
   useEffect(() => {
@@ -221,8 +224,19 @@ const Stats = () => {
     };
   }, []);
 
+  // Mostrar skeleton en lugar de null para evitar flash
   if (!mounted) {
-    return null;
+    return (
+      <section className="py-16 bg-transparent">
+        <div className="container mx-auto px-4">
+          <div className="flex flex-wrap justify-center gap-8">
+            {[1, 2, 3, 4].map((i) => (
+              <div key={i} className="h-[200px] w-[250px] bg-gray-200 dark:bg-gray-800 rounded-2xl animate-pulse" />
+            ))}
+          </div>
+        </div>
+      </section>
+    );
   }
 
   const currentTheme = resolvedTheme || 'dark';

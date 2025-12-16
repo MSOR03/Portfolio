@@ -136,7 +136,7 @@ const DecorativeDots = memo(({ animate, count }) => {
 DecorativeDots.displayName = "DecorativeDots";
 
 const Photo = () => {
-  const { isMobile, mounted } = useIsMobile();
+  const { isMobile } = useIsMobile();
   
   // Configuración adaptativa según dispositivo
   const config = {
@@ -166,15 +166,8 @@ const Photo = () => {
     },
   } : {};
 
-  // Render skeleton durante SSR para evitar hydration mismatch
-  if (!mounted) {
-    return (
-      <div className="w-full h-full relative flex justify-center items-center">
-        <div className="w-[298px] h-[298px] md:w-[340px] md:h-[340px] lg:w-[420px] lg:h-[420px] xl:w-[500px] xl:h-[500px] rounded-2xl bg-gray-200 dark:bg-gray-800" />
-      </div>
-    );
-  }
-
+  // Renderizar inmediatamente - la imagen tiene priority y se carga rápido
+  // No esperar mounted evita el flash visual
   return (
     <div className="w-full h-full relative flex justify-center items-center">
       <div className="relative">

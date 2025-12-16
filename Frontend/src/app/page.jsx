@@ -2,27 +2,75 @@
 
 import { Button } from "@/components/ui/button";
 import { FiDownload } from "react-icons/fi";
-import { memo, useMemo, lazy, Suspense } from "react";
+import { memo, useMemo, Suspense } from "react";
+import dynamic from "next/dynamic";
 import { FaQuoteLeft } from "react-icons/fa";
 
 import Social from "@/components/Social";
 import Photo from "@/components/Photo";
-import Stats from "@/components/Stats";
-import Technologies from "@/components/Technologies";
-import Testimonials from "@/components/Testimonials";
-import ContactSection from "@/components/ContactSection";
-import GradesTimeline from "@/components/GradesTimeline";
-import LanguageProgress from "@/components/Languaje";
 import ExperienceCard from "@/components/ExperienceCard";
-import Carousel from "@/components/carruselVideo";
 import useDownloadCV from "@/components/downloadCV";
 
-// Lazy loading con preload
-const RadarChart = lazy(() => import("@/components/RadarChart"));
-const RadialProgressChart = lazy(() =>
-  import("@/components/RadialProgressChart")
+// Carga diferida de secciones pesadas para mejorar el rendimiento inicial
+const Stats = dynamic(() => import("@/components/Stats"), {
+  ssr: false,
+  loading: () => (
+    <div className="mt-5 flex flex-wrap justify-center gap-8">
+      <ChartSkeleton />
+    </div>
+  ),
+});
+
+const Technologies = dynamic(() => import("@/components/Technologies"), {
+  ssr: false,
+  loading: () => (
+    <div className="py-12">
+      <ChartSkeleton />
+    </div>
+  ),
+});
+
+const Testimonials = dynamic(() => import("@/components/Testimonials"), {
+  ssr: false,
+  loading: () => (
+    <div className="py-12">
+      <ChartSkeleton />
+    </div>
+  ),
+});
+
+const ContactSection = dynamic(() => import("@/components/ContactSection"), {
+  ssr: false,
+});
+
+const GradesTimeline = dynamic(() => import("@/components/GradesTimeline"), {
+  ssr: false,
+});
+
+const LanguageProgress = dynamic(() => import("@/components/Languaje"), {
+  ssr: false,
+});
+
+const Carousel = dynamic(() => import("@/components/carruselVideo"), {
+  ssr: false,
+});
+
+const RadarChart = dynamic(() => import("@/components/RadarChart"), {
+  ssr: false,
+  loading: () => <ChartSkeleton />,
+});
+
+const RadialProgressChart = dynamic(
+  () => import("@/components/RadialProgressChart"),
+  {
+    ssr: false,
+    loading: () => <ChartSkeleton />,
+  }
 );
-const ClientOnly = lazy(() => import("@/components/ClientOnly"));
+
+const ClientOnly = dynamic(() => import("@/components/ClientOnly"), {
+  ssr: false,
+});
 
 // Skeleton OPTIMIZADO
 const ChartSkeleton = memo(() => (
@@ -139,11 +187,9 @@ SectionTitle.displayName = "SectionTitle";
 const OptimizedRadialChart = memo(({ config }) => (
   <div key={config.title} className="w-full max-w-xl">
     <div className="relative bg-white/5 dark:bg-white/5 rounded-xl p-4 border border-green-500/20">
-      <Suspense fallback={<ChartSkeleton />}>
-        <ClientOnly>
-          <RadialProgressChart title={config.title} skills={config.skills} />
-        </ClientOnly>
-      </Suspense>
+      <ClientOnly fallback={<ChartSkeleton />}>
+        <RadialProgressChart title={config.title} skills={config.skills} />
+      </ClientOnly>
     </div>
   </div>
 ));
@@ -220,9 +266,11 @@ const Home = () => {
         <div className="flex justify-center items-start gap-12 flex-col lg:flex-row mx-auto max-w-7xl">
           <div className="w-full lg:w-1/2 flex justify-center">
             <div className="relative w-full max-w-2xl lg:max-w-[600px] bg-white/5 dark:bg-white/5 rounded-2xl p-6 border border-green-500/20">
-              <Suspense fallback={<ChartSkeleton />}>
-                <RadarChart />
-              </Suspense>
+              <ClientOnly fallback={<ChartSkeleton />}>
+                <Suspense fallback={<ChartSkeleton />}>
+                  <RadarChart />
+                </Suspense>
+              </ClientOnly>
             </div>
           </div>
 

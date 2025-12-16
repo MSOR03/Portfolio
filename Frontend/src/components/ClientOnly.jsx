@@ -2,14 +2,18 @@
 
 import { useState, useEffect } from "react";
 
-export default function ClientOnly({ children }) {
+export default function ClientOnly({ children, fallback = null }) {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
+    // Usar requestAnimationFrame para montar inmediatamente después del primer frame
+    requestAnimationFrame(() => {
+      setMounted(true);
+    });
   }, []);
 
-  if (!mounted) return null;
+  // Mostrar fallback inmediatamente en lugar de null para evitar flash
+  if (!mounted) return fallback;
 
   return <>{children}</>;
 }
